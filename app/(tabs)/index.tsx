@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { Chat, chat } from '@/services/chatGptService';
+import React, { useRef, useState } from 'react';
 import {
   Button,
   FlatList,
@@ -7,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -20,13 +21,28 @@ interface Message {
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([] as Message[]);
   const [input, setInput] = useState('');
+  const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
+    const userInput = input.trim();
+    setMessages([...messages, { id: Date.now().toString(), text: input ?? '', reply: false }]);
+    setInput('');
+    setChatbotIsTyping(true);
+    const chats: Chat[] = [{ role: 'system', content: 'You are an english tutor. Correct student and continue the converstation. Do not care about punctuation, the user is using voice keyboard. Focus on the grammer.' }];
     if (input.trim()) {
-      setMessages([...messages, { id: Date.now().toString(), text: input, reply: false }]);
+      messages.forEach(msg => {
+        chats.push({ role: msg.reply ? 'assistant' : 'user', content: msg.text });
+      });
+      chats.push({ role: 'user', content: userInput });
+      let response = await chat(chats);
+      const chatBotReply = response.choices[0].message.content;
+      setMessages(prev => [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]);
       setInput('');
+      setChatbotIsTyping(false);
     }
   };
+
+  const flatListRef = useRef<FlatList>(null);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -35,6 +51,7 @@ export default function ChatScreen() {
         style={styles.container}
       >
         <FlatList
+          ref={flatListRef}
           data={messages}
           keyExtractor={item => item.id}
           renderItem={({ item }) => <View style={[
@@ -42,7 +59,16 @@ export default function ChatScreen() {
             item.reply ? styles.replyMessage : styles.receivedMessage
           ]}><Text>{item.text}</Text></View>}
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
-          inverted
+          onContentSizeChange={(width, height) => {
+            flatListRef.current?.scrollToOffset({ offset: height, animated: true });
+          }}
+          ListFooterComponent={
+            chatbotIsTyping ? (
+              <View style={styles.typingIndicator}>
+                <Text>Assistant is typing...</Text>
+              </View>
+            ) : <View style={{ height: 10 }} /> // always keep small buffer
+          }
         />
         <View style={styles.inputContainer}>
           <TextInput
@@ -51,7 +77,7 @@ export default function ChatScreen() {
             onChangeText={setInput}
             placeholder="Type a message"
           />
-          <Button title="Send" onPress={sendMessage} />
+          <Button disabled={chatbotIsTyping} title="Send" onPress={sendMessage} />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -87,6 +113,10 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     borderRadius: 5,
+  },
+  typingIndicator: {
+    padding: 10,
+    alignItems: 'center',
   },
 });
 
