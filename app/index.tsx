@@ -15,7 +15,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 interface Message {
   id: string;
   text: string;
-  reply: boolean
+  reply: boolean,
+  error?: boolean
 }
 
 export default function ChatScreen() {
@@ -34,9 +35,15 @@ export default function ChatScreen() {
         chats.push({ role: msg.reply ? 'assistant' : 'user', content: msg.text });
       });
       chats.push({ role: 'user', content: userInput });
-      let response = await chat(chats);
-      const chatBotReply = response.choices[0].message.content;
-      setMessages(prev => [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]);
+
+      try {
+        const response = await chat(chats);
+        const chatBotReply = response.choices[0].message.content;
+        setMessages(prev => [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]);
+      } catch {
+        setMessages(prev => [...prev, { id: Date.now().toString() + '-reply', text: 'It seems the tutor is busy! Please try again.', reply: true, error: true }]);
+      }
+
       setInput('');
       setChatbotIsTyping(false);
     }
@@ -56,7 +63,7 @@ export default function ChatScreen() {
           keyExtractor={item => item.id}
           renderItem={({ item }) => <View style={[
             styles.message,
-            item.reply ? styles.replyMessage : styles.receivedMessage
+            item.reply ? (!item.error ? styles.replyMessage : styles.errorMessage) : styles.receivedMessage
           ]}><Text>{item.text}</Text></View>}
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
           onContentSizeChange={(width, height) => {
@@ -99,6 +106,10 @@ const styles = StyleSheet.create({
   replyMessage: {
     alignSelf: 'flex-end',
     backgroundColor: '#DCF8C6', // WhatsApp-style green
+  },
+  errorMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#ffcccc', // WhatsApp-style red
   },
   inputContainer: {
     flexDirection: 'row',
