@@ -29,7 +29,7 @@ export default function ChatScreen() {
     setMessages([...messages, { id: Date.now().toString(), text: input ?? '', reply: false }]);
     setInput('');
     setChatbotIsTyping(true);
-    const chats: Chat[] = [{ role: 'system', content: 'You are an english tutor. Correct student and continue the converstation. Do not care about punctuation, the user is using voice keyboard. Focus on the grammer.' }];
+    const chats: Chat[] = [{ role: 'system', content: 'You are an English tutor. The student is using a voice keyboard, so punctuation may be missing or incorrect. Ignore all punctuation issues completely. Focus only on correcting grammar, word choice, and sentence structure. After correcting, continue the conversation naturally.' }];
     if (input.trim()) {
       messages.forEach(msg => {
         chats.push({ role: msg.reply ? 'assistant' : 'user', content: msg.text });
