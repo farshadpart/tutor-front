@@ -10,7 +10,7 @@ export interface Chat {
 
 export const chat = async (input : Chat[]) : Promise<ChatCompletion> => {
     return await client.chat.completions.create({
-        model: "gpt-4.1-nano",
+        model: "gpt-4.1-mini",
         messages: input,
         max_tokens: 1000,
         temperature: 0.7,

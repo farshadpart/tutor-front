@@ -1,4 +1,5 @@
 import { Chat, chat } from '@/services/chatGptService';
+import { makeChatReady } from '@/services/chatManager';
 import React, { useRef, useState } from 'react';
 import {
   Button,
@@ -29,15 +30,14 @@ export default function ChatScreen() {
     setMessages([...messages, { id: Date.now().toString(), text: input ?? '', reply: false }]);
     setInput('');
     setChatbotIsTyping(true);
-    const chats: Chat[] = [{ role: 'system', content: 'You are an English tutor. The student is using a voice keyboard, so punctuation may be missing or incorrect. Ignore all punctuation issues completely. Focus only on correcting grammar, word choice, and sentence structure. After correcting mention the reason of the mistake, continue the conversation naturally.' }];
+    const chats: Chat[] = [];
     if (input.trim()) {
       messages.forEach(msg => {
         chats.push({ role: msg.reply ? 'assistant' : 'user', content: msg.text });
       });
-      chats.push({ role: 'user', content: userInput });
 
       try {
-        const response = await chat(chats);
+        const response = await chat(makeChatReady(chats, userInput));
         const chatBotReply = response.choices[0].message.content;
         setMessages(prev => [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]);
       } catch {
