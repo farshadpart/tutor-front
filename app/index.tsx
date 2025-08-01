@@ -1,4 +1,5 @@
-import { Chat, chat } from '@/services/chatGptService';
+import { VoiceRecorder } from '@/components/recorder/VoiceRecorder';
+import { Chat, chat, transcription } from '@/services/chatGptService';
 import { makeChatReady } from '@/services/chatManager';
 import React, { useRef, useState } from 'react';
 import {
@@ -24,14 +25,24 @@ export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([] as Message[]);
   const [input, setInput] = useState('');
   const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
+  const [anlysing, setAnalysing] = useState(false);
 
-  const sendMessage = async () => {
-    const userInput = input.trim();
-    setMessages([...messages, { id: Date.now().toString(), text: input ?? '', reply: false }]);
+  const sendVoiceMessage = async (audio: { uri: string; name: string; type: string }) => {
+    setAnalysing(true);
+    console.log(audio);
+    let userTranscription = await transcription({url:audio.uri});
+    setAnalysing(false);
+    await sendTextMessage(userTranscription);
+  };
+
+  const sendTextMessage = async (userTranscription?: string) => {
+    console.log('userInput:', userTranscription)
+    const userInput = userTranscription ?? input.trim();
+    setMessages([...messages, { id: Date.now().toString(), text: userInput ?? '', reply: false }]);
     setInput('');
     setChatbotIsTyping(true);
     const chats: Chat[] = [];
-    if (input.trim()) {
+    if (userInput.trim()) {
       messages.forEach(msg => {
         chats.push({ role: msg.reply ? 'assistant' : 'user', content: msg.text });
       });
@@ -48,6 +59,30 @@ export default function ChatScreen() {
       setChatbotIsTyping(false);
     }
   };
+
+  const renderFooter = () => {
+    if (chatbotIsTyping) {
+      return (
+        <View style={styles.typingIndicator}>
+          <Text>Assistant is typing...</Text>
+        </View>
+      );
+    }
+
+    if (anlysing) {
+      return (
+        <View style={styles.typingIndicator}>
+          <Text>Analysing your voice...</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.mic}>
+        <VoiceRecorder onRecordingComplete={(audio) => sendVoiceMessage(audio)} />
+      </View>
+    );
+  }
 
   const flatListRef = useRef<FlatList>(null);
 
@@ -69,13 +104,7 @@ export default function ChatScreen() {
           onContentSizeChange={(width, height) => {
             flatListRef.current?.scrollToOffset({ offset: height, animated: true });
           }}
-          ListFooterComponent={
-            chatbotIsTyping ? (
-              <View style={styles.typingIndicator}>
-                <Text>Assistant is typing...</Text>
-              </View>
-            ) : <View style={{ height: 10 }} /> // always keep small buffer
-          }
+          ListFooterComponent={ renderFooter() }
         />
         <View style={styles.inputContainer}>
           <TextInput
@@ -84,7 +113,7 @@ export default function ChatScreen() {
             onChangeText={setInput}
             placeholder="Type a message"
           />
-          <Button disabled={chatbotIsTyping} title="Send" onPress={sendMessage} />
+          <Button disabled={chatbotIsTyping} title="Send" onPress={() => sendTextMessage()} />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -127,6 +156,9 @@ const styles = StyleSheet.create({
   },
   typingIndicator: {
     padding: 10,
+    alignItems: 'center',
+  },
+  mic: {
     alignItems: 'center',
   },
 });
