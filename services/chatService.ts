@@ -10,3 +10,4 @@ export const makeChatReady = (conversation: Chat[], input: string): Chat[] => {
     
     return lastMessages;
 }
+
