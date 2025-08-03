@@ -1,7 +1,8 @@
 import { VoiceRecorder } from '@/components/recorder/VoiceRecorder';
 import { Chat, chat, transcription } from '@/services/chatGptService';
-import { makeChatReady } from '@/services/chatManager';
-import React, { useRef, useState } from 'react';
+import { makeChatReady } from '@/services/chatService';
+import { getChatHistory, Message, saveChatHistory } from '@/services/messageService';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   FlatList,
@@ -14,29 +15,29 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-interface Message {
-  id: string;
-  text: string;
-  reply: boolean,
-  error?: boolean
-}
-
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([] as Message[]);
   const [input, setInput] = useState('');
   const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
   const [anlysing, setAnalysing] = useState(false);
 
+  useEffect(() => {
+    const fetchChatHistory = async () => {
+      const history = await getChatHistory();
+      setMessages(history);
+    };
+
+    fetchChatHistory();
+  }, []);
+
   const sendVoiceMessage = async (audio: { uri: string; name: string; type: string }) => {
     setAnalysing(true);
-    console.log(audio);
-    let userTranscription = await transcription({url:audio.uri});
+    let userTranscription = await transcription({ url: audio.uri });
     setAnalysing(false);
     await sendTextMessage(userTranscription);
   };
 
   const sendTextMessage = async (userTranscription?: string) => {
-    console.log('userInput:', userTranscription)
     const userInput = userTranscription ?? input.trim();
     setMessages([...messages, { id: Date.now().toString(), text: userInput ?? '', reply: false }]);
     setInput('');
@@ -50,9 +51,19 @@ export default function ChatScreen() {
       try {
         const response = await chat(makeChatReady(chats, userInput));
         const chatBotReply = response.choices[0].message.content;
-        setMessages(prev => [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]);
+        setMessages(prev => {
+          let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]
+          const save = async () => await saveChatHistory(latestMessages);
+          save();
+          return latestMessages;
+        });
       } catch {
-        setMessages(prev => [...prev, { id: Date.now().toString() + '-reply', text: 'It seems the tutor is busy! Please try again.', reply: true, error: true }]);
+        setMessages(prev => {
+          let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: 'It seems the tutor is busy! Please try again.', reply: true, error: true }]
+          const save = async () => await saveChatHistory(latestMessages);
+          save();
+          return latestMessages;
+        });
       }
 
       setInput('');
@@ -104,7 +115,7 @@ export default function ChatScreen() {
           onContentSizeChange={(width, height) => {
             flatListRef.current?.scrollToOffset({ offset: height, animated: true });
           }}
-          ListFooterComponent={ renderFooter() }
+          ListFooterComponent={renderFooter()}
         />
         <View style={styles.inputContainer}>
           <TextInput
