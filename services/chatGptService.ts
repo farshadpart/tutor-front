@@ -38,6 +38,7 @@ export const transcription = async ({ url }: { url: string }) => {
     const formData = new FormData();
     formData.append("file", filePart);
     formData.append("model", "whisper-1");
+    formData.append("language", "en");
 
     const result = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
@@ -48,7 +49,7 @@ export const transcription = async ({ url }: { url: string }) => {
     });
 
     const json = await result.json();
-    console.log(json);
+    console.log('chatGPT transcription result', json);
 
     return json.text;
 };
