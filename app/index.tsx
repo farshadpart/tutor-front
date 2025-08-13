@@ -112,6 +112,7 @@ export default function ChatScreen() {
             item.reply ? (!item.error ? styles.replyMessage : styles.errorMessage) : styles.receivedMessage
           ]}><Text>{item.text}</Text></View>}
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
+          keyboardShouldPersistTaps="handled"
           onContentSizeChange={(width, height) => {
             flatListRef.current?.scrollToOffset({ offset: height, animated: true });
           }}
