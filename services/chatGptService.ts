@@ -49,7 +49,6 @@ export const transcription = async ({ url }: { url: string }) => {
     });
 
     const json = await result.json();
-    console.log('chatGPT transcription result', json);
 
     return json.text;
 };
