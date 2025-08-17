@@ -39,10 +39,20 @@ export default function ChatScreen() {
 
   const sendTextMessage = async (userTranscription?: string) => {
     const userInput = userTranscription ?? input.trim();
+    const chats: Chat[] = [];
+    if (!userInput) {
+      setMessages(prev => {
+          let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: 'Looks like we didn’t catch your voice or any text. Want to try again?', reply: true, error: true }]
+          const save = async () => await saveChatHistory(latestMessages);
+          save();
+          return latestMessages;
+        });
+      return;
+    }
+
     setMessages([...messages, { id: Date.now().toString(), text: userInput ?? '', reply: false }]);
     setInput('');
     setChatbotIsTyping(true);
-    const chats: Chat[] = [];
     if (userInput.trim()) {
       messages.forEach(msg => {
         chats.push({ role: msg.reply ? 'assistant' : 'user', content: msg.text });
