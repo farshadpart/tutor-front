@@ -13,29 +13,27 @@ interface ChatBoxProps {
 }
 
 export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyping, onSendTextMessage }: ChatBoxProps) => {
-    const localMessages = messages;
+    const localMessages = [...messages].reverse();
     const [input, setInput] = useState('');
     const flatListRef = useRef<FlatList>(null);
 
     const handlePressSend = () => {
         onSendTextMessage(input);
         setInput('');
+        flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
             <FlatList
-                //inverted
+                inverted
                 ref={flatListRef}
                 data={localMessages}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => <MessageItem item={item} />}
                 contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
                 keyboardShouldPersistTaps="handled"
-                onContentSizeChange={(width, height) => {
-                    flatListRef.current?.scrollToOffset({ offset: height, animated: true });
-                }}
-                ListFooterComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} onRecordingComplete={onRecordingComplete} />}
+                ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} onRecordingComplete={onRecordingComplete} />}
             />
             <View style={styles.inputContainer}>
                 <TextInput
