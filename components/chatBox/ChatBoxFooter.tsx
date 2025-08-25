@@ -1,5 +1,5 @@
+import { Fragment } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { VoiceRecorder } from '../recorder/VoiceRecorder';
 
 interface ChatBoxFooterProps {
     chatbotIsTyping: boolean;
@@ -25,11 +25,7 @@ export const ChatBoxFooter = ({chatbotIsTyping, analysing, onRecordingComplete}:
             );
         }
 
-        return (
-            <View style={styles.mic}>
-                <VoiceRecorder onRecordingComplete={onRecordingComplete} />
-            </View>
-        );
+        return <Fragment/>;
     }
 
     return (
@@ -41,8 +37,5 @@ const styles = StyleSheet.create({
     typingIndicator: {
         padding: 10,
         alignItems: 'center',
-    },
-    mic: {
-        alignItems: 'center',
-    },
+    }
 });

@@ -1,7 +1,9 @@
 import { Message } from '@/services/messageService';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
-import { Button, FlatList, KeyboardAvoidingView, Platform, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { MessageItem } from '../MessageItem';
+import { VoiceRecorder } from '../recorder/VoiceRecorder';
 import { ChatBoxFooter } from './ChatBoxFooter';
 
 interface ChatBoxProps {
@@ -42,7 +44,13 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                     onChangeText={setInput}
                     placeholder="Type a message"
                 />
-                <Button disabled={chatbotIsTyping} title="Send" onPress={handlePressSend} />
+                {
+                    input.length === 0 ?
+                        <VoiceRecorder onRecordingComplete={onRecordingComplete} /> :
+                        <TouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={styles.sendButton}>
+                            <Ionicons name="send" size={24} color="black" />
+                        </TouchableOpacity>
+                }
             </View>
         </KeyboardAvoidingView>
     )
@@ -52,6 +60,7 @@ const styles = StyleSheet.create({
     container: { flex: 1 },
     inputContainer: {
         flexDirection: 'row',
+        alignItems: 'center',
         padding: 10,
         borderTopWidth: 1,
         borderColor: '#ccc',
@@ -63,5 +72,8 @@ const styles = StyleSheet.create({
         padding: 10,
         marginRight: 10,
         borderRadius: 5,
-    }
+    },
+    sendButton: {
+        paddingHorizontal: 10
+    },
 });
