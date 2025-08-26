@@ -11,7 +11,7 @@ interface ChatBoxProps {
     analysing: boolean;
     chatbotIsTyping: boolean;
     onRecordingComplete: (audio: { uri: string; name: string; type: string }) => void;
-    onSendTextMessage: (userTranscription?: string) => string;
+    onSendTextMessage: (userTranscription?: string) => void;
 }
 
 export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyping, onSendTextMessage }: ChatBoxProps) => {
@@ -25,6 +25,11 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
         flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
 
+    const handleRecordingComplete = (audio: { uri: string; name: string; type: string }) => {
+        flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+        onRecordingComplete(audio);
+    }
+
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
             <FlatList
@@ -35,7 +40,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                 renderItem={({ item }) => <MessageItem item={item} />}
                 contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
                 keyboardShouldPersistTaps="handled"
-                ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} onRecordingComplete={onRecordingComplete} />}
+                ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
             />
             <View style={styles.inputContainer}>
                 <TextInput
@@ -46,7 +51,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                 />
                 {
                     input.length === 0 ?
-                        <VoiceRecorder onRecordingComplete={onRecordingComplete} /> :
+                        <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
                         <TouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={styles.sendButton}>
                             <Ionicons name="send" size={24} color="black" />
                         </TouchableOpacity>

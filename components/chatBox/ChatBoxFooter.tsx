@@ -4,10 +4,9 @@ import { StyleSheet, Text, View } from 'react-native';
 interface ChatBoxFooterProps {
     chatbotIsTyping: boolean;
     analysing: boolean;
-    onRecordingComplete: (audio: { uri: string; name: string; type: string }) => void;
 }
 
-export const ChatBoxFooter = ({chatbotIsTyping, analysing, onRecordingComplete}:ChatBoxFooterProps) => {
+export const ChatBoxFooter = ({chatbotIsTyping, analysing}:ChatBoxFooterProps) => {
     const renderFooter = () => {
         if (chatbotIsTyping) {
             return (
