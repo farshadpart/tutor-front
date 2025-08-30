@@ -1,3 +1,4 @@
+import Entypo from '@expo/vector-icons/Entypo';
 import {
   AudioModule,
   RecordingPresets,
@@ -6,7 +7,7 @@ import {
   useAudioRecorderState,
 } from 'expo-audio';
 import { useEffect } from 'react';
-import { Alert, Button, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 type VoiceRecorderProps = {
   onRecordingComplete?: (audio: {
@@ -56,20 +57,20 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Button
-        title={recorderState.isRecording ? 'Stop Recording' : 'Start Recording'}
-        onPress={recorderState.isRecording ? stopRecording : record}
-      />
+    <View>
+      <TouchableOpacity style={styles.iconButton} onPress={recorderState.isRecording ? stopRecording : record}>
+        {recorderState.isRecording ? (
+          <Entypo name="controller-stop" size={24} color="black" />
+        ) : (
+          <Entypo name="mic" size={24} color="black" />
+        )}
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
-    padding: 10,
+  iconButton: {
+     paddingHorizontal: 10
   },
 });

@@ -9,7 +9,7 @@ export default function ChatScreen() {
     const [messages, setMessages] = useState<Message[]>([] as Message[]);
     const [input, setInput] = useState('');
     const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
-    const [anlysing, setAnalysing] = useState(false);
+    const [analysing, setAnalysing] = useState(false);
 
     useEffect(() => {
         const fetchChatHistory = async () => {
@@ -17,7 +17,7 @@ export default function ChatScreen() {
             setMessages(history);
         };
 
-        fetchChatHistory();
+        fetchChatHistory().then();
     }, []);
 
     const handleSendVoiceMessage = async (audio: { uri: string; name: string; type: string }) => {
@@ -75,7 +75,7 @@ export default function ChatScreen() {
         <SafeAreaView style={{ flex: 1 }}>
             <ChatBox 
                 messages={messages} 
-                analysing={anlysing} 
+                analysing={analysing} 
                 chatbotIsTyping={chatbotIsTyping} 
                 onRecordingComplete={(audio) => handleSendVoiceMessage(audio)}
                 onSendTextMessage={handleSendTextMessage}
