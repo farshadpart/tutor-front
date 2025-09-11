@@ -2,7 +2,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
 import Entypo from '@expo/vector-icons/Entypo';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-import {useRouter} from "expo-router";
+import { useRouter } from "expo-router";
+import { useState, useEffect } from 'react';
+import { getChatList } from '../services/messageService';
 
 export default function Layout() {
     return (
@@ -16,18 +18,21 @@ export default function Layout() {
 }
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
+    const [chatList, setChatList] = useState<string[]>([]);
+    useEffect(() => {
+        const fetchChatList = async () => {
+            setChatList(await getChatList());
+        };
+        fetchChatList().then();
+    }, []);
+    const router = useRouter();
+
     return (
         <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
-            {menuItems.map(item => (
-                <DrawerItem key={item.id} label={item.title} onPress={() => router.push(`/${item.id}`)} />
+            {chatList.map(item => (
+                <DrawerItem key={item} label={item} onPress={() => router.push(`/${item}`)} />
             ))}
         </DrawerContentScrollView>
     )
 }
-
-const router = useRouter();
-
-const menuItems = [
-    { id: 1, title: '1-title' }, { id: 2, title: '2-title' }, { id: 3, title: '3-title' }
-]

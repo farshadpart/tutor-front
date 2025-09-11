@@ -21,3 +21,19 @@ export const saveChatHistory = async (conversation: Message[]) => {
     const chatAsString = JSON.stringify(conversation);
     await FileSystem.writeAsStringAsync(`${FileSystem.documentDirectory}conversationHistory.json`, chatAsString);
 }
+
+export const getChatList = async () => {
+    const fileInfo = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}chatList.json`);
+    if (!fileInfo.exists) {
+        return [];
+    }
+
+    let chatHistory = await FileSystem.readAsStringAsync(`${FileSystem.documentDirectory}chatList.json`);
+    return JSON.parse(chatHistory) as string[];
+}
+
+export const saveChatList = async (chatList: string[]) => {
+    const chatListAsString = JSON.stringify(chatList);
+    await FileSystem.writeAsStringAsync(`${FileSystem.documentDirectory}chatList.json`, chatListAsString);
+}
+

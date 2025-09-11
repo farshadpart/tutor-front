@@ -1,12 +1,11 @@
 import React from 'react';
-import {DrawerMenu} from "@/components/drawerMenu/DrawerMenu";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {PaperProvider} from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import ChatScreen from '../components/chatBox/ChatScreen';
 
 export default function Index() {
     return (
         <SafeAreaView style={{flex: 1}}>
-            <></>
+            <ChatScreen/>
         </SafeAreaView>
     );
 }
