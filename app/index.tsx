@@ -6,9 +6,7 @@ import {PaperProvider} from "react-native-paper";
 export default function Index() {
     return (
         <SafeAreaView style={{flex: 1}}>
-            <PaperProvider>
-                <DrawerMenu/>
-            </PaperProvider>
+            <></>
         </SafeAreaView>
     );
 }
