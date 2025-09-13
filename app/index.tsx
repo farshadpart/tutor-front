@@ -5,7 +5,7 @@ import ChatScreen from '../components/chatBox/ChatScreen';
 export default function Index() {
     return (
         <SafeAreaView style={{flex: 1}}>
-            <ChatScreen/>
+            <ChatScreen chatId='NewChat'/>
         </SafeAreaView>
     );
 }
