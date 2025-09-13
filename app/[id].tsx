@@ -1,6 +1,7 @@
-import { View, SafeAreaView } from "react-native"
+import { SafeAreaView } from "react-native"
 import { useLocalSearchParams, Stack } from "expo-router"
 import ChatScreen from "../components/chatBox/ChatScreen"
+import { Fragment } from "react";
 
 export default function MenuItemContainer() {
     const { id } = useLocalSearchParams();
@@ -9,11 +10,11 @@ export default function MenuItemContainer() {
         return Error('The type of id is not valid!');
 
     return (
-        <View>
-            <Stack.Screen options={{ title: `Page:${id}` }} />
+        <Fragment>
+            <Stack.Screen options={{ title: 'Conversation' }} />
             <SafeAreaView style={{ flex: 1 }}>
                 <ChatScreen chatId={id} />
             </SafeAreaView>
-        </View>
+        </Fragment>
     )
 }
