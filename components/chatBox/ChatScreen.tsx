@@ -2,8 +2,7 @@ import { ChatBox } from '@/components/chatBox/ChatBox';
 import { Chat, chat, transcription } from '@/services/chatGptService';
 import { makeChatReady } from '@/services/chatService';
 import { getChatHistory, Message, saveChatHistory, upsertChatInfo } from '@/services/messageService';
-import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState, useRef } from 'react';
 import { randomUUID } from 'expo-crypto';
 
 export interface ChatScreenProps {
@@ -97,14 +96,12 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ChatBox
-                messages={messages}
-                analysing={analysing}
-                chatbotIsTyping={chatbotIsTyping}
-                onRecordingComplete={(audio) => handleSendVoiceMessage(audio)}
-                onSendTextMessage={handleSendTextMessage}
-            />
-        </SafeAreaView>
+        <ChatBox
+            messages={messages}
+            analysing={analysing}
+            chatbotIsTyping={chatbotIsTyping}
+            onRecordingComplete={(audio) => handleSendVoiceMessage(audio)}
+            onSendTextMessage={handleSendTextMessage}
+        />
     );
 }

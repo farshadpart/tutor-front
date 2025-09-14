@@ -1,4 +1,3 @@
-import { SafeAreaView } from "react-native"
 import { useLocalSearchParams, Stack } from "expo-router"
 import ChatScreen from "../components/chatBox/ChatScreen"
 import { Fragment } from "react";
@@ -12,9 +11,7 @@ export default function MenuItemContainer() {
     return (
         <Fragment>
             <Stack.Screen options={{ title: 'Conversation' }} />
-            <SafeAreaView style={{ flex: 1 }}>
-                <ChatScreen chatId={id} />
-            </SafeAreaView>
+            <ChatScreen chatId={id} />
         </Fragment>
     )
 }

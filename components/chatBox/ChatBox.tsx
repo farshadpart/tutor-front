@@ -1,7 +1,7 @@
 import { Message } from '@/services/messageService';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { Fragment, useRef, useState } from 'react';
+import { FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { MessageItem } from '../MessageItem';
 import { VoiceRecorder } from '../recorder/VoiceRecorder';
 import { ChatBoxFooter } from './ChatBoxFooter';
@@ -31,7 +31,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
     }
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+        <Fragment>
             <FlatList
                 inverted
                 ref={flatListRef}
@@ -57,7 +57,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                         </TouchableOpacity>
                 }
             </View>
-        </KeyboardAvoidingView>
+        </Fragment>
     )
 }
 
