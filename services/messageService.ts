@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 
 export interface Message {
     id: string;
@@ -12,29 +12,36 @@ export interface ChatInfo {
     title: string
 }
 
-export const getChatHistory = async (chatId: string): Promise<Message[]> => {
-    const fileInfo = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}${chatId}.json`);
+export const getChatHistory = async (chatId: string): Promise<Message[]> => {    
+    const file = new File(Paths.document, `${chatId}.json`);
+    const fileInfo = file.info();
     if (!fileInfo.exists) {
         return [];
     }
 
-    let chatHistory = await FileSystem.readAsStringAsync(`${FileSystem.documentDirectory}${chatId}.json`);
-    return JSON.parse(chatHistory) as Message[];
+    return JSON.parse(await file.text()) as Message[];
 }
 
 export const saveChatHistory = async (chatId: string, conversation: Message[]) => {
     const chatAsString = JSON.stringify(conversation);
-    await FileSystem.writeAsStringAsync(`${FileSystem.documentDirectory}${chatId}.json`, chatAsString);
+    const file = new File(Paths.document, `${chatId}.json`);
+    const fileInfo = file.info();
+
+    if (!fileInfo.exists) {
+        file.create();
+    }
+
+    file.write(chatAsString);
 }
 
 export const getChatList = async () => {
-    const fileInfo = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}chatList.json`);
+    const file = new File(Paths.document, 'chatList.json');
+    const fileInfo = file.info();
     if (!fileInfo.exists) {
         return [];
     }
 
-    let chatHistory = await FileSystem.readAsStringAsync(`${FileSystem.documentDirectory}chatList.json`);
-    return JSON.parse(chatHistory) as ChatInfo[];
+    return JSON.parse(await file.text()) as ChatInfo[];
 }
 
 export const upsertChatInfo = async (chatInfo: ChatInfo) => {
@@ -47,6 +54,13 @@ export const upsertChatInfo = async (chatInfo: ChatInfo) => {
         chatList.push(chatInfo);
     }
     
-    await FileSystem.writeAsStringAsync(`${FileSystem.documentDirectory}chatList.json`, JSON.stringify(chatList));
+    const file = new File(Paths.document, 'chatList.json');
+    const fileInfo = file.info();
+
+    if (!fileInfo.exists) {
+        file.create()
+    }
+
+    file.write(JSON.stringify(chatList));
 }
 

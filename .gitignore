@@ -1,7 +1,11 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-#vs
+#ide files
 .vs/
+.vscode/
+
+#key files
+keyProvider.ts
 
 # dependencies
 node_modules/
@@ -23,8 +27,7 @@ expo-env.d.ts
 
 # Metro
 .metro-health-check*
-android
-.idea
+
 # debug
 npm-debug.*
 yarn-debug.*
@@ -42,5 +45,6 @@ yarn-error.*
 
 app-example
 
-keyProvider.ts
-/.vs/tutor.slnx/FileContentIndex/3658e275-e258-4058-9a5e-8d68cdf24769.vsidx
+# generated native folders
+/ios
+/android

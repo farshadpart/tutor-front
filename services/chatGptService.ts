@@ -19,22 +19,9 @@ export const chat = async (input: Chat[]): Promise<ChatCompletion> => {
 }
 
 export const transcription = async ({ url }: { url: string }) => {
-    const isReactNative = typeof navigator !== "undefined" && navigator.product === "ReactNative";
-
-    let filePart;
-
-    if (isReactNative) {
-        filePart = {
-            uri: url,
-            name: "audio.m4a",
-            type: "audio/m4a",
-        } as any;
-    } else {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        filePart = new File([blob], "audio.m4a", { type: "audio/m4a" });
-    }
-
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const filePart = new File([blob], "audio.m4a", { type: "audio/m4a" });
     const formData = new FormData();
     formData.append("file", filePart);
     formData.append("model", "whisper-1");
