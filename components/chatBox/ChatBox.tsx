@@ -32,7 +32,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
     }
 
     return (
-        //<KeyboardShiftView style={{ flex: 1 }}>
+        <KeyboardShiftView dismissOnTouchOutside>
             <Fragment>
                 <FlatList
                     inverted
@@ -60,7 +60,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                     }
                 </View>
             </Fragment>
-        //</KeyboardShiftView>
+        </KeyboardShiftView>
     )
 }
 
