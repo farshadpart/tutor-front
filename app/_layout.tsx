@@ -23,13 +23,15 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         fetchChatList().then();
     }, []);
     const router = useRouter();
-
     return (
         <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
-            {chatList.map(item => (
-                <DrawerItem key={item.id} label={item.title} onPress={() => router.push(`/${item.id}`)} />
-            ))}
+            {chatList.map(item => {
+                const activeRoute = props.state.routes[props.state.index];
+                const activeChatId = activeRoute.name === "[id]" ? (activeRoute.params as { id: string } | undefined)?.id : undefined;
+                const isFocused = activeChatId !== undefined && activeChatId === item.id;
+                return <DrawerItem key={item.id} focused={isFocused} activeTintColor="red" label={item.title} onPress={() => router.push(`/${item.id}`)} />
+            })}
         </DrawerContentScrollView>
     )
 }
