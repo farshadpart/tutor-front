@@ -1,11 +1,12 @@
 import { Message } from '@/services/messageService';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Fragment, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { MessageItem } from '../MessageItem';
 import { VoiceRecorder } from '../recorder/VoiceRecorder';
 import { ChatBoxFooter } from './ChatBoxFooter';
 import KeyboardShiftView from '../keyboardShiftView/KeyboardShiftView';
+import DismissArea from '../keyboardShiftView/DismissArea';
 
 interface ChatBoxProps {
     messages: Message[];
@@ -33,7 +34,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
 
     return (
         <KeyboardShiftView dismissOnTouchOutside>
-            <Fragment>
+            <DismissArea>
                 <FlatList
                     inverted
                     ref={flatListRef}
@@ -44,22 +45,22 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                     keyboardShouldPersistTaps="handled"
                     ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
                 />
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        style={styles.input}
-                        value={input}
-                        onChangeText={setInput}
-                        placeholder="Type a message"
-                    />
-                    {
-                        input.length === 0 ?
-                            <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
-                            <TouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={styles.sendButton}>
-                                <Ionicons name="send" size={24} color="black" />
-                            </TouchableOpacity>
-                    }
-                </View>
-            </Fragment>
+            </DismissArea>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    value={input}
+                    onChangeText={setInput}
+                    placeholder="Type a message"
+                />
+                {
+                    input.length === 0 ?
+                        <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
+                        <TouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={styles.sendButton}>
+                            <Ionicons name="send" size={24} color="black" />
+                        </TouchableOpacity>
+                }
+            </View>
         </KeyboardShiftView>
     )
 }
