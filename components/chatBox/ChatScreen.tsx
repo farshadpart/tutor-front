@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 
 export interface ChatScreenProps {
-    chatId: string | 'NewChat';
+    chatId: string;
 }
 
 export default function ChatScreen({ chatId }: ChatScreenProps) {

@@ -8,7 +8,7 @@ import { ChatInfo, getChatList } from '../services/messageService';
 export default function Layout() {
     return (
         <Drawer drawerContent={CustomDrawerContent} screenOptions={{ drawerActiveTintColor: 'red', drawerHideStatusBarOnOpen: true }}>
-            <Drawer.Screen name="index" options={{ title: 'New Chat', drawerIcon: ({ color, size }) => <Entypo name="chat" size={24} color="black" /> }} />
+            <Drawer.Screen name="index" options={{ drawerItemStyle: { display: 'none' } }} />
             <Drawer.Screen name="[id]" options={{ drawerItemStyle: { display: 'none' } }} />
         </Drawer>
     );
@@ -23,14 +23,32 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         fetchChatList().then();
     }, []);
     const router = useRouter();
+    const activeRoute = props.state.routes[props.state.index];
+    const activeChatId =
+        activeRoute.name === '[id]'
+            ? (activeRoute.params as { id: string } | undefined)?.id
+            : undefined;
+
     return (
         <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
-            {chatList.map(item => {
-                const activeRoute = props.state.routes[props.state.index];
-                const activeChatId = activeRoute.name === "[id]" ? (activeRoute.params as { id: string } | undefined)?.id : undefined;
-                const isFocused = activeChatId !== undefined && activeChatId === item.id;
-                return <DrawerItem key={item.id} focused={isFocused} activeTintColor="red" label={item.title} onPress={() => router.push(`/${item.id}`)} />
+            <DrawerItem
+                label="New Chat"
+                activeTintColor="red"
+                focused={activeRoute.name === 'index'}
+                onPress={() =>
+                    router.push({
+                        pathname: '/',
+                        params: { new: Date.now().toString() }
+                    })
+                }
+                icon={({ color, size }) => (
+                    <Entypo name="chat" size={24} color={color} />
+                )}
+            />
+
+            {chatList.slice().reverse().map(item => {
+                return <DrawerItem key={item.id} focused={activeChatId === item.id} activeTintColor="red" label={item.title} onPress={() => router.push(`/${item.id}`)} />
             })}
         </DrawerContentScrollView>
     )
