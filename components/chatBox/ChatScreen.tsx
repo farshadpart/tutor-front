@@ -1,11 +1,15 @@
 import { ChatBox } from '@/components/chatBox/ChatBox';
 import { Chat, chat, transcription } from '@/services/chatGptService';
 import { makeChatReady } from '@/services/chatService';
-import { getChatHistory, Message, saveChatHistory } from '@/services/messageService';
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { getChatHistory, Message, saveChatHistory, upsertChatInfo } from '@/services/messageService';
+import { useEffect, useState } from 'react';
 
-export default function ChatScreen() {
+
+export interface ChatScreenProps {
+    chatId: string;
+}
+
+export default function ChatScreen({ chatId }: ChatScreenProps) {
     const [messages, setMessages] = useState<Message[]>([] as Message[]);
     const [input, setInput] = useState('');
     const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
@@ -13,12 +17,20 @@ export default function ChatScreen() {
 
     useEffect(() => {
         const fetchChatHistory = async () => {
-            const history = await getChatHistory();
-            setMessages(history);
+            setMessages(await getChatHistory(chatId));
         };
 
         fetchChatHistory().then();
-    }, []);
+    },[chatId]);
+
+    useEffect(() => {
+        return () => {
+            const message = messages.at(-1);
+            if (message !== undefined && !message.error && !message.reply) {
+                upsertChatInfo({ id: chatId, title: message?.text }).then();
+            }
+        };
+    }, [messages, chatId])
 
     const handleSendVoiceMessage = async (audio: { uri: string; name: string; type: string }) => {
         setAnalysing(true);
@@ -33,7 +45,7 @@ export default function ChatScreen() {
         if (!userInput) {
             setMessages(prev => {
                 let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: 'Looks like we didn’t catch your voice or any text. Want to try again?', reply: true, error: true }]
-                const save = async () => await saveChatHistory(latestMessages);
+                const save = async () => await saveChatHistory(chatId, latestMessages);
                 save();
                 return latestMessages;
             });
@@ -53,14 +65,14 @@ export default function ChatScreen() {
                 const chatBotReply = response.choices[0].message.content;
                 setMessages(prev => {
                     let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]
-                    const save = async () => await saveChatHistory(latestMessages);
+                    const save = async () => await saveChatHistory(chatId, latestMessages);
                     save();
                     return latestMessages;
                 });
             } catch {
                 setMessages(prev => {
                     let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: 'It seems the tutor is busy! Please try again.', reply: true, error: true }]
-                    const save = async () => await saveChatHistory(latestMessages);
+                    const save = async () => await saveChatHistory(chatId, latestMessages);
                     save();
                     return latestMessages;
                 });
@@ -72,14 +84,12 @@ export default function ChatScreen() {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ChatBox 
-                messages={messages} 
-                analysing={analysing} 
-                chatbotIsTyping={chatbotIsTyping} 
-                onRecordingComplete={(audio) => handleSendVoiceMessage(audio)}
-                onSendTextMessage={handleSendTextMessage}
-            />
-        </SafeAreaView>
+        <ChatBox
+            messages={messages}
+            analysing={analysing}
+            chatbotIsTyping={chatbotIsTyping}
+            onRecordingComplete={(audio) => handleSendVoiceMessage(audio)}
+            onSendTextMessage={handleSendTextMessage}
+        />
     );
 }

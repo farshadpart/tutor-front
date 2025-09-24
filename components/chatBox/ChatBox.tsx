@@ -1,10 +1,12 @@
 import { Message } from '@/services/messageService';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { MessageItem } from '../MessageItem';
 import { VoiceRecorder } from '../recorder/VoiceRecorder';
 import { ChatBoxFooter } from './ChatBoxFooter';
+import KeyboardShiftView from '../keyboardShiftView/KeyboardShiftView';
+import DismissArea from '../keyboardShiftView/DismissArea';
 
 interface ChatBoxProps {
     messages: Message[];
@@ -31,17 +33,19 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
     }
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-            <FlatList
-                inverted
-                ref={flatListRef}
-                data={localMessages}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => <MessageItem item={item} />}
-                contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
-                keyboardShouldPersistTaps="handled"
-                ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
-            />
+        <KeyboardShiftView dismissOnTouchOutside>
+            <DismissArea>
+                <FlatList
+                    inverted
+                    ref={flatListRef}
+                    data={localMessages}
+                    keyExtractor={item => item.id}
+                    renderItem={({ item }) => <MessageItem item={item} />}
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
+                    keyboardShouldPersistTaps="handled"
+                    ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
+                />
+            </DismissArea>
             <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
@@ -57,7 +61,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                         </TouchableOpacity>
                 }
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardShiftView>
     )
 }
 
