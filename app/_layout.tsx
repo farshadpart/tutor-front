@@ -16,18 +16,19 @@ export default function Layout() {
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const [chatList, setChatList] = useState<ChatInfo[]>([]);
-    useEffect(() => {
-        const fetchChatList = async () => {
-            setChatList(await getChatList());
-        };
-        fetchChatList().then();
-    }, []);
     const router = useRouter();
     const activeRoute = props.state.routes[props.state.index];
     const activeChatId =
         activeRoute.name === '[id]'
             ? (activeRoute.params as { id: string } | undefined)?.id
             : undefined;
+
+    useEffect(() => {
+        const fetchChatList = async () => {
+            setChatList(await getChatList());
+        };
+        fetchChatList().then();
+    }, [activeChatId]);
 
     return (
         <DrawerContentScrollView {...props}>

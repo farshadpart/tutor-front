@@ -12,7 +12,6 @@ export default function Index() {
         useCallback(() => {
             const newId = randomUUID();
             setUuid(newId);
-            console.log("Generated UUID", newId);
         }, [])
     );
     console.log(uuid)
