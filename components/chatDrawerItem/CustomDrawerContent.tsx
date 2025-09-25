@@ -1,7 +1,7 @@
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
-import { ChatInfo, getChatList, deleteChat } from "../../services/messageService";
+import { ChatInfo, getChatList, deleteChat, upsertChatInfo } from "../../services/messageService";
 import ChatDrawerItem from "./ChatDrawerItem";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Pressable, StyleSheet, Text } from "react-native";
@@ -27,16 +27,17 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         setChatList((prev) => prev.filter((c) => c.id !== id));
     };
 
-    const handleRename = (id: string) => {
-        // TODO: open a rename modal or inline input
-        console.log("Rename chat", id);
+    const handleRename = async (id: string, newTitle: string) => {
+        await upsertChatInfo({ id, title: newTitle });
+        setChatList(prev =>
+            prev.map(chat => (chat.id === id ? { ...chat, title: newTitle } : chat))
+        );
     };
 
     return (
         <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
 
-            {/* New Chat */}
             <Pressable
                 style={[styles.row, activeRoute.name === "index" && styles.activeRow]}
                 onPress={() =>
@@ -50,7 +51,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                 <Text style={styles.label}>New Chat</Text>
             </Pressable>
 
-            {/* Existing chats */}
             {chatList
                 .slice()
                 .reverse()
@@ -61,7 +61,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                         title={item.title}
                         isActive={activeChatId === item.id}
                         onPress={() => router.push(`/${item.id}`)}
-                        onRename={() => handleRename(item.id)}
+                        onRename={handleRename}
                         onDelete={() => handleDelete(item.id)}
                     />
                 ))}
