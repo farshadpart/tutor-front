@@ -12,7 +12,7 @@ export interface ChatInfo {
     title: string
 }
 
-export const getChatHistory = async (chatId: string): Promise<Message[]> => {    
+export const getChatHistory = async (chatId: string): Promise<Message[]> => {
     const file = new File(Paths.document, `${chatId}.json`);
     const fileInfo = file.info();
     if (!fileInfo.exists) {
@@ -53,7 +53,18 @@ export const upsertChatInfo = async (chatInfo: ChatInfo) => {
     else {
         chatList.push(chatInfo);
     }
-    
+
+    updateChatInfoList(chatList);
+}
+
+export const deleteChat = async (id: string) => {
+    let chatList = await getChatList();
+    chatList = chatList.filter(chatInfo => chatInfo.id !== id)
+    updateChatInfoList(chatList);
+    deleteChatHistory(id);
+}
+
+const updateChatInfoList = (chatInfoList: ChatInfo[]) => {
     const file = new File(Paths.document, 'chatList.json');
     const fileInfo = file.info();
 
@@ -61,6 +72,15 @@ export const upsertChatInfo = async (chatInfo: ChatInfo) => {
         file.create()
     }
 
-    file.write(JSON.stringify(chatList));
+    file.write(JSON.stringify(chatInfoList));
+}
+
+const deleteChatHistory = (chatId: string) => {
+    const file = new File(Paths.document, `${chatId}.json`);
+    const fileInfo = file.info();
+
+    if (fileInfo.exists) {
+        file.delete();
+    }
 }
 

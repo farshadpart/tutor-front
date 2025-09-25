@@ -14,7 +14,6 @@ export default function Index() {
             setUuid(newId);
         }, [])
     );
-    console.log(uuid)
 
     return (
         <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
