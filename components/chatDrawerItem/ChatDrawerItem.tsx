@@ -50,28 +50,35 @@ export default function ChatDrawerItem({
 
             <View style={styles.actions}>
                 {isEditing ? (
-                    <Pressable onPress={handleSave}>
-                        <Entypo name="check" size={18} color="green" />
+                    <Pressable style={styles.iconButton} onPress={handleSave}>
+                        <Entypo name="check" size={20} color="green" />
                     </Pressable>
                 ) : (
                     <Pressable
+                        style={styles.iconButton}
                         onPress={() => {
                             setDraft(title); // reset draft before editing
                             setIsEditing(true);
                         }}
                     >
-                        <Entypo name="edit" size={18} color="gray" />
+                        <Entypo name="edit" size={20} color="gray" />
                     </Pressable>
                 )}
-                <Pressable onPress={onDelete}>
-                    <Entypo name="trash" size={18} color="gray" />
+                <Pressable style={styles.iconButton} onPress={onDelete}>
+                    <Entypo name="trash" size={20} color="gray" />
                 </Pressable>
             </View>
         </View>
     );
+
 }
 
 const styles = StyleSheet.create({
+    iconButton: {
+        padding: 2,
+        marginHorizontal: 2,
+        borderRadius: 2
+    },
     row: {
         flexDirection: "row",
         alignItems: "center",
