@@ -36,13 +36,16 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const deleteThisChat = (id: string) => {
         deleteChat(id);
         setChatList((prev) => prev.filter((c) => c.id !== id));
+        if (activeChatId === id) {
+            requestAnimationFrame(() => {
+                router.push("/");
+            });
+        }
     }
 
     const handleRename = async (id: string, newTitle: string) => {
         await upsertChatInfo({ id, title: newTitle });
-        setChatList(prev =>
-            prev.map(chat => (chat.id === id ? { ...chat, title: newTitle } : chat))
-        );
+        setChatList(prev => prev.map(chat => (chat.id === id ? { ...chat, title: newTitle } : chat)));
     };
 
     return (
@@ -51,12 +54,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
             <Pressable
                 style={[styles.row, activeRoute.name === "index" && styles.activeRow]}
-                onPress={() =>
-                    router.push({
-                        pathname: "/",
-                        params: { new: Date.now().toString() },
-                    })
-                }
+                onPress={() => router.push('/')}
             >
                 <Entypo name="chat" size={20} color="red" />
                 <Text style={styles.label}>New Chat</Text>
