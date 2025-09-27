@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ChatInfo, getChatList, deleteChat, upsertChatInfo } from "../../services/messageService";
 import ChatDrawerItem from "./ChatDrawerItem";
 import Entypo from "@expo/vector-icons/Entypo";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text, Alert } from "react-native";
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const [chatList, setChatList] = useState<ChatInfo[]>([]);
@@ -22,10 +22,21 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         fetchChatList().then();
     }, [activeChatId]);
 
-    const handleDelete = (id: string) => {
+    const handleDelete = (item: ChatInfo) => {
+        Alert.alert(
+            "Delete Chat",
+            `Are you sure you want to delete ${item.title} chat?`,
+            [
+                { text: "Cancel", style: "cancel" },
+                { text: "Delete", style: "destructive", onPress: () => deleteThisChat(item.id) }
+            ]
+        );
+    };
+
+    const deleteThisChat = (id: string) => {
         deleteChat(id);
         setChatList((prev) => prev.filter((c) => c.id !== id));
-    };
+    }
 
     const handleRename = async (id: string, newTitle: string) => {
         await upsertChatInfo({ id, title: newTitle });
@@ -62,7 +73,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                         isActive={activeChatId === item.id}
                         onPress={() => router.push(`/${item.id}`)}
                         onRename={handleRename}
-                        onDelete={() => handleDelete(item.id)}
+                        onDelete={() => handleDelete(item)}
                     />
                 ))}
         </DrawerContentScrollView>
