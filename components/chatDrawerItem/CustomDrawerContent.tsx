@@ -1,26 +1,19 @@
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
-import { useState, useEffect } from "react";
-import { ChatInfo, getChatList, deleteChat, upsertChatInfo } from "../../services/messageService";
+import { ChatInfo, deleteChat, upsertChatInfo } from "../../services/messageService";
 import ChatDrawerItem from "./ChatDrawerItem";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Pressable, StyleSheet, Text, Alert } from "react-native";
+import { useChatListProvider } from "./ChatListContext"
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
-    const [chatList, setChatList] = useState<ChatInfo[]>([]);
+    const { chatList, setChatList } = useChatListProvider();
     const router = useRouter();
     const activeRoute = props.state.routes[props.state.index];
     const activeChatId =
         activeRoute.name === "[id]"
             ? (activeRoute.params as { id: string } | undefined)?.id
             : undefined;
-
-    useEffect(() => {
-        const fetchChatList = async () => {
-            setChatList(await getChatList());
-        };
-        fetchChatList().then();
-    }, [activeChatId]);
 
     const handleDelete = (item: ChatInfo) => {
         Alert.alert(
@@ -35,7 +28,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
     const deleteThisChat = (id: string) => {
         deleteChat(id);
-        setChatList((prev) => prev.filter((c) => c.id !== id));
+        setChatList(chatList.filter((c) => c.id !== id));
         if (activeChatId === id) {
             requestAnimationFrame(() => {
                 router.push("/");
@@ -45,7 +38,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
     const handleRename = async (id: string, newTitle: string) => {
         await upsertChatInfo({ id, title: newTitle });
-        setChatList(prev => prev.map(chat => (chat.id === id ? { ...chat, title: newTitle } : chat)));
+        setChatList(chatList.map(chat => (chat.id === id ? { ...chat, title: newTitle } : chat)));
     };
 
     return (
