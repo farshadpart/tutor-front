@@ -1,11 +1,11 @@
-import { Drawer } from 'expo-router/drawer';
-import CustomDrawerContent from "../components/chatDrawerItem/CustomDrawerContent"
+import { ChatListProvider } from '../components/chatDrawerItem/ChatListContext';
+import { DrawerTutor } from '../components/chatDrawerItem/DrawerTutor';
+
 
 export default function Layout() {
     return (
-        <Drawer drawerContent={CustomDrawerContent} screenOptions={{ drawerActiveTintColor: 'red', drawerHideStatusBarOnOpen: true }}>
-            <Drawer.Screen name="index" options={{ drawerItemStyle: { display: 'none' } }} />
-            <Drawer.Screen name="[id]" options={{ drawerItemStyle: { display: 'none' } }} />
-        </Drawer>
+        <ChatListProvider>
+            <DrawerTutor/>
+        </ChatListProvider>
     );
 }
