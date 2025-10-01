@@ -1,34 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import ChatScreen from '../components/chatBox/ChatScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { randomUUID } from 'expo-crypto';
-import { Stack } from "expo-router"
+import { Stack, useLocalSearchParams } from "expo-router"
 import { useChatListProvider } from "../components/chatDrawerItem/ChatListContext"
 import { getChatList } from "../services/messageService"
 
 export default function Index() {
-    const navigation = useNavigation();
     const { setChatList } = useChatListProvider();
+    const navigation = useNavigation();
+    const params = useLocalSearchParams();
 
     useEffect(() => {
-        const unsubscribeFocus = navigation.addListener('focus', () => {
-            const newId = randomUUID();
-            setUuid(newId);
-        });
-
-        const unsubscribeBlur = navigation.addListener('blur', () => {
+        if (params["newChat"] !== undefined) {
+            navigation.replaceParams(undefined);
+            
             const fetchChatList = async () => {
                 setChatList(await getChatList());
             };
             fetchChatList().then();
-        });
 
-        return () => {
-            unsubscribeFocus();
-            unsubscribeBlur();
-        };
-    }, [navigation, setChatList]);
+            const newId = randomUUID();
+            setUuid(newId);
+        }
+    }, [params, navigation, setChatList])
+
+    useFocusEffect(
+        useCallback(() => {
+            const newId = randomUUID();
+            setUuid(newId);
+
+            return () => {
+                const fetchChatList = async () => {
+                    setChatList(await getChatList());
+                };
+                fetchChatList();
+            };
+        }, [setChatList])
+    );
+
     const [uuid, setUuid] = useState("");
 
     return (
