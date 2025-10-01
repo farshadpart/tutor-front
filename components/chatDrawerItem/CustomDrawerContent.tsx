@@ -47,7 +47,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
             <Pressable
                 style={[styles.row, activeRoute.name === "index" && styles.activeRow]}
-                onPress={() => router.push('/')}
+                onPress={() => router.push({ pathname: '/', params: { newChat: "newChat" } })}
             >
                 <Entypo name="chat" size={20} color="red" />
                 <Text style={styles.label}>New Chat</Text>
