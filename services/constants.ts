@@ -1,0 +1,1 @@
+export const TUTORAPI = 'http://192.168.2.103:5252'

@@ -1,5 +1,5 @@
 import { ChatBox } from '@/components/chatBox/ChatBox';
-import { Chat, chat, transcription } from '@/services/chatGptService';
+import { Chat, chat, transcription } from '@/services/tutorApiService';
 import { makeChatReady } from '@/services/chatService';
 import { getChatHistory, Message, saveChatHistory, upsertChatInfo } from '@/services/messageService';
 import { useEffect, useState } from 'react';
@@ -61,8 +61,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
             });
 
             try {
-                const response = await chat(makeChatReady(chats, userInput));
-                const chatBotReply = response.choices[0].message.content;
+                const chatBotReply = await chat(makeChatReady(chats, userInput));
                 setMessages(prev => {
                     let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]
                     const save = async () => await saveChatHistory(chatId, latestMessages);
