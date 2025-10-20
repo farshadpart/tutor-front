@@ -3,10 +3,12 @@ import { useRouter } from "expo-router";
 import { ChatInfo, deleteChat, upsertChatInfo } from "../../services/messageService";
 import ChatDrawerItem from "./ChatDrawerItem";
 import Entypo from "@expo/vector-icons/Entypo";
-import { Pressable, StyleSheet, Text, Alert } from "react-native";
+import { Pressable, StyleSheet, Text, Alert, TouchableOpacity } from "react-native";
 import { useChatListProvider } from "./ChatListContext"
+import { useAuthStore } from "../../hooks/useAuthStore";
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
+    const authStore = useAuthStore();
     const { chatList, setChatList } = useChatListProvider();
     const router = useRouter();
     const activeRoute = props.state.routes[props.state.index];
@@ -44,7 +46,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     return (
         <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
-
+            <TouchableOpacity style={styles.button} onPress={() => authStore.logOut(authStore.user!.email)}><Text style={styles.buttonText}>Logout</Text></TouchableOpacity>
             <Pressable
                 style={[styles.row, activeRoute.name === "index" && styles.activeRow]}
                 onPress={() => router.push({ pathname: '/', params: { newChat: "newChat" } })}
@@ -85,6 +87,17 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         fontSize: 16,
     },
+    button: {
+        backgroundColor: "#2563eb",
+        borderRadius: 8,
+        paddingVertical: 14,
+        alignItems: "center",
+    },
+    buttonText: {
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: "600",
+    }
 });
 
 export default CustomDrawerContent;

@@ -1,5 +1,5 @@
 import { useLocalSearchParams, Stack } from "expo-router"
-import ChatScreen from "../components/chatBox/ChatScreen"
+import ChatScreen from "../../components/chatBox/ChatScreen"
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MenuItemContainer() {
