@@ -1,4 +1,4 @@
-import { Chat } from "./chatGptService";
+import { Chat } from "./tutorApiService";
 
 const systemChat: Chat = {
   role: 'system',

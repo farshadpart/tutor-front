@@ -1,12 +1,32 @@
-import { Link } from "expo-router";
-import { TouchableOpacity, View, Text, TextInput, StyleSheet } from "react-native";
+import { Link, useRouter } from "expo-router";
+import { TouchableOpacity, View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import { useState } from "react";
-import { useAuthStore } from "../hooks/useAuthStore";
+import { register } from "../services/accountService"
+import { RegisterRequest } from "../interfaces/account/registerRequest"
 
 const Register = () => {
-    const authStore = useAuthStore();
+    const router = useRouter();
+
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("")
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const handleRegisterPress = async (registerRequest: RegisterRequest) => {
+        if (password !== confirmPassword) {
+            Alert.alert("Password Mismatch", "Passwords do not match. Please re-enter your password.");
+            return;
+        }
+
+        const registerResult = await register(registerRequest);
+        if (registerResult) {
+            Alert.alert("Email Confirmation", "Please check your confirmation email to verify your address.");
+            router.replace("/");
+
+            return;
+        }
+
+        Alert.alert("Registration Failed", "Your registration could not be completed. Please check your confirmation email and try again.");
+    }
 
     return (
         <View style={styles.container}>
@@ -36,9 +56,11 @@ const Register = () => {
                 style={styles.input}
                 placeholder="Confirm your password"
                 secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
             />
 
-            <TouchableOpacity style={styles.button} onPress={() => authStore.register({ email, password })}>
+            <TouchableOpacity style={styles.button} onPress={() => handleRegisterPress({ email, password })}>
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
 

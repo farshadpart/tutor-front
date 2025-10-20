@@ -1,17 +1,16 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import * as SecureStore from "expo-secure-store";
-import { login, register, logout } from "../services/accountService"
-import { RegisterRequest } from "../interfaces/account/registerRequest"
+import { login, logout } from "../services/accountService"
 
 export interface LoginRequest {
     email: string,
     password: string
 }
 
-interface Claim {
-    Type: string,
-    Value: string
+export interface Claim {
+    type: string,
+    value: string
 }
 
 export interface User {
@@ -22,7 +21,6 @@ export interface User {
 type UserState = {
     user?: User;
     logIn: (loginRequest: LoginRequest) => void;
-    register: (registerRequest: RegisterRequest) => void;
     logOut: (email: string) => void;
 };
 
@@ -30,8 +28,8 @@ export const useAuthStore = create(
     persist<UserState>(
         (set) => ({
             user: undefined,
-            logIn: (loginRequest: LoginRequest) => {
-                const user = login(loginRequest);
+            logIn: async (loginRequest: LoginRequest) => {
+                const user = await login(loginRequest);
                 set((state) => {
                     return {
                         ...state,
@@ -49,15 +47,6 @@ export const useAuthStore = create(
                     return {
                         ...state,
                         user: undefined
-                    };
-                });
-            },
-            register: (registerRequest: RegisterRequest) => {
-                const user = register(registerRequest);
-                set((state) => {
-                    return {
-                        ...state,
-                        user
                     };
                 });
             }
