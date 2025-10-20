@@ -1,51 +1,64 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import ChatScreen from '../components/chatBox/ChatScreen';
+import { useRouter } from "expo-router";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { randomUUID } from 'expo-crypto';
-import { Stack, useLocalSearchParams } from "expo-router"
-import { useChatListProvider } from "../components/chatDrawerItem/ChatListContext"
-import { getChatList } from "../services/messageService"
+import { useAuthStore } from "../hooks/useAuthStore"
 
 export default function Index() {
-    const { setChatList } = useChatListProvider();
-    const navigation = useNavigation();
-    const params = useLocalSearchParams();
-
-    useEffect(() => {
-        if (params["newChat"] !== undefined) {
-            navigation.replaceParams(undefined);
-            
-            const fetchChatList = async () => {
-                setChatList(await getChatList());
-            };
-            fetchChatList().then();
-
-            const newId = randomUUID();
-            setUuid(newId);
-        }
-    }, [params, navigation, setChatList])
-
-    useFocusEffect(
-        useCallback(() => {
-            const newId = randomUUID();
-            setUuid(newId);
-
-            return () => {
-                const fetchChatList = async () => {
-                    setChatList(await getChatList());
-                };
-                fetchChatList();
-            };
-        }, [setChatList])
-    );
-
-    const [uuid, setUuid] = useState("");
+    const router = useRouter();
+    const authStore = useAuthStore();
 
     return (
-        <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
-            <Stack.Screen options={{ title: 'New Chat' }} />
-            <ChatScreen chatId={uuid} />
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Welcome</Text>
+
+            <TouchableOpacity onPress={() => router.push('/Login')} style={styles.button}>
+                <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => router.push('/Register')} style={[styles.button, styles.secondaryButton]}>
+                <Text style={[styles.buttonText, styles.secondaryText]}>Register</Text>
+            </TouchableOpacity>
         </SafeAreaView>
-    )
+    );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8f9fa',
+        padding: 20,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: '700',
+        marginBottom: 40,
+        color: '#333',
+    },
+    button: {
+        backgroundColor: '#007bff',
+        paddingVertical: 14,
+        paddingHorizontal: 40,
+        borderRadius: 12,
+        marginVertical: 10,
+        width: '80%',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 3,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '600',
+    },
+    secondaryButton: {
+        backgroundColor: '#e9ecef',
+    },
+    secondaryText: {
+        color: '#007bff',
+    },
+});
