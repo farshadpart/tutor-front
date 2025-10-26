@@ -64,7 +64,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                         id={item.id}
                         title={item.title}
                         isActive={activeChatId === item.id}
-                        onPress={() => router.push(`/${item.id}`)}
+                        onPress={() => router.push(`/chatArea/${item.id}`)}
                         onRename={handleRename}
                         onDelete={() => handleDelete(item)}
                     />

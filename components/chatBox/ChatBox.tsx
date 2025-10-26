@@ -6,7 +6,7 @@ import { MessageItem } from '../MessageItem';
 import { VoiceRecorder } from '../recorder/VoiceRecorder';
 import { ChatBoxFooter } from './ChatBoxFooter';
 import KeyboardShiftView from '../keyboardShiftView/KeyboardShiftView';
-import DismissArea from '../keyboardShiftView/DismissArea';
+import InputArea from '../keyboardShiftView/InputArea';
 
 interface ChatBoxProps {
     messages: Message[];
@@ -33,34 +33,35 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
     }
 
     return (
-        <KeyboardShiftView dismissOnTouchOutside>
-            <DismissArea>
-                <FlatList
-                    inverted
-                    ref={flatListRef}
-                    data={localMessages}
-                    keyExtractor={item => item.id}
-                    renderItem={({ item }) => <MessageItem item={item} />}
-                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
-                    keyboardShouldPersistTaps="handled"
-                    ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
-                />
-            </DismissArea>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    value={input}
-                    onChangeText={setInput}
-                    placeholder="Type a message"
-                />
-                {
-                    input.length === 0 ?
-                        <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
-                        <TouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={styles.sendButton}>
-                            <Ionicons name="send" size={24} color="black" />
-                        </TouchableOpacity>
-                }
-            </View>
+        <KeyboardShiftView>
+            <FlatList
+                inverted
+                ref={flatListRef}
+                data={localMessages}
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => <MessageItem item={item} />}
+                contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
+                keyboardShouldPersistTaps="handled"
+                ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
+            />
+
+            <InputArea>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        value={input}
+                        onChangeText={setInput}
+                        placeholder="Type a message"
+                    />
+                    {
+                        input.length === 0 ?
+                            <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
+                            <TouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={styles.sendButton}>
+                                <Ionicons name="send" size={24} color="black" />
+                            </TouchableOpacity>
+                    }
+                </View>
+            </InputArea>
         </KeyboardShiftView>
     )
 }

@@ -1,8 +1,10 @@
 import { Link, useRouter } from "expo-router";
-import { TouchableOpacity, View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import { TouchableOpacity, View, Text, TextInput, StyleSheet, Alert, Keyboard } from "react-native";
 import { useState } from "react";
 import { register } from "../services/accountService"
 import { RegisterRequest } from "../interfaces/account/registerRequest"
+import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
+import InputArea from "../components/keyboardShiftView/InputArea";
 
 const Register = () => {
     const router = useRouter();
@@ -19,6 +21,7 @@ const Register = () => {
 
         const registerResult = await register(registerRequest);
         if (registerResult) {
+            Keyboard.dismiss();
             Alert.alert("Email Confirmation", "Please check your confirmation email to verify your address.");
             router.replace("/");
 
@@ -29,46 +32,54 @@ const Register = () => {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Create Account</Text>
+        <KeyboardShiftView>
+            <View style={styles.container}>
+                <Text style={styles.title}>Create Account</Text>
 
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter your email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-            />
+                <InputArea>
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your email"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        value={email}
+                        onChangeText={setEmail}
+                    />
+                </InputArea>
 
-            <Text style={styles.label}>Password</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter your password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
+                <InputArea>
+                    <Text style={styles.label}>Password</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your password"
+                        secureTextEntry
+                        value={password}
+                        onChangeText={setPassword}
+                    />
+                </InputArea>
 
-            <Text style={styles.label}>Confirm Password</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Confirm your password"
-                secureTextEntry
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-            />
+                <InputArea>
+                    <Text style={styles.label}>Confirm Password</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Confirm your password"
+                        secureTextEntry
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                    />
+                </InputArea>
 
-            <TouchableOpacity style={styles.button} onPress={() => handleRegisterPress({ email, password })}>
-                <Text style={styles.buttonText}>Register</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={() => handleRegisterPress({ email, password })}>
+                    <Text style={styles.buttonText}>Register</Text>
+                </TouchableOpacity>
 
-            <Text style={styles.footerText}>
-                Already have an account?{" "}
-                <Link href="/Login" style={styles.link}>Login</Link>
-            </Text>
-        </View>
+                <Text style={styles.footerText}>
+                    Already have an account?{" "}
+                    <Link href="/Login" style={styles.link}>Login</Link>
+                </Text>
+            </View>
+        </KeyboardShiftView>
     );
 };
 

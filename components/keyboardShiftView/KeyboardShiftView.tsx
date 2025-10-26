@@ -1,18 +1,17 @@
 import React, { useEffect, useState, ReactNode } from "react";
 import {
-    View,
     Keyboard,
     LayoutAnimation,
     Platform,
     StyleSheet,
     ViewStyle,
+    Pressable,
 } from "react-native";
 
 type Props = {
     children: ReactNode;
     style?: ViewStyle;
     extraHeight?: number;
-    dismissOnTouchOutside?: boolean;
 };
 
 export default function KeyboardShiftView({
@@ -46,9 +45,13 @@ export default function KeyboardShiftView({
     }, [extraHeight]);
 
     return (
-        <View style={[styles.container, style, { paddingBottom: keyboardOffset }]}>
+        <Pressable
+            style={[styles.container, style, { paddingBottom: keyboardOffset }]}
+            onPress={Keyboard.dismiss}
+            pointerEvents="box-none"
+        >
             {children}
-        </View>
+        </Pressable>
     );
 }
 

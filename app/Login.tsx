@@ -1,6 +1,8 @@
-import { Alert, TouchableOpacity, Text, View, TextInput, StyleSheet } from "react-native";
+import { Alert, TouchableOpacity, Text, View, TextInput, StyleSheet, Keyboard } from "react-native";
 import { useState } from "react";
 import { useAuthStore } from "../hooks/useAuthStore";
+import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
+import InputArea from "../components/keyboardShiftView/InputArea";
 
 const Login = () => {
     const authStore = useAuthStore();
@@ -9,38 +11,48 @@ const Login = () => {
 
     const handleLoginPress = async (email: string, password: string) => {
         const loginResult = await authStore.logIn({ email, password });
-        
+
         if (!loginResult) {
             Alert.alert("Login Failed", "Login failed, please try again later!");
+            return;
         }
+
+        Keyboard.dismiss();
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter your email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-            />
+        <KeyboardShiftView>
+            <View style={styles.container}>
+                <Text style={styles.title}>Login</Text>
 
-            <Text style={styles.label}>Password</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter your password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
+                <InputArea>
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your email"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        value={email}
+                        onChangeText={setEmail}
+                    />
+                </InputArea>
 
-            <TouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
-                <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-        </View>
+                <InputArea>
+                    <Text style={styles.label}>Password</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your password"
+                        secureTextEntry
+                        value={password}
+                        onChangeText={setPassword}
+                    />
+                </InputArea>
+
+                <TouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
+                    <Text style={styles.buttonText}>Login</Text>
+                </TouchableOpacity>
+            </View>
+        </KeyboardShiftView>
     );
 };
 
