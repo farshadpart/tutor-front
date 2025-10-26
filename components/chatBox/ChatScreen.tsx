@@ -3,6 +3,7 @@ import { Chat, chat, transcription } from '@/services/tutorApiService';
 import { makeChatReady } from '@/services/chatService';
 import { getChatHistory, Message, saveChatHistory, upsertChatInfo } from '@/services/messageService';
 import { useEffect, useState } from 'react';
+import { useAuthStore } from '../../hooks/useAuthStore';
 
 
 export interface ChatScreenProps {
@@ -14,6 +15,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
     const [input, setInput] = useState('');
     const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
     const [analysing, setAnalysing] = useState(false);
+    const authState = useAuthStore();
 
     useEffect(() => {
         const fetchChatHistory = async () => {
@@ -34,7 +36,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
 
     const handleSendVoiceMessage = async (audio: { uri: string; name: string; type: string }) => {
         setAnalysing(true);
-        let userTranscription = await transcription({ url: audio.uri });
+        let userTranscription = await transcription({ url: audio.uri, accessToken: authState.accessToken });
         setAnalysing(false);
         await handleSendTextMessage(userTranscription);
     };
@@ -61,7 +63,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
             });
 
             try {
-                const chatBotReply = await chat(makeChatReady(chats, userInput));
+                const chatBotReply = await chat({ input: makeChatReady(chats, userInput), accessToken: authState.accessToken });
                 setMessages(prev => {
                     let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]
                     const save = async () => await saveChatHistory(chatId, latestMessages);

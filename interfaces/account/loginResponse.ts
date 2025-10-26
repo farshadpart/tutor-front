@@ -1,3 +1,6 @@
+import { User } from "../../hooks/useAuthStore"
+
 export interface LoginResponse {
-    accessToken: string
+    user?: User
+    accessToken?: string
 }

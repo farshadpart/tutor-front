@@ -3,8 +3,9 @@ import { RegisterRequest } from "../interfaces/account/registerRequest"
 import { TUTORAPI } from "./constants";
 import { LoginResponse } from "../interfaces/account/loginResponse"
 import { jwtDecode } from "jwt-decode";
+import { TutorApiLoginResponse } from "../interfaces/account/tutoApiLoginResponse";
 
-export const login = async (loginRequest: LoginRequest): Promise<User | undefined> => {
+export const login = async (loginRequest: LoginRequest): Promise<LoginResponse> => {
     try {
         const response = await fetch(`${TUTORAPI}/account/login`, {
             method: "POST",
@@ -14,11 +15,13 @@ export const login = async (loginRequest: LoginRequest): Promise<User | undefine
             }
         });
 
-        const loginResponse = JSON.parse(await response.text()) as LoginResponse;
-        return mapTokenToUser(loginResponse.accessToken);
+        const loginResponse = JSON.parse(await response.text()) as TutorApiLoginResponse;
+        const user = mapTokenToUser(loginResponse.accessToken);
+
+        return {user, accessToken: loginResponse.accessToken}
     } catch (e) {
         console.log('Error', e);
-        return undefined;
+        return { user: undefined, accessToken: undefined};
     }
 }
 
