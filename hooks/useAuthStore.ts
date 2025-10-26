@@ -20,7 +20,8 @@ export interface User {
 
 type UserState = {
     user?: User;
-    logIn: (loginRequest: LoginRequest) => void;
+    accessToken?: string;
+    logIn: (loginRequest: LoginRequest) => Promise<boolean>;
     logOut: (email: string) => void;
 };
 
@@ -29,13 +30,16 @@ export const useAuthStore = create(
         (set) => ({
             user: undefined,
             logIn: async (loginRequest: LoginRequest) => {
-                const user = await login(loginRequest);
+                const loginResponse = await login(loginRequest);
                 set((state) => {
                     return {
                         ...state,
-                        user
+                        user: loginResponse.user,
+                        accessToken: loginResponse.accessToken
                     };
                 });
+
+                return loginResponse.user !== undefined ? true : false;
             },
             logOut: (email: string) => {
                 const logOutResult = logout(email);

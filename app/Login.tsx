@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, View, TextInput, StyleSheet } from "react-native";
+import { Alert, TouchableOpacity, Text, View, TextInput, StyleSheet } from "react-native";
 import { useState } from "react";
 import { useAuthStore } from "../hooks/useAuthStore";
 
@@ -6,6 +6,14 @@ const Login = () => {
     const authStore = useAuthStore();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const handleLoginPress = async (email: string, password: string) => {
+        const loginResult = await authStore.logIn({ email, password });
+        
+        if (!loginResult) {
+            Alert.alert("Login Failed", "Login failed, please try again later!");
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -29,7 +37,7 @@ const Login = () => {
                 onChangeText={setPassword}
             />
 
-            <TouchableOpacity style={styles.button} onPress={() => authStore.logIn({email, password})}>
+            <TouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
         </View>
