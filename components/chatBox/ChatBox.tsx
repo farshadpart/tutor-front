@@ -33,7 +33,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
     }
 
     return (
-        <KeyboardShiftView>
+        <KeyboardShiftView scrollable={true}>
             <FlatList
                 inverted
                 ref={flatListRef}
@@ -41,10 +41,8 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => <MessageItem item={item} />}
                 contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
-                keyboardShouldPersistTaps="handled"
                 ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
             />
-
             <InputArea>
                 <View style={styles.inputContainer}>
                     <TextInput

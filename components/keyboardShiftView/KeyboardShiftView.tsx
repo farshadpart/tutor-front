@@ -6,17 +6,20 @@ import {
     StyleSheet,
     ViewStyle,
     Pressable,
+    View
 } from "react-native";
 
 type Props = {
     children: ReactNode;
     style?: ViewStyle;
+    scrollable?: boolean;
     extraHeight?: number;
 };
 
 export default function KeyboardShiftView({
     children,
     style,
+    scrollable = false,
     extraHeight = 20,
 }: Props) {
     const [keyboardOffset, setKeyboardOffset] = useState(0);
@@ -45,13 +48,14 @@ export default function KeyboardShiftView({
     }, [extraHeight]);
 
     return (
-        <Pressable
-            style={[styles.container, style, { paddingBottom: keyboardOffset }]}
-            onPress={Keyboard.dismiss}
-            pointerEvents="box-none"
-        >
-            {children}
-        </Pressable>
+        scrollable ?
+            <View style={[styles.container, style, { paddingBottom: keyboardOffset }]}>
+                {children}
+            </View>
+            :
+            <Pressable style={[styles.container, style, { paddingBottom: keyboardOffset }]} onPress={Keyboard.dismiss}>
+                {children}
+            </Pressable>
     );
 }
 
