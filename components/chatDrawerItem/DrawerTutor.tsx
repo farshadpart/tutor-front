@@ -15,7 +15,7 @@ export const DrawerTutor = () => {
     }, [setChatList]);
 
     return (
-        <Drawer drawerContent={CustomDrawerContent} screenOptions={{ drawerActiveTintColor: 'red', drawerHideStatusBarOnOpen: true }} >
+        <Drawer drawerContent={CustomDrawerContent} screenOptions={{ drawerActiveTintColor: 'red', drawerHideStatusBarOnOpen: true, keyboardDismissMode: "none" }} >
             <Drawer.Screen name="index" options={{ drawerItemStyle: { display: 'none' } }} />
             <Drawer.Screen name="[id]" options={{ drawerItemStyle: { display: 'none' } }} />
         </Drawer>
