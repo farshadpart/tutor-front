@@ -6,7 +6,6 @@ type ChatListContextType = {
     setChatList: (chatList: ChatInfo[]) => void;
 };
 
-//const ChatListContext = createContext<ChatListContextType | undefined>({chatList: [] as ChatInfo[], setChatList: () => { console.log('shit') }});
 const ChatListContext = createContext<ChatListContextType | undefined>(undefined);
 
 export function ChatListProvider({ children }: { children: React.ReactNode; }) {

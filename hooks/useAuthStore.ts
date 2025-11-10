@@ -14,7 +14,9 @@ export interface Claim {
 }
 
 export interface User {
+    id: string,
     email: string,
+    subscriptionGroup?: string,
     claims: Claim[]
 }
 
@@ -23,6 +25,7 @@ type UserState = {
     accessToken?: string;
     logIn: (loginRequest: LoginRequest) => Promise<boolean>;
     logOut: (email: string) => void;
+    setSubscription: (subscriptionGroup?: string) => void;
 };
 
 export const useAuthStore = create(
@@ -53,7 +56,17 @@ export const useAuthStore = create(
                         user: undefined
                     };
                 });
-            }
+            },
+            setSubscription: async (subscriptionGroup?: string) => {
+                set((state) => {
+                    const userWithUpdatedSubscription = state.user ? { ...state.user, subscriptionGroup } : undefined;
+
+                    return {
+                        ...state,
+                        user: userWithUpdatedSubscription,
+                    };
+                });
+            },
         }),
         {
             name: "auth-store",

@@ -53,11 +53,14 @@ export const register = async (registerReqeust: RegisterRequest): Promise<boolea
 const mapTokenToUser = (token: string): User => {
     const decoded: Record<string, any> = jwtDecode(token);
 
-    // Extract email from the common claim key
+    const id = decoded["http://schemas.xmlsoap.org/ws/2009/09/identity/claims/id"] ?? "";
+
     const email =
         decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] ??
         decoded["email"] ??
         "";
+
+    const subscriptionGroup = decoded["http://schemas.xmlsoap.org/ws/2009/09/identity/claims/subscriptionGroup"]
 
     // Convert all claims to { type, value } pairs
     const claims: Claim[] = Object.entries(decoded).map(([key, value]) => ({
@@ -65,5 +68,5 @@ const mapTokenToUser = (token: string): User => {
         value: String(value),
     }));
 
-    return { email, claims };
+    return { id, email, subscriptionGroup, claims };
 }
