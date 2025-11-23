@@ -15,7 +15,10 @@ export const login = async (loginRequest: LoginRequest): Promise<LoginResponse> 
             }
         });
 
-        const loginResponse = JSON.parse(await response.text()) as TutorApiLoginResponse;
+        console.log('Response', response.status);
+        const responseText = await response.text();
+        console.log('Response Text', responseText);
+        const loginResponse = JSON.parse(responseText) as TutorApiLoginResponse;
         const user = mapTokenToUser(loginResponse.accessToken);
 
         return {user, accessToken: loginResponse.accessToken}
