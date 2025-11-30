@@ -35,7 +35,7 @@
         {
           "android": {
             "enableProguardInReleaseBuilds": true,
-            "enableShrinkResourcesInReleaseBuilds": true 
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
       ],
@@ -59,7 +59,9 @@
         }
       ],
       "expo-secure-store",
-      "expo-build-properties"
+      "expo-build-properties",
+      "expo-web-browser",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,
