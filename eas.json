@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 16.20.0",
+    "version": ">=16.20.0",
     "appVersionSource": "remote"
   },
   "build": {
@@ -12,10 +12,7 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true,
-      "android": {
-        "proguard": true
-      }
+      "autoIncrement": true
     }
   },
   "submit": {
