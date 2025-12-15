@@ -1,1 +1,1 @@
-export const TUTORAPI = 'https://tutoreleven.duckdns.org/tutor'
+export const TUTORAPI = 'https://freemasonic-aloofly-hershel.ngrok-free.dev'

@@ -1,6 +1,7 @@
 import { Alert, TouchableOpacity, Text, View, TextInput, StyleSheet, Keyboard } from "react-native";
 import { useState } from "react";
 import { useAuthStore } from "../hooks/useAuthStore";
+import { ThemedView } from "@/src/components/themedView/ThemedView";
 import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
 import InputArea from "../components/keyboardShiftView/InputArea";
 
@@ -22,7 +23,7 @@ const Login = () => {
 
     return (
         <KeyboardShiftView>
-            <View style={styles.container}>
+            <ThemedView style={styles.container}>
                 <Text style={styles.title}>Login</Text>
 
                 <InputArea>
@@ -51,7 +52,7 @@ const Login = () => {
                 <TouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
-            </View>
+            </ThemedView>
         </KeyboardShiftView>
     );
 };
@@ -60,8 +61,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#f9fafb",
+        padding: 20
     },
     title: {
         fontSize: 28,
