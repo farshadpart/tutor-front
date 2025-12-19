@@ -1,7 +1,10 @@
-import { Alert, TouchableOpacity, Text, View, TextInput, StyleSheet, Keyboard } from "react-native";
+import { Alert, StyleSheet, Keyboard } from "react-native";
 import { useState } from "react";
 import { useAuthStore } from "../hooks/useAuthStore";
 import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { ThemedText } from "@/src/components/themedText/ThemedText";
+import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInput";
+import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
 import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
 import InputArea from "../components/keyboardShiftView/InputArea";
 
@@ -24,11 +27,11 @@ const Login = () => {
     return (
         <KeyboardShiftView>
             <ThemedView style={styles.container}>
-                <Text style={styles.title}>Login</Text>
+                <ThemedText style={styles.title}>Login</ThemedText>
 
                 <InputArea>
-                    <Text style={styles.label}>Email</Text>
-                    <TextInput
+                    <ThemedText style={styles.label}>Email</ThemedText>
+                    <ThemedTextInput
                         style={styles.input}
                         placeholder="Enter your email"
                         keyboardType="email-address"
@@ -39,8 +42,8 @@ const Login = () => {
                 </InputArea>
 
                 <InputArea>
-                    <Text style={styles.label}>Password</Text>
-                    <TextInput
+                    <ThemedText style={styles.label}>Password</ThemedText>
+                    <ThemedTextInput
                         style={styles.input}
                         placeholder="Enter your password"
                         secureTextEntry
@@ -49,9 +52,9 @@ const Login = () => {
                     />
                 </InputArea>
 
-                <TouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
+                <ThemedTouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
+                    <ThemedText style={styles.buttonText}>Login</ThemedText>
+                </ThemedTouchableOpacity>
             </ThemedView>
         </KeyboardShiftView>
     );
@@ -68,30 +71,24 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 30,
-        color: "#111827",
     },
     label: {
         fontSize: 16,
-        color: "#374151",
         marginBottom: 6,
     },
     input: {
         borderWidth: 1,
-        borderColor: "#d1d5db",
-        backgroundColor: "#fff",
         borderRadius: 8,
         padding: 12,
         fontSize: 16,
         marginBottom: 16,
     },
     button: {
-        backgroundColor: "#2563eb",
         borderRadius: 8,
         paddingVertical: 14,
         alignItems: "center",
     },
     buttonText: {
-        color: "#fff",
         fontSize: 18,
         fontWeight: "600",
     },
