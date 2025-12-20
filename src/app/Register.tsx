@@ -1,10 +1,14 @@
 import { Link, useRouter } from "expo-router";
-import { TouchableOpacity, View, Text, TextInput, StyleSheet, Alert, Keyboard } from "react-native";
+import { StyleSheet, Alert, Keyboard } from "react-native";
 import { useState } from "react";
 import { register } from "@/src/services/accountService"
 import { RegisterRequest } from "@/src/types/account/registerRequest"
 import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
 import InputArea from "../components/keyboardShiftView/InputArea";
+import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { ThemedText } from "@/src/components/themedText/ThemedText";
+import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInput";
+import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
 
 const Register = () => {
     const router = useRouter();
@@ -33,12 +37,12 @@ const Register = () => {
 
     return (
         <KeyboardShiftView>
-            <View style={styles.container}>
-                <Text style={styles.title}>Create Account</Text>
+            <ThemedView style={styles.container}>
+                <ThemedText style={styles.title}>Create Account</ThemedText>
 
                 <InputArea>
-                    <Text style={styles.label}>Email</Text>
-                    <TextInput
+                    <ThemedText style={styles.label}>Email</ThemedText>
+                    <ThemedTextInput
                         style={styles.input}
                         placeholder="Enter your email"
                         keyboardType="email-address"
@@ -49,8 +53,8 @@ const Register = () => {
                 </InputArea>
 
                 <InputArea>
-                    <Text style={styles.label}>Password</Text>
-                    <TextInput
+                    <ThemedText style={styles.label}>Password</ThemedText>
+                    <ThemedTextInput
                         style={styles.input}
                         placeholder="Enter your password"
                         secureTextEntry
@@ -60,8 +64,8 @@ const Register = () => {
                 </InputArea>
 
                 <InputArea>
-                    <Text style={styles.label}>Confirm Password</Text>
-                    <TextInput
+                    <ThemedText style={styles.label}>Confirm Password</ThemedText>
+                    <ThemedTextInput
                         style={styles.input}
                         placeholder="Confirm your password"
                         secureTextEntry
@@ -70,15 +74,15 @@ const Register = () => {
                     />
                 </InputArea>
 
-                <TouchableOpacity style={styles.button} onPress={() => handleRegisterPress({ email, password })}>
-                    <Text style={styles.buttonText}>Register</Text>
-                </TouchableOpacity>
+                <ThemedTouchableOpacity style={styles.button} onPress={() => handleRegisterPress({ email, password })}>
+                    <ThemedText style={styles.buttonText}>Register</ThemedText>
+                </ThemedTouchableOpacity>
 
-                <Text style={styles.footerText}>
+                <ThemedText style={styles.footerText}>
                     Already have an account?{" "}
                     <Link href="/Login" style={styles.link}>Login</Link>
-                </Text>
-            </View>
+                </ThemedText>
+            </ThemedView>
         </KeyboardShiftView>
     );
 };
@@ -87,50 +91,41 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#f9fafb",
+        padding: 20
     },
     title: {
         fontSize: 28,
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 30,
-        color: "#111827",
     },
     label: {
         fontSize: 16,
-        color: "#374151",
         marginBottom: 6,
     },
     input: {
         borderWidth: 1,
-        borderColor: "#d1d5db",
-        backgroundColor: "#fff",
         borderRadius: 8,
         padding: 12,
         fontSize: 16,
         marginBottom: 16,
     },
     button: {
-        backgroundColor: "#16a34a",
         borderRadius: 8,
         paddingVertical: 14,
         alignItems: "center",
         marginTop: 10,
     },
     buttonText: {
-        color: "#fff",
         fontSize: 18,
         fontWeight: "600",
     },
     footerText: {
         marginTop: 24,
         textAlign: "center",
-        fontSize: 15,
-        color: "#6b7280",
+        fontSize: 15
     },
     link: {
-        color: "#2563eb",
         fontWeight: "600",
     },
 });
