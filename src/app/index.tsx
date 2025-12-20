@@ -1,24 +1,24 @@
 import { useRouter } from "expo-router";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuthStore } from "../hooks/useAuthStore"
+import { StyleSheet } from "react-native";
+import { ThemedSafeAreaView } from '@/src/components/themedSafeAreaView/ThemedSafeAreaView';
+import { ThemedText } from '@/src/components/themedText/ThemedText'
+import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 
 export default function Index() {
     const router = useRouter();
-    const authStore = useAuthStore();
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Welcome</Text>
+        <ThemedSafeAreaView style={styles.container}>
+            <ThemedText style={styles.title}>Welcome</ThemedText>
 
-            <TouchableOpacity onPress={() => router.push('/Login')} style={styles.button}>
-                <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
+            <ThemedTouchableOpacity onPress={() => router.push('/Login')} style={styles.button}>
+                <ThemedText style={styles.buttonText}>Login</ThemedText>
+            </ThemedTouchableOpacity>
 
-            <TouchableOpacity onPress={() => router.push('/Register')} style={[styles.button, styles.secondaryButton]}>
-                <Text style={[styles.buttonText, styles.secondaryText]}>Register</Text>
-            </TouchableOpacity>
-        </SafeAreaView>
+            <ThemedTouchableOpacity onPress={() => router.push('/Register')} style={[styles.button]}>
+                <ThemedText style={[styles.buttonText]}>Register</ThemedText>
+            </ThemedTouchableOpacity>
+        </ThemedSafeAreaView>
     );
 }
 
@@ -27,17 +27,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f8f9fa',
         padding: 20,
     },
     title: {
         fontSize: 28,
         fontWeight: '700',
-        marginBottom: 40,
-        color: '#333',
+        marginBottom: 40
     },
     button: {
-        backgroundColor: '#007bff',
         paddingVertical: 14,
         paddingHorizontal: 40,
         borderRadius: 12,
@@ -51,14 +48,7 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     buttonText: {
-        color: '#fff',
         fontSize: 18,
         fontWeight: '600',
-    },
-    secondaryButton: {
-        backgroundColor: '#e9ecef',
-    },
-    secondaryText: {
-        color: '#007bff',
-    },
+    }
 });

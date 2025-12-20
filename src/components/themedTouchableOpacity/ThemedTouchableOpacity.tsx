@@ -9,9 +9,6 @@ export function ThemedTouchableOpacity({
 }: ThemedTouchableOpacityProps) {
     const { theme } = useTheme();
 
-    console.log('Background', theme.colors.background);
-    console.log('Surface', theme.colors.surface);
-
     const defaultStyle: ViewStyle = {
         backgroundColor: theme.colors.primary,
         borderRadius: 8,
