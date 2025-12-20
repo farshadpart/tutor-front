@@ -4,9 +4,9 @@ export const light: Theme = {
     colors: {
         background: '#ffffff',
         surface: '#f9fafb',
-        text: '#111827',
+        text: '#1f2937',
         placeholder: '#6b7280',
-        primary: '#2563eb',
+        primary: '#3b82f6',
         border: '#e5e7eb',
         inputBackground: '#ffffff',
     },

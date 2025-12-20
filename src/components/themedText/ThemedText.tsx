@@ -7,7 +7,6 @@ export function ThemedText({ style, ...rest }: ThemedTextProps) {
 
     const defaultStyle: TextStyle = {
         color: theme.colors.text,
-        backgroundColor: theme.colors.background,
     };
 
     console.log('Background color applied to ThemedText:', defaultStyle.backgroundColor);
