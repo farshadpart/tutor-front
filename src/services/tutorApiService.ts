@@ -14,7 +14,6 @@ export const chat = async ({ input, accessToken }: { input: Chat[], accessToken:
         }
     });
 
-    console.log(response)
     return response.text();
 }
 

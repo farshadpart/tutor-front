@@ -9,8 +9,6 @@ export function ThemedText({ style, ...rest }: ThemedTextProps) {
         color: theme.colors.text,
     };
 
-    console.log('Background color applied to ThemedText:', defaultStyle.backgroundColor);
-
     return (
         <Text
             {...rest}

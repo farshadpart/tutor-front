@@ -10,8 +10,6 @@ export function ThemedSafeAreaView({ style, ...rest }: ThemedSafeAreaViewProps) 
         backgroundColor: theme.colors.background,
     };
 
-    console.log('Background color applied to ThemedText:', defaultStyle.backgroundColor);
-
     return (
         <SafeAreaView
             {...rest}
