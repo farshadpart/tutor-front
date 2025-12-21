@@ -1,7 +1,10 @@
 import { getSubscriptionGroups, create } from "@/src/services/subscriptionService";
-import { View, TouchableOpacity, Alert, StyleSheet, Text } from "react-native";
+import { View, Alert, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../hooks/useAuthStore";
+import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { ThemedText } from "@/src/components/themedText/ThemedText";
+import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
 
 const Subscription = () => {
     const authStore = useAuthStore();
@@ -15,11 +18,11 @@ const Subscription = () => {
 
     const renderSubscriptionGroups = () => {
         return subscriptionGroups.map(group =>
-            <View key={group}>
-                <TouchableOpacity style={styles.button} onPress={async () => handleSubscriptionSelect(group)}>
-                    <Text style={styles.buttonText}>{group}</Text>
-                </TouchableOpacity>
-            </View>
+            <ThemedView key={group}>
+                <ThemedTouchableOpacity style={styles.button} onPress={async () => handleSubscriptionSelect(group)}>
+                    <ThemedText style={styles.buttonText}>{group}</ThemedText>
+                </ThemedTouchableOpacity>
+            </ThemedView>
         );
     }
 
@@ -50,17 +53,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#f9fafb",
+        padding: 20
     },
     button: {
-        backgroundColor: "#2563eb",
         borderRadius: 8,
         paddingVertical: 14,
         alignItems: "center",
     },
     buttonText: {
-        color: "#fff",
         fontSize: 18,
         fontWeight: "600",
     },
