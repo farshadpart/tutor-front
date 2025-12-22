@@ -1,7 +1,7 @@
 import { ChatBoxProps } from "@/src/components/chatBox/types/chatBoxProps";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { StyleSheet, FlatList } from 'react-native';
 import { MessageItem } from '@/src/components/messageItem/MessageItem';
 import InputArea from '../keyboardShiftView/InputArea';
 import KeyboardShiftView from '../keyboardShiftView/KeyboardShiftView';
@@ -11,14 +11,13 @@ import { ThemedView } from '@/src/components/themedView/ThemedView';
 import { ThemedTextInput } from '@/src/components/themedTextInput/ThemedTextInput';
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 import { useTheme } from '@/src/providers/ThemeProvider';
+import { ThemedFlatList } from "../themedFlatList/themedFlatList";
 
 export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyping, onSendTextMessage }: ChatBoxProps) => {
     const { theme } = useTheme();
     const localMessages = [...messages].reverse();
     const [input, setInput] = useState('');
     const flatListRef = useRef<FlatList>(null);
-
-    console.log('Color, ', theme.colors.text)
 
     const handlePressSend = () => {
         onSendTextMessage(input);
@@ -33,7 +32,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
 
     return (
         <KeyboardShiftView scrollable={true}>
-            <FlatList
+            <ThemedFlatList
                 inverted
                 ref={flatListRef}
                 data={localMessages}
@@ -69,13 +68,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 10,
-        borderTopWidth: 1,
-        borderColor: '#ccc',
+        borderTopWidth: 1
     },
     input: {
         flex: 1,
         borderWidth: 1,
-        borderColor: '#ccc',
         padding: 10,
         marginRight: 10,
         borderRadius: 5,
