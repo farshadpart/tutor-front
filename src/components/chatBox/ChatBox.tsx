@@ -2,7 +2,7 @@ import { ChatBoxProps } from "@/src/components/chatBox/types/chatBoxProps";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
 import { FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
-import { MessageItem } from '../MessageItem';
+import { MessageItem } from '@/src/components/messageItem/MessageItem';
 import InputArea from '../keyboardShiftView/InputArea';
 import KeyboardShiftView from '../keyboardShiftView/KeyboardShiftView';
 import { VoiceRecorder } from '../recorder/VoiceRecorder';

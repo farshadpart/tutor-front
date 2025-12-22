@@ -10,5 +10,8 @@ export type Theme = {
         placeholder: string;
         inputBackground: string;
         primaryText: string;
+        messageBackground: string;
+        replyMessageBackground: string;
+        errorMessageBackground: string;
     };
 };

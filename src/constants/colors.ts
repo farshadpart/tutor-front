@@ -11,7 +11,10 @@ export const light: Theme = {
         primary: '#3b82f6',
         border: '#e5e7eb',
         inputBackground: '#ffffff',
-        primaryText: '#ffffff'
+        primaryText: '#ffffff',
+        messageBackground: '#EEEEEE',
+        replyMessageBackground: '#DCF8C6',
+        errorMessageBackground: '#FFCCCC',
     },
 };
 
@@ -26,6 +29,9 @@ export const dark: Theme = {
         primary: '#60a5fa',
         border: '#27272a',
         inputBackground: '#09090b',
-        primaryText: '#000000'
+        primaryText: '#000000',
+        messageBackground: '#1E1E1E',
+        replyMessageBackground: '#3F3F46',
+        errorMessageBackground: '#8B0000', 
     },
 };
