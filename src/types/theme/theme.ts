@@ -13,5 +13,7 @@ export type Theme = {
         messageBackground: string;
         replyMessageBackground: string;
         errorMessageBackground: string;
+        activeRowBackground: string;
+        success: string;
     };
 };

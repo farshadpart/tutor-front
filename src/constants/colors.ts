@@ -15,6 +15,8 @@ export const light: Theme = {
         messageBackground: '#EEEEEE',
         replyMessageBackground: '#DCF8C6',
         errorMessageBackground: '#FFCCCC',
+        activeRowBackground: '#E0F3FF',
+        success: '#28A745',
     },
 };
 
@@ -33,5 +35,7 @@ export const dark: Theme = {
         messageBackground: '#1E1E1E',
         replyMessageBackground: '#3F3F46',
         errorMessageBackground: '#8B0000', 
+        activeRowBackground: '#2A3B4D',
+        success: '#1DB954',
     },
 };

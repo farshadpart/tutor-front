@@ -1,7 +1,12 @@
 ﻿import { ChatDrawerItemProps } from "@/src/components/chatDrawerItem/types/chatDriverItemProps";
-import Entypo from "@expo/vector-icons/Entypo";
+import { Feather } from '@expo/vector-icons';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet } from "react-native";
+import { ThemedText } from '@/src/components/themedText/ThemedText';
+import { ThemedView } from '@/src/components/themedView/ThemedView'
+import { ThemedTextInput } from '@/src/components/themedTextInput/ThemedTextInput';
+import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 
 export default function ChatDrawerItem({
     id,
@@ -11,6 +16,7 @@ export default function ChatDrawerItem({
     onRename,
     onDelete,
 }: ChatDrawerItemProps) {
+    const { theme } = useTheme();
     const [isEditing, setIsEditing] = useState(false);
     const [draft, setDraft] = useState(title);
 
@@ -19,14 +25,14 @@ export default function ChatDrawerItem({
         if (draft.trim() && draft !== title) {
             onRename(id, draft.trim());
         } else {
-            setDraft(title); // reset if empty or unchanged
+            setDraft(title);
         }
     };
 
     return (
-        <View style={[styles.row, isActive && styles.activeRow]}>
+        <ThemedView style={[styles.row, isActive && { backgroundColor: theme.colors.activeRowBackground }]}>
             {isEditing ? (
-                <TextInput
+                <ThemedTextInput
                     style={styles.input}
                     value={draft}
                     onChangeText={setDraft}
@@ -35,32 +41,32 @@ export default function ChatDrawerItem({
                     onSubmitEditing={handleSave}
                 />
             ) : (
-                <Pressable style={styles.flexRow} onPress={onPress}>
-                    <Text style={styles.label}>{title}</Text>
-                </Pressable>
+                <ThemedTouchableOpacity style={[styles.flexRow, { backgroundColor: isActive ? theme.colors.activeRowBackground : theme.colors.background }]} onPress={onPress}>
+                    <ThemedText style={styles.label}>{title}</ThemedText>
+                </ThemedTouchableOpacity>
             )}
 
-            <View style={styles.actions}>
+            <ThemedView style={[styles.actions, { backgroundColor: isActive ? theme.colors.activeRowBackground : theme.colors.background }]}>
                 {isEditing ? (
-                    <Pressable style={styles.iconButton} onPress={handleSave}>
-                        <Entypo name="check" size={20} color="green" />
-                    </Pressable>
+                    <ThemedTouchableOpacity style={[styles.iconButton, { backgroundColor: isActive ? theme.colors.activeRowBackground : theme.colors.background }]} onPress={handleSave}>
+                        <Feather name="check" size={20} color={theme.colors.success} />
+                    </ThemedTouchableOpacity>
                 ) : (
-                    <Pressable
-                        style={styles.iconButton}
+                    <ThemedTouchableOpacity
+                        style={[styles.iconButton, { backgroundColor: isActive ? theme.colors.activeRowBackground : theme.colors.background }]}
                         onPress={() => {
-                            setDraft(title); // reset draft before editing
+                            setDraft(title);
                             setIsEditing(true);
                         }}
                     >
-                        <Entypo name="edit" size={20} color="gray" />
-                    </Pressable>
+                        <Feather name="edit-2" size={20} color={theme.colors.text} />
+                    </ThemedTouchableOpacity>
                 )}
-                <Pressable style={styles.iconButton} onPress={onDelete}>
-                    <Entypo name="trash" size={20} color="gray" />
-                </Pressable>
-            </View>
-        </View>
+                <ThemedTouchableOpacity style={[styles.iconButton, { backgroundColor: isActive ? theme.colors.activeRowBackground : theme.colors.background }]} onPress={onDelete}>
+                    <Feather name="trash-2" size={20} color={theme.colors.text} />
+                </ThemedTouchableOpacity>
+            </ThemedView>
+        </ThemedView>
     );
 
 }
@@ -77,9 +83,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 12,
     },
-    activeRow: {
-        backgroundColor: "#fee",
-    },
     flexRow: {
         flex: 1,
     },
@@ -92,7 +95,6 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         fontSize: 16,
         borderBottomWidth: 1,
-        borderBottomColor: "#aaa",
         paddingVertical: 2,
     },
     actions: {
