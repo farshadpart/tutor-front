@@ -1,5 +1,5 @@
 import { Link, useRouter } from "expo-router";
-import { StyleSheet, Alert, Keyboard } from "react-native";
+import { StyleSheet, Keyboard } from "react-native";
 import { useState } from "react";
 import { register } from "@/src/services/accountService"
 import { RegisterRequest } from "@/src/types/account/registerRequest"
@@ -9,30 +9,31 @@ import { ThemedView } from "@/src/components/themedView/ThemedView";
 import { ThemedText } from "@/src/components/themedText/ThemedText";
 import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInput";
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
+import { useModal } from "@/src/components/themedModal/ThemedModalContext";
 
 const Register = () => {
     const router = useRouter();
-
+    const { showModal } = useModal();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const handleRegisterPress = async (registerRequest: RegisterRequest) => {
         if (password !== confirmPassword) {
-            Alert.alert("Password Mismatch", "Passwords do not match. Please re-enter your password.");
+            showModal({ title: "Password Mismatch", message: "Passwords do not match. Please re-enter your password." });
             return;
         }
 
         const registerResult = await register(registerRequest);
         if (registerResult) {
             Keyboard.dismiss();
-            Alert.alert("Email Confirmation", "Please check your confirmation email to verify your address.");
+            showModal({ title: "Email Confirmation", message: "Please check your confirmation email to verify your address." });
             router.replace("/");
 
             return;
         }
 
-        Alert.alert("Registration Failed", "Your registration could not be completed. Please check your confirmation email and try again.");
+        showModal({ title: "Registration Failed", message: "Your registration could not be completed. Please check your confirmation email and try again." });
     }
 
     return (

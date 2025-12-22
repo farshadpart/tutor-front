@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Keyboard } from "react-native";
+import { StyleSheet, Keyboard } from "react-native";
 import { useState } from "react";
 import { useAuthStore } from "../hooks/useAuthStore";
 import { ThemedView } from "@/src/components/themedView/ThemedView";
@@ -7,8 +7,10 @@ import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInpu
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
 import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
 import InputArea from "../components/keyboardShiftView/InputArea";
+import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 
 const Login = () => {
+    const { showModal } = useModal();
     const authStore = useAuthStore();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,7 +19,7 @@ const Login = () => {
         const loginResult = await authStore.logIn({ email, password });
 
         if (!loginResult) {
-            Alert.alert("Login Failed", "Login failed, please try again later!");
+            showModal({ title: "Login Faile", message: "Login failed, please check your credentials and try again."});
             return;
         }
 

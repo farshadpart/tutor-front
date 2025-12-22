@@ -1,12 +1,14 @@
 import { getSubscriptionGroups, create } from "@/src/services/subscriptionService";
-import { View, Alert, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../hooks/useAuthStore";
 import { ThemedView } from "@/src/components/themedView/ThemedView";
 import { ThemedText } from "@/src/components/themedText/ThemedText";
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
+import { useModal } from "@/src/components/themedModal/ThemedModalContext";
 
 const Subscription = () => {
+    const { showModal } = useModal();
     const authStore = useAuthStore();
     const [subscriptionGroups, setSubscriptionGroups] = useState<string[]>([]);
     useEffect(() => {
@@ -35,7 +37,7 @@ const Subscription = () => {
             accessToken: authStore.accessToken ?? ""
         });
         if (!result) {
-            Alert.alert("Subscription Error", "Something went wrong while processing your subscription. Don't worry - no charges were made. Please try again in a moment.");
+            showModal({ title: "Subscription Error", message: "Something went wrong while processing your subscription. Don't worry - no charges were made. Please try again in a moment."});
             return;
         }
 
@@ -43,9 +45,9 @@ const Subscription = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <ThemedView style={styles.container}>
             {renderSubscriptionGroups()}
-        </View>
+        </ThemedView>
     );
 }
 
