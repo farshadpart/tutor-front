@@ -17,6 +17,7 @@ export const light: Theme = {
         errorMessageBackground: '#FFCCCC',
         activeRowBackground: '#E0F3FF',
         success: '#28A745',
+        textMuted: '#6B7280'
     },
 };
 
@@ -37,5 +38,6 @@ export const dark: Theme = {
         errorMessageBackground: '#8B0000', 
         activeRowBackground: '#2A3B4D',
         success: '#1DB954',
+        textMuted: '#9CA3AF'
     },
 };

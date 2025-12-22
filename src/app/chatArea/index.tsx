@@ -5,9 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { randomUUID } from 'expo-crypto';
 import { Stack, useLocalSearchParams } from "expo-router"
 import { useChatListProvider } from "../../components/chatDrawerItem/ChatListContext"
-import { getChatList } from "@/src/services/messageService"
+import { getChatList } from "@/src/services/messageService";
+import { useTheme } from "@/src/providers/ThemeProvider";
 
 export default function Index() {
+    const { theme } = useTheme();
     const { setChatList } = useChatListProvider();
     const navigation = useNavigation();
     const params = useLocalSearchParams();
@@ -43,7 +45,7 @@ export default function Index() {
     const [uuid, setUuid] = useState("");
 
     return (
-        <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+        <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: theme.colors.background }}>
             <Stack.Screen options={{ title: 'New Chat' }} />
             <ChatScreen chatId={uuid} />
         </SafeAreaView>

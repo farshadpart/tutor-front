@@ -15,5 +15,6 @@ export type Theme = {
         errorMessageBackground: string;
         activeRowBackground: string;
         success: string;
+        textMuted: string;
     };
 };

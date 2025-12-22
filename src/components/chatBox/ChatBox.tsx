@@ -52,7 +52,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                     {
                         input.length === 0 ?
                             <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
-                            <ThemedTouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={styles.sendButton}>
+                            <ThemedTouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={[styles.sendButton, {backgroundColor: theme.colors.background}]}>
                                 <Ionicons name="send" size={24} color={theme.colors.text} />
                             </ThemedTouchableOpacity>
                     }
@@ -67,8 +67,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 10,
-        borderTopWidth: 1
+        padding: 10
     },
     input: {
         flex: 1,
