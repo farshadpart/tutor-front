@@ -1,12 +1,7 @@
 import React from 'react';
 import { Modal, StyleSheet, View, Pressable } from 'react-native';
 import { useTheme } from '@/src/providers/ThemeProvider';
-
-type ThemedModalProps = {
-    visible: boolean;
-    onClose: () => void;
-    children: React.ReactNode;
-};
+import { ThemedModalProps } from '@/src/components/themedModal/types/ThemedModalProps';
 
 export const ThemedModal = ({
     visible,
