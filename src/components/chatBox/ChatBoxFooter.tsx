@@ -1,22 +1,24 @@
 import { ChatBoxFooterProps } from "@/src/components/chatBox/types/chatBoxFooterProps";
 import { Fragment } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { ThemedView } from '@/src/components/themedView/ThemedView';
+import { ThemedText } from '@/src/components/themedText/ThemedText';
 
 export const ChatBoxFooter = ({chatbotIsTyping, analysing}:ChatBoxFooterProps) => {
     const renderFooter = () => {
         if (chatbotIsTyping) {
             return (
-                <View style={styles.typingIndicator}>
-                    <Text>Assistant is typing...</Text>
-                </View>
+                <ThemedView style={styles.typingIndicator}>
+                    <ThemedText>Assistant is typing...</ThemedText>
+                </ThemedView>
             );
         }
 
         if (analysing) {
             return (
-                <View style={styles.typingIndicator}>
-                    <Text>Analysing your voice...</Text>
-                </View>
+                <ThemedView style={styles.typingIndicator}>
+                    <ThemedText>Analysing your voice...</ThemedText>
+                </ThemedView>
             );
         }
 
