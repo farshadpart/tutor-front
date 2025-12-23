@@ -27,7 +27,7 @@ export const ActConfirm = ({ title, message, submitLabel, onCancel, onAct, dange
                     onPress={onAct}
                     style={{ padding: 6, backgroundColor: dangerousAct === true ? theme.colors.destructiveBackground : theme.colors.primary }}
                 >
-                    <ThemedText style={{ color: dangerousAct === true ? theme.colors.destructive : theme.colors.primaryText }}>
+                    <ThemedText style={{ color: dangerousAct === true ? theme.colors.destructive : theme.colors.text }}>
                         { submitLabel !== undefined ? submitLabel : 'Ok' }
                     </ThemedText>
                 </ThemedTouchableOpacity>
