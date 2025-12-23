@@ -5,7 +5,7 @@ import { useTheme } from '@/src/providers/ThemeProvider';
 import { Fragment } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-export const ActConfirm = ({ title, message, submitLabel, onCancel, onAct }: ConfirmProps) => {
+export const ActConfirm = ({ title, message, submitLabel, onCancel, onAct, dangerousAct }: ConfirmProps) => {
     const { theme } = useTheme();
 
     return (
@@ -16,15 +16,18 @@ export const ActConfirm = ({ title, message, submitLabel, onCancel, onAct }: Con
             </ThemedText>
 
             <View style={styles.actions}>
-                <ThemedTouchableOpacity style={{ padding: 6, backgroundColor: theme.colors.secondary}} onPress={onCancel}>
-                    <ThemedText>Cancel</ThemedText>
-                </ThemedTouchableOpacity>
+                {
+                    onCancel &&
+                    <ThemedTouchableOpacity style={{ padding: 6, backgroundColor: theme.colors.secondary }} onPress={onCancel}>
+                        <ThemedText>Cancel</ThemedText>
+                    </ThemedTouchableOpacity>
+                }
 
                 <ThemedTouchableOpacity
                     onPress={onAct}
-                    style={{ padding: 6, backgroundColor: theme.colors.destructiveBackground }}
+                    style={{ padding: 6, backgroundColor: dangerousAct === true ? theme.colors.destructiveBackground : theme.colors.primary }}
                 >
-                    <ThemedText style={{ color: theme.colors.destructive }}>
+                    <ThemedText style={{ color: dangerousAct === true ? theme.colors.destructive : theme.colors.primaryText }}>
                         { submitLabel !== undefined ? submitLabel : 'Ok' }
                     </ThemedText>
                 </ThemedTouchableOpacity>

@@ -1,16 +1,17 @@
-import { StyleSheet, Keyboard } from "react-native";
-import { useState } from "react";
-import { useAuthStore } from "../hooks/useAuthStore";
-import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 import { ThemedText } from "@/src/components/themedText/ThemedText";
 import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInput";
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
-import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
+import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { useState } from "react";
+import { Keyboard, StyleSheet } from "react-native";
 import InputArea from "../components/keyboardShiftView/InputArea";
-import { useModal } from '@/src/components/themedModal/ThemedModalContext';
+import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
+import { useAuthStore } from "../hooks/useAuthStore";
+import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 
 const Login = () => {
-    const { showModal } = useModal();
+    const { showModal, closeModal } = useModal();
     const authStore = useAuthStore();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -19,7 +20,7 @@ const Login = () => {
         const loginResult = await authStore.logIn({ email, password });
 
         if (!loginResult) {
-            showModal({ title: "Login Faile", message: "Login failed, please check your credentials and try again."});
+            showModal({children: <ActConfirm title='Login Failed' message='Login failed, please check your credentials and try again.' onAct={closeModal} />});
             return;
         }
 

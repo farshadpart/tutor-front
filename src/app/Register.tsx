@@ -1,39 +1,40 @@
-import { Link, useRouter } from "expo-router";
-import { StyleSheet, Keyboard } from "react-native";
-import { useState } from "react";
-import { register } from "@/src/services/accountService"
-import { RegisterRequest } from "@/src/types/account/registerRequest"
-import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
-import InputArea from "../components/keyboardShiftView/InputArea";
-import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
+import { useModal } from "@/src/components/themedModal/ThemedModalContext";
 import { ThemedText } from "@/src/components/themedText/ThemedText";
 import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInput";
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
-import { useModal } from "@/src/components/themedModal/ThemedModalContext";
+import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { register } from "@/src/services/accountService";
+import { RegisterRequest } from "@/src/types/account/registerRequest";
+import { Link, useRouter } from "expo-router";
+import { useState } from "react";
+import { Keyboard, StyleSheet } from "react-native";
+import InputArea from "../components/keyboardShiftView/InputArea";
+import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
 
 const Register = () => {
     const router = useRouter();
-    const { showModal } = useModal();
+    const { showModal, closeModal } = useModal();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const handleRegisterPress = async (registerRequest: RegisterRequest) => {
         if (password !== confirmPassword) {
-            showModal({ title: "Password Mismatch", message: "Passwords do not match. Please re-enter your password." });
+            showModal({ children: <ActConfirm onAct={closeModal} title="Password Mismatch" message="Passwords do not match. Please re-enter your password." /> });
             return;
         }
 
         const registerResult = await register(registerRequest);
         if (registerResult) {
             Keyboard.dismiss();
-            showModal({ title: "Email Confirmation", message: "Please check your confirmation email to verify your address." });
+            showModal({ children: <ActConfirm onAct={closeModal} title="Email Confirmation" message="Please check your confirmation email to verify your address." /> });
             router.replace("/");
 
             return;
         }
 
-        showModal({ title: "Registration Failed", message: "Your registration could not be completed. Please check your confirmation email and try again." });
+        showModal({ children: <ActConfirm onAct={closeModal} title="Registration Failed" message="Your registration could not be completed. Please check your confirmation email and try again." /> });
     }
 
     return (

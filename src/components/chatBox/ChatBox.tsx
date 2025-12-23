@@ -1,17 +1,17 @@
 import { ChatBoxProps } from "@/src/components/chatBox/types/chatBoxProps";
+import { MessageItem } from '@/src/components/messageItem/MessageItem';
+import { ThemedTextInput } from '@/src/components/themedTextInput/ThemedTextInput';
+import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import { ThemedView } from '@/src/components/themedView/ThemedView';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
-import { StyleSheet, FlatList } from 'react-native';
-import { MessageItem } from '@/src/components/messageItem/MessageItem';
+import { FlatList, StyleSheet } from 'react-native';
 import InputArea from '../keyboardShiftView/InputArea';
 import KeyboardShiftView from '../keyboardShiftView/KeyboardShiftView';
 import { VoiceRecorder } from '../recorder/VoiceRecorder';
-import { ChatBoxFooter } from './ChatBoxFooter';
-import { ThemedView } from '@/src/components/themedView/ThemedView';
-import { ThemedTextInput } from '@/src/components/themedTextInput/ThemedTextInput';
-import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
-import { useTheme } from '@/src/providers/ThemeProvider';
 import { ThemedFlatList } from "../themedFlatList/themedFlatList";
+import { ChatBoxFooter } from './ChatBoxFooter';
 
 export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyping, onSendTextMessage }: ChatBoxProps) => {
     const { theme } = useTheme();

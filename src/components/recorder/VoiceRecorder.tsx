@@ -1,3 +1,8 @@
+import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
+import { useModal } from '@/src/components/themedModal/ThemedModalContext';
+import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import { ThemedView } from '@/src/components/themedView/ThemedView';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import Entypo from '@expo/vector-icons/Entypo';
 import {
     AudioModule,
@@ -8,10 +13,6 @@ import {
 } from 'expo-audio';
 import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import { ThemedView } from '@/src/components/themedView/ThemedView';
-import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
-import { useTheme } from '@/src/providers/ThemeProvider';
-import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 
 type VoiceRecorderProps = {
     onRecordingComplete?: (audio: {
@@ -22,7 +23,7 @@ type VoiceRecorderProps = {
 };
 
 export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
-    const { showModal } = useModal();
+    const { showModal, closeModal } = useModal();
     const { theme } = useTheme();
     const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
     const recorderState = useAudioRecorderState(audioRecorder);
@@ -52,7 +53,7 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
         (async () => {
             const status = await AudioModule.requestRecordingPermissionsAsync();
             if (!status.granted) {
-                showModal({ title: 'Error', message: 'Permission to access microphone was denied' });
+                showModal({ children: <ActConfirm onAct={closeModal} title='Error' message='Permission to access microphone was denied' /> });
             }
 
             await setAudioModeAsync({
@@ -60,7 +61,7 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
                 allowsRecording: true,
             });
         })();
-    }, []);
+    }, [showModal, closeModal]);
 
     return (
         <ThemedView>

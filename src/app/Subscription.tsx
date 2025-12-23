@@ -1,14 +1,15 @@
-import { getSubscriptionGroups, create } from "@/src/services/subscriptionService";
-import { StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
-import { useAuthStore } from "../hooks/useAuthStore";
-import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { ActConfirm } from "@/src/components/modalTemplates/confirm/ActConfirm";
+import { useModal } from "@/src/components/themedModal/ThemedModalContext";
 import { ThemedText } from "@/src/components/themedText/ThemedText";
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
-import { useModal } from "@/src/components/themedModal/ThemedModalContext";
+import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { create, getSubscriptionGroups } from "@/src/services/subscriptionService";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
+import { useAuthStore } from "../hooks/useAuthStore";
 
 const Subscription = () => {
-    const { showModal } = useModal();
+    const { showModal, closeModal } = useModal();
     const authStore = useAuthStore();
     const [subscriptionGroups, setSubscriptionGroups] = useState<string[]>([]);
     useEffect(() => {
@@ -37,7 +38,7 @@ const Subscription = () => {
             accessToken: authStore.accessToken ?? ""
         });
         if (!result) {
-            showModal({ title: "Subscription Error", message: "Something went wrong while processing your subscription. Don't worry - no charges were made. Please try again in a moment."});
+            showModal({ children: <ActConfirm onAct={closeModal} title="Subscription Error" message="Something went wrong while processing your subscription."/>});
             return;
         }
 

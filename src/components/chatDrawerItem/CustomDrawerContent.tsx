@@ -27,7 +27,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
     const handleDelete = (item: ChatInfo) => {
         const message = `Are you sure you want to delete the chat "${item.title}"?`;
-        showModal({ children: <ActConfirm title='Delete' message={message} submitLabel='Delete' onCancel={closeModal} onAct={() => {closeModal(); deleteThisChat(item.id)}} />})
+        showModal({ children: <ActConfirm dangerousAct={true} title='Delete' message={message} submitLabel='Delete' onCancel={closeModal} onAct={() => {closeModal(); deleteThisChat(item.id)}} />})
     };
 
     const deleteThisChat = (id: string) => {

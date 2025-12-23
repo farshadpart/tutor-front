@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import ChatScreen from '../../components/chatBox/ChatScreen';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { randomUUID } from 'expo-crypto';
-import { Stack, useLocalSearchParams } from "expo-router"
-import { useChatListProvider } from "../../components/chatDrawerItem/ChatListContext"
-import { getChatList } from "@/src/services/messageService";
 import { useTheme } from "@/src/providers/ThemeProvider";
+import { getChatList } from "@/src/services/messageService";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { randomUUID } from 'expo-crypto';
+import { Stack, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ChatScreen from '../../components/chatBox/ChatScreen';
+import { useChatListProvider } from "@/src/components/chatDrawerItem/ChatListContext";
 
 export default function Index() {
     const { theme } = useTheme();
