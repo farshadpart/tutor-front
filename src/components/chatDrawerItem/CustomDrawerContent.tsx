@@ -1,14 +1,21 @@
+import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
+import { useModal } from '@/src/components/themedModal/ThemedModalContext';
+import { ThemedText } from '@/src/components/themedText/ThemedText';
+import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import { deleteChat, upsertChatInfo } from "@/src/services/messageService";
 import { ChatInfo } from "@/src/types/chat/chatInfo";
-import Entypo from "@expo/vector-icons/Entypo";
+import { Feather } from '@expo/vector-icons';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
-import { Alert, Pressable, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import ChatDrawerItem from "./ChatDrawerItem";
 import { useChatListProvider } from "./ChatListContext";
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
+    const { showModal, closeModal } = useModal();
+    const { theme, scheme } = useTheme();
     const authStore = useAuthStore();
     const { chatList, setChatList } = useChatListProvider();
     const router = useRouter();
@@ -19,14 +26,8 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             : undefined;
 
     const handleDelete = (item: ChatInfo) => {
-        Alert.alert(
-            "Delete Chat",
-            `Are you sure you want to delete ${item.title} chat?`,
-            [
-                { text: "Cancel", style: "cancel" },
-                { text: "Delete", style: "destructive", onPress: () => deleteThisChat(item.id) }
-            ]
-        );
+        const message = `Are you sure you want to delete the chat "${item.title}"?`;
+        showModal({ children: <ActConfirm dangerousAct={true} title='Delete' message={message} submitLabel='Delete' onCancel={closeModal} onAct={() => {closeModal(); deleteThisChat(item.id)}} />})
     };
 
     const deleteThisChat = (id: string) => {
@@ -45,21 +46,48 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     };
 
     return (
-        <DrawerContentScrollView {...props}>
+        <DrawerContentScrollView
+            {...props}
+            style={[
+                styles.drawer,
+                scheme === 'dark'
+                    ? styles.drawerShadowDark
+                    : styles.drawerShadowLight,
+            ]}
+        >
             <DrawerItemList {...props} />
-            <TouchableOpacity style={styles.button} onPress={() => authStore.logOut(authStore.user!.email)}><Text style={styles.buttonText}>Logout</Text></TouchableOpacity>
-            <Pressable
-                style={[styles.row, activeRoute.name === "index" && styles.activeRow]}
-                onPress={() => router.push({ pathname: '/', params: { newChat: "newChat" } })}
+
+            <ThemedTouchableOpacity style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={() => authStore.logOut(authStore.user!.email)}>
+                <ThemedText style={[styles.buttonText, { color: theme.colors.text }]}>Logout</ThemedText>
+            </ThemedTouchableOpacity>
+
+            <ThemedTouchableOpacity
+                style={[
+                    styles.row,
+                    {
+                        backgroundColor:
+                            activeRoute.name === 'index'
+                                ? theme.colors.activeRowBackground
+                                : theme.colors.background,
+                    },
+                ]}
+                onPress={() =>
+                    router.push({
+                        pathname: '/',
+                        params: { newChat: 'newChat' },
+                    })
+                }
             >
-                <Entypo name="chat" size={20} color="red" />
-                <Text style={styles.label}>New Chat</Text>
-            </Pressable>
+                <Feather name="message-square" size={20} color={theme.colors.text} />
+                <ThemedText style={styles.label}>
+                    New Chat
+                </ThemedText>
+            </ThemedTouchableOpacity>
 
             {chatList
                 .slice()
                 .reverse()
-                .map((item) => (
+                .map(item => (
                     <ChatDrawerItem
                         key={item.id}
                         id={item.id}
@@ -81,24 +109,39 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 12,
     },
-    activeRow: {
-        backgroundColor: "#fee",
-    },
     label: {
         marginLeft: 8,
         fontSize: 16,
     },
     button: {
-        backgroundColor: "#2563eb",
         borderRadius: 8,
         paddingVertical: 14,
         alignItems: "center",
     },
     buttonText: {
-        color: "#fff",
         fontSize: 18,
         fontWeight: "600",
-    }
+    },
+    drawer: {
+        backgroundColor: 'transparent',
+    },
+    drawerShadowLight: {
+        backgroundColor: '#FFFFFF',
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 0 },
+        shadowOpacity: 0.18,
+        shadowRadius: 6,
+        elevation: 6,
+    },
+
+    drawerShadowDark: {
+        backgroundColor: '#0E0E10',
+        shadowColor: '#000',
+        shadowOffset: { width: 6, height: 0 },
+        shadowOpacity: 0.75,
+        shadowRadius: 16,
+        elevation: 20,
+    },
 });
 
 export default CustomDrawerContent;

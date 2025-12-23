@@ -1,10 +1,17 @@
-import { Alert, TouchableOpacity, Text, View, TextInput, StyleSheet, Keyboard } from "react-native";
+import { useModal } from '@/src/components/themedModal/ThemedModalContext';
+import { ThemedText } from "@/src/components/themedText/ThemedText";
+import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInput";
+import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
+import { ThemedView } from "@/src/components/themedView/ThemedView";
 import { useState } from "react";
-import { useAuthStore } from "../hooks/useAuthStore";
-import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
+import { Keyboard, StyleSheet } from "react-native";
 import InputArea from "../components/keyboardShiftView/InputArea";
+import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
+import { useAuthStore } from "../hooks/useAuthStore";
+import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 
 const Login = () => {
+    const { showModal, closeModal } = useModal();
     const authStore = useAuthStore();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -13,7 +20,7 @@ const Login = () => {
         const loginResult = await authStore.logIn({ email, password });
 
         if (!loginResult) {
-            Alert.alert("Login Failed", "Login failed, please try again later!");
+            showModal({children: <ActConfirm title='Login Failed' message='Login failed, please check your credentials and try again.' onAct={closeModal} />});
             return;
         }
 
@@ -22,12 +29,12 @@ const Login = () => {
 
     return (
         <KeyboardShiftView>
-            <View style={styles.container}>
-                <Text style={styles.title}>Login</Text>
+            <ThemedView style={styles.container}>
+                <ThemedText style={styles.title}>Login</ThemedText>
 
                 <InputArea>
-                    <Text style={styles.label}>Email</Text>
-                    <TextInput
+                    <ThemedText style={styles.label}>Email</ThemedText>
+                    <ThemedTextInput
                         style={styles.input}
                         placeholder="Enter your email"
                         keyboardType="email-address"
@@ -38,8 +45,8 @@ const Login = () => {
                 </InputArea>
 
                 <InputArea>
-                    <Text style={styles.label}>Password</Text>
-                    <TextInput
+                    <ThemedText style={styles.label}>Password</ThemedText>
+                    <ThemedTextInput
                         style={styles.input}
                         placeholder="Enter your password"
                         secureTextEntry
@@ -48,10 +55,10 @@ const Login = () => {
                     />
                 </InputArea>
 
-                <TouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-            </View>
+                <ThemedTouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
+                    <ThemedText style={styles.buttonText}>Login</ThemedText>
+                </ThemedTouchableOpacity>
+            </ThemedView>
         </KeyboardShiftView>
     );
 };
@@ -60,38 +67,31 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#f9fafb",
+        padding: 20
     },
     title: {
         fontSize: 28,
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 30,
-        color: "#111827",
     },
     label: {
         fontSize: 16,
-        color: "#374151",
         marginBottom: 6,
     },
     input: {
         borderWidth: 1,
-        borderColor: "#d1d5db",
-        backgroundColor: "#fff",
         borderRadius: 8,
         padding: 12,
         fontSize: 16,
         marginBottom: 16,
     },
     button: {
-        backgroundColor: "#2563eb",
         borderRadius: 8,
         paddingVertical: 14,
         alignItems: "center",
     },
     buttonText: {
-        color: "#fff",
         fontSize: 18,
         fontWeight: "600",
     },

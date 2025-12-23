@@ -15,7 +15,6 @@ export const getSubscriptionGroups = async (): Promise<string []> => {
 
 export const create = async ({ createSubscriptionRequest, accessToken }: { createSubscriptionRequest: CreateSubscriptionRequest, accessToken: string }) : Promise<boolean> => {
     try {
-        console.log('Creating Subscription', createSubscriptionRequest);
         const response = await fetch(`${TUTORAPI}/subscription/create`, {
             method: "POST",
             body: JSON.stringify(createSubscriptionRequest),
@@ -24,8 +23,6 @@ export const create = async ({ createSubscriptionRequest, accessToken }: { creat
                 "Authorization": `Bearer ${accessToken}`,
             }
         });
-
-        console.log('Response Status', response.status); 
 
         return true;
     } catch (e) {

@@ -1,9 +1,15 @@
-import { getSubscriptionGroups, create } from "@/src/services/subscriptionService";
-import { View, TouchableOpacity, Alert, StyleSheet, Text } from "react-native";
+import { ActConfirm } from "@/src/components/modalTemplates/confirm/ActConfirm";
+import { useModal } from "@/src/components/themedModal/ThemedModalContext";
+import { ThemedText } from "@/src/components/themedText/ThemedText";
+import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
+import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { create, getSubscriptionGroups } from "@/src/services/subscriptionService";
 import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
 import { useAuthStore } from "../hooks/useAuthStore";
 
 const Subscription = () => {
+    const { showModal, closeModal } = useModal();
     const authStore = useAuthStore();
     const [subscriptionGroups, setSubscriptionGroups] = useState<string[]>([]);
     useEffect(() => {
@@ -15,11 +21,11 @@ const Subscription = () => {
 
     const renderSubscriptionGroups = () => {
         return subscriptionGroups.map(group =>
-            <View key={group}>
-                <TouchableOpacity style={styles.button} onPress={async () => handleSubscriptionSelect(group)}>
-                    <Text style={styles.buttonText}>{group}</Text>
-                </TouchableOpacity>
-            </View>
+            <ThemedView key={group}>
+                <ThemedTouchableOpacity style={styles.button} onPress={async () => handleSubscriptionSelect(group)}>
+                    <ThemedText style={styles.buttonText}>{group}</ThemedText>
+                </ThemedTouchableOpacity>
+            </ThemedView>
         );
     }
 
@@ -32,7 +38,7 @@ const Subscription = () => {
             accessToken: authStore.accessToken ?? ""
         });
         if (!result) {
-            Alert.alert("Subscription Error", "Something went wrong while processing your subscription. Don't worry - no charges were made. Please try again in a moment.");
+            showModal({ children: <ActConfirm onAct={closeModal} title="Subscription Error" message="Something went wrong while processing your subscription."/>});
             return;
         }
 
@@ -40,9 +46,9 @@ const Subscription = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <ThemedView style={styles.container}>
             {renderSubscriptionGroups()}
-        </View>
+        </ThemedView>
     );
 }
 
@@ -50,17 +56,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#f9fafb",
+        padding: 20
     },
     button: {
-        backgroundColor: "#2563eb",
         borderRadius: 8,
         paddingVertical: 14,
         alignItems: "center",
     },
     buttonText: {
-        color: "#fff",
         fontSize: 18,
         fontWeight: "600",
     },

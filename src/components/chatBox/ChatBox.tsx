@@ -1,14 +1,20 @@
 import { ChatBoxProps } from "@/src/components/chatBox/types/chatBoxProps";
+import { MessageItem } from '@/src/components/messageItem/MessageItem';
+import { ThemedTextInput } from '@/src/components/themedTextInput/ThemedTextInput';
+import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import { ThemedView } from '@/src/components/themedView/ThemedView';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
-import { FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
-import { MessageItem } from '../MessageItem';
+import { FlatList, StyleSheet } from 'react-native';
 import InputArea from '../keyboardShiftView/InputArea';
 import KeyboardShiftView from '../keyboardShiftView/KeyboardShiftView';
 import { VoiceRecorder } from '../recorder/VoiceRecorder';
+import { ThemedFlatList } from "../themedFlatList/themedFlatList";
 import { ChatBoxFooter } from './ChatBoxFooter';
 
 export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyping, onSendTextMessage }: ChatBoxProps) => {
+    const { theme } = useTheme();
     const localMessages = [...messages].reverse();
     const [input, setInput] = useState('');
     const flatListRef = useRef<FlatList>(null);
@@ -26,7 +32,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
 
     return (
         <KeyboardShiftView scrollable={true}>
-            <FlatList
+            <ThemedFlatList
                 inverted
                 ref={flatListRef}
                 data={localMessages}
@@ -36,8 +42,8 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                 ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
             />
             <InputArea>
-                <View style={styles.inputContainer}>
-                    <TextInput
+                <ThemedView style={styles.inputContainer}>
+                    <ThemedTextInput
                         style={styles.input}
                         value={input}
                         onChangeText={setInput}
@@ -46,11 +52,11 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                     {
                         input.length === 0 ?
                             <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
-                            <TouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={styles.sendButton}>
-                                <Ionicons name="send" size={24} color="black" />
-                            </TouchableOpacity>
+                            <ThemedTouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={[styles.sendButton, {backgroundColor: theme.colors.background}]}>
+                                <Ionicons name="send" size={24} color={theme.colors.text} />
+                            </ThemedTouchableOpacity>
                     }
-                </View>
+                </ThemedView>
             </InputArea>
         </KeyboardShiftView>
     )
@@ -61,14 +67,11 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 10,
-        borderTopWidth: 1,
-        borderColor: '#ccc',
+        padding: 10
     },
     input: {
         flex: 1,
         borderWidth: 1,
-        borderColor: '#ccc',
         padding: 10,
         marginRight: 10,
         borderRadius: 5,
