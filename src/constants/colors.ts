@@ -7,6 +7,7 @@ export const light: Theme = {
         card: '#ffffff',
         text: '#1f2937',
         textSecondary: '#6b7280',
+        secondary: '#F3F4F6',
         placeholder: '#6b7280',
         primary: '#3b82f6',
         border: '#e5e7eb',
@@ -17,7 +18,12 @@ export const light: Theme = {
         errorMessageBackground: '#FFCCCC',
         activeRowBackground: '#E0F3FF',
         success: '#28A745',
-        textMuted: '#6B7280'
+        textMuted: '#6B7280',
+        modalOverlay: 'rgba(0, 0, 0, 0.35)',
+        modalBackground: '#FFFFFF',
+        modalShadowColor: '#000000',
+        destructiveBackground: '#FEE2E2',
+        destructive: '#DC2626',
     },
 };
 
@@ -28,6 +34,7 @@ export const dark: Theme = {
         card: '#18181b',
         text: '#f9fafb',
         textSecondary: '#9ca3af',
+        secondary: '#1F2937',
         placeholder: '#9ca3af',
         primary: '#60a5fa',
         border: '#27272a',
@@ -38,6 +45,11 @@ export const dark: Theme = {
         errorMessageBackground: '#8B0000', 
         activeRowBackground: '#2A3B4D',
         success: '#1DB954',
-        textMuted: '#9CA3AF'
+        textMuted: '#9CA3AF',
+        modalOverlay: 'rgba(0, 0, 0, 0.7)',
+        modalBackground: '#111827',
+        modalShadowColor: '#000000',
+        destructiveBackground: '#3F1D1D',
+        destructive: '#F87171'
     },
 };

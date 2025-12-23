@@ -1,4 +1,5 @@
+import { ReactNode } from 'react';
+
 export type ModalOptions = {
-    title: string;
-    message: string;
+    children: ReactNode
 };

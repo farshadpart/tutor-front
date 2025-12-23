@@ -7,6 +7,7 @@ export type Theme = {
         surface: string;
         card: string;
         textSecondary: string;
+        secondary: string;
         placeholder: string;
         inputBackground: string;
         primaryText: string;
@@ -16,5 +17,10 @@ export type Theme = {
         activeRowBackground: string;
         success: string;
         textMuted: string;
+        modalOverlay: string;
+        modalBackground: string;
+        modalShadowColor: string;
+        destructiveBackground: string;
+        destructive: string;
     };
 };

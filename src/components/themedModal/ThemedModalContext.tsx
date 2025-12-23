@@ -5,6 +5,7 @@ import { ModalOptions } from '@/src/components/themedModal/types/ModalOptions';
 
 type ModalContextValue = {
     showModal: (options: ModalOptions) => void;
+    closeModal: () => void;
 };
 
 const ModalContext = createContext<ModalContextValue | null>(null);
@@ -21,15 +22,11 @@ export function ThemedModalProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <ModalContext.Provider value={{ showModal }}>
+        <ModalContext.Provider value={{ showModal, closeModal }}>
             {children}
-
-            <ThemedModal
-                visible={!!modal}
-                title={modal?.title ?? ''}
-                message={modal?.message ?? ''}
-                onClose={closeModal}
-            />
+            <ThemedModal visible={!!modal} onClose={closeModal}>
+                {modal?.children}
+            </ThemedModal>
         </ModalContext.Provider>
     );
 }

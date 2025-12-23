@@ -1,95 +1,70 @@
-import { useTheme } from '@/src/providers/ThemeProvider'
-import { Modal, StyleSheet } from 'react-native';
-import { ThemedAlertProps } from './types/ThemedAlertProps';
-import { ThemedView } from '@/src/components/themedView/ThemedView';
-import { ThemedText } from '@/src/components/themedText/ThemedText';
-import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import React from 'react';
+import { Modal, StyleSheet, View, Pressable } from 'react-native';
+import { useTheme } from '@/src/providers/ThemeProvider';
 
-export function ThemedModal({
+type ThemedModalProps = {
+    visible: boolean;
+    onClose: () => void;
+    children: React.ReactNode;
+};
+
+export const ThemedModal = ({
     visible,
-    title,
-    message,
     onClose,
-}: ThemedAlertProps) {
-    const { theme } = useTheme();
-
+    children,
+}: ThemedModalProps) => {
+    const { theme, scheme } = useTheme();
 
     return (
         <Modal
             transparent
-            animationType="fade"
             visible={visible}
+            animationType="fade"
             onRequestClose={onClose}
         >
-            <ThemedView style={styles.overlay}>
-                <ThemedView
+            <View
+                style={[
+                    styles.overlay,
+                    { backgroundColor: theme.colors.modalOverlay },
+                ]}
+            >
+                <Pressable style={styles.backdrop} onPress={onClose} />
+
+                <View
                     style={[
                         styles.container,
-                        { backgroundColor: theme.colors.card },
+                        {
+                            backgroundColor: theme.colors.modalBackground,
+                            shadowColor: theme.colors.modalShadowColor,
+                            shadowOpacity: scheme === 'dark' ? 0.6 : 0.25,
+                            shadowRadius: scheme === 'dark' ? 16 : 8,
+                        },
                     ]}
                 >
-                    <ThemedText
-                        style={[
-                            styles.title,
-                            { color: theme.colors.text },
-                        ]}
-                    >
-                        {title}
-                    </ThemedText>
-
-                    <ThemedText
-                        style={[
-                            styles.message,
-                            { color: theme.colors.textSecondary },
-                        ]}
-                    >
-                        {message}
-                    </ThemedText>
-
-                    <ThemedTouchableOpacity
-                        onPress={onClose}
-                        style={[
-                            styles.button,
-                            { backgroundColor: theme.colors.primary },
-                        ]}
-                    >
-                        <ThemedText style={[styles.buttonText, { color: theme.colors.primaryText }]}>
-                            OK
-                        </ThemedText>
-                    </ThemedTouchableOpacity>
-                </ThemedView>
-            </ThemedView>
+                    {children}
+                </View>
+            </View>
         </Modal>
     );
-}
+};
+
 
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.55)',
         justifyContent: 'center',
         alignItems: 'center',
     },
+    backdrop: {
+        ...StyleSheet.absoluteFillObject,
+    },
     container: {
         width: '85%',
-        borderRadius: 16,
+        maxWidth: 420,
+        borderRadius: 14,
         padding: 20,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: '600',
-        marginBottom: 8,
-    },
-    message: {
-        fontSize: 15,
-        marginBottom: 20,
-    },
-    button: {
-        borderRadius: 10,
-        paddingVertical: 12,
-        alignItems: 'center',
-    },
-    buttonText: {
-        fontWeight: '600',
+
+        shadowOffset: { width: 0, height: 8 },
+        elevation: 12,
     },
 });

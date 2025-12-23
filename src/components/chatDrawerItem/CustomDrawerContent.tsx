@@ -1,19 +1,20 @@
+import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
+import { useModal } from '@/src/components/themedModal/ThemedModalContext';
+import { ThemedText } from '@/src/components/themedText/ThemedText';
+import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import { deleteChat, upsertChatInfo } from "@/src/services/messageService";
 import { ChatInfo } from "@/src/types/chat/chatInfo";
 import { Feather } from '@expo/vector-icons';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
-import { Alert, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import ChatDrawerItem from "./ChatDrawerItem";
 import { useChatListProvider } from "./ChatListContext";
-import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
-import { ThemedText } from '@/src/components/themedText/ThemedText';
-import { useTheme } from '@/src/providers/ThemeProvider';
-import { useModal } from '@/src/components/themedModal/ThemedModalContext'
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
-    const { showModal } = useModal();
+    const { showModal, closeModal } = useModal();
     const { theme, scheme } = useTheme();
     const authStore = useAuthStore();
     const { chatList, setChatList } = useChatListProvider();
@@ -25,14 +26,8 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             : undefined;
 
     const handleDelete = (item: ChatInfo) => {
-        Alert.alert(
-            "Delete Chat",
-            `Are you sure you want to delete ${item.title} chat?`,
-            [
-                { text: "Cancel", style: "cancel" },
-                { text: "Delete", style: "destructive", onPress: () => deleteThisChat(item.id) }
-            ]
-        );
+        const message = `Are you sure you want to delete the chat "${item.title}"?`;
+        showModal({ children: <ActConfirm title='Delete' message={message} submitLabel='Delete' onCancel={closeModal} onAct={() => {closeModal(); deleteThisChat(item.id)}} />})
     };
 
     const deleteThisChat = (id: string) => {
