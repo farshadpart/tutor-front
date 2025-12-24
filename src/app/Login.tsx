@@ -1,3 +1,4 @@
+import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 import { ThemedText } from "@/src/components/themedText/ThemedText";
 import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInput";
@@ -8,7 +9,6 @@ import { Keyboard, StyleSheet } from "react-native";
 import InputArea from "../components/keyboardShiftView/InputArea";
 import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
 import { useAuthStore } from "../hooks/useAuthStore";
-import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 
 const Login = () => {
     const { showModal, closeModal } = useModal();
@@ -19,8 +19,14 @@ const Login = () => {
     const handleLoginPress = async (email: string, password: string) => {
         const loginResult = await authStore.logIn({ email, password });
 
-        if (!loginResult) {
-            showModal({children: <ActConfirm title='Login Failed' message='Login failed, please check your credentials and try again.' onAct={closeModal} />});
+        if (!loginResult.isSuccess) {
+
+            if (loginResult.error === '401') {
+                showModal({children: <ActConfirm title='Login Failed' message='Login failed, please check your credentials and try again.' onAct={closeModal} />});
+                return;
+            }
+
+            showModal({ children: <ActConfirm title='Login Failed' message='Something went wrong, please try later!' onAct={closeModal} /> });
             return;
         }
 

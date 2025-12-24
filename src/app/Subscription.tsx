@@ -14,10 +14,17 @@ const Subscription = () => {
     const [subscriptionGroups, setSubscriptionGroups] = useState<string[]>([]);
     useEffect(() => {
         const fetchSubscriptionGroups = async () => {
-            setSubscriptionGroups(await getSubscriptionGroups());
+            const subscriptionGroupResult = await getSubscriptionGroups();
+            if (!subscriptionGroupResult.isSuccess) {
+                showModal({ children: <ActConfirm title='Error' message='Failed to retrive the subscription groups, please try later!' onAct={closeModal} /> })
+                return;
+            }
+
+            const subscriptionGroups = subscriptionGroupResult.data ?? [];
+            setSubscriptionGroups(subscriptionGroups);
         };
         fetchSubscriptionGroups().then();
-    }, []);
+    }, [showModal, closeModal]);
 
     const renderSubscriptionGroups = () => {
         return subscriptionGroups.map(group =>
@@ -37,7 +44,8 @@ const Subscription = () => {
             },
             accessToken: authStore.accessToken ?? ""
         });
-        if (!result) {
+
+        if (!result.isSuccess) {
             showModal({ children: <ActConfirm onAct={closeModal} title="Subscription Error" message="Something went wrong while processing your subscription."/>});
             return;
         }

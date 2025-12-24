@@ -1,14 +1,16 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import * as SecureStore from "expo-secure-store";
-import { login, logout } from "@/src/services/accountService"
+import { login, logout } from "@/src/services/accountService";
 import { LoginRequest } from "@/src/types/account/loginRequest";
+import { LoginResponse } from '@/src/types/account/loginResponse';
+import { Result } from '@/src/types/common/result';
+import * as SecureStore from "expo-secure-store";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { User } from "../types/account/user";
 
 type UserState = {
     user?: User;
     accessToken?: string;
-    logIn: (loginRequest: LoginRequest) => Promise<boolean>;
+    logIn: (loginRequest: LoginRequest) => Promise<Result<LoginResponse>>;
     logOut: (email: string) => void;
     setSubscription: (subscriptionGroup?: string) => void;
 };
@@ -22,12 +24,12 @@ export const useAuthStore = create(
                 set((state) => {
                     return {
                         ...state,
-                        user: loginResponse.user,
-                        accessToken: loginResponse.accessToken
+                        user: loginResponse.data?.user,
+                        accessToken: loginResponse.data?.accessToken
                     };
                 });
 
-                return loginResponse.user !== undefined ? true : false;
+                return loginResponse;
             },
             logOut: (email: string) => {
                 const logOutResult = logout(email);

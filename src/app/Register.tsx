@@ -26,7 +26,7 @@ const Register = () => {
         }
 
         const registerResult = await register(registerRequest);
-        if (registerResult) {
+        if (registerResult.isSuccess) {
             Keyboard.dismiss();
             showModal({ children: <ActConfirm onAct={closeModal} title="Email Confirmation" message="Please check your confirmation email to verify your address." /> });
             router.replace("/");
@@ -34,7 +34,7 @@ const Register = () => {
             return;
         }
 
-        showModal({ children: <ActConfirm onAct={closeModal} title="Registration Failed" message="Your registration could not be completed. Please check your confirmation email and try again." /> });
+        showModal({ children: <ActConfirm onAct={closeModal} title="Registration Failed" message="Your registration could not be completed. Please try later!" /> });
     }
 
     return (
