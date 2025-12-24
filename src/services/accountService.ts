@@ -1,13 +1,15 @@
-import { User } from "@/src/types/account/user"
-import { Claim } from "@/src/types/account/claim"
-import { LoginRequest } from "@/src/types/account/loginRequest"
-import { RegisterRequest } from "@/src/types/account/registerRequest"
 import { TUTORAPI } from "@/src/constants/addresses";
-import { LoginResponse } from "@/src/types/account/loginResponse"
-import { jwtDecode } from "jwt-decode";
+import { Claim } from "@/src/types/account/claim";
+import { LoginRequest } from "@/src/types/account/loginRequest";
+import { LoginResponse } from "@/src/types/account/loginResponse";
+import { RegisterRequest } from "@/src/types/account/registerRequest";
 import { TutorApiLoginResponse } from "@/src/types/account/tutoApiLoginResponse";
+import { User } from "@/src/types/account/user";
+import { jwtDecode } from "jwt-decode";
+import { Result } from "@/src/types/common/result";
+import { interpret } from "@/src/services/interpreter";
 
-export const login = async (loginRequest: LoginRequest): Promise<LoginResponse> => {
+export const login = async (loginRequest: LoginRequest): Promise<Result<LoginResponse>> => {
     try {
         const response = await fetch(`${TUTORAPI}/account/login`, {
             method: "POST",
@@ -17,14 +19,18 @@ export const login = async (loginRequest: LoginRequest): Promise<LoginResponse> 
             }
         });
 
-        const responseText = await response.text();
-        const loginResponse = JSON.parse(responseText) as TutorApiLoginResponse;
-        const user = mapTokenToUser(loginResponse.accessToken);
+        const loginResponse = await interpret<TutorApiLoginResponse>(response);
+        if (!loginResponse.isSuccess || loginResponse.data === undefined) {
+            return loginResponse;
+        }
 
-        return {user, accessToken: loginResponse.accessToken}
+        const user = mapTokenToUser(loginResponse.data.accessToken);
+        return {
+            isSuccess: true, data: { user, accessToken: loginResponse.data.accessToken }
+        }
     } catch (e) {
-        console.log('Error', e);
-        return { user: undefined, accessToken: undefined};
+        console.error('Error', e);
+        return { isSuccess: false, error: "Something went wrong!"};
     }
 }
 
