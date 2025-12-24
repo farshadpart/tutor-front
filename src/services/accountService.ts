@@ -38,7 +38,7 @@ export const logout = (email: string) : boolean => {
     return true;
 }
 
-export const register = async (registerReqeust: RegisterRequest): Promise<boolean> => {
+export const register = async (registerReqeust: RegisterRequest): Promise<Result> => {
     try {
         const response = await fetch(`${TUTORAPI}/account/register`, {
             method: "POST",
@@ -48,14 +48,10 @@ export const register = async (registerReqeust: RegisterRequest): Promise<boolea
             }
         });
 
-        if (response.status === 200) {
-            return true;
-        }
-
-        return false;
+        return interpret(response);
     } catch (e) {
-        console.log('Error', e);
-        return false;
+        console.error(e, 'The registeration process failed');
+        return { isSuccess: false, error: 'Something went wrong!' };
     }
 }
 

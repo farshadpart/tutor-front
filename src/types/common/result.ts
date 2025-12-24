@@ -1,5 +1,5 @@
-export interface Result<T> {
-    isSuccess: boolean,
-    data?: T,
-    error?: string
+export interface Result<T = void> {
+    isSuccess: boolean;
+    data?: T;
+    error?: string;
 }

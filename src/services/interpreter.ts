@@ -4,7 +4,10 @@ export const interpret = async <T>(response: Response): Promise<Result<T>> => {
     try {
         if (response.status === 200) {
             const responseText = await response.text();
-            return { isSuccess: true, data: JSON.parse(responseText) as T };
+            if(responseText)
+                return { isSuccess: true, data: JSON.parse(responseText) as T };
+
+            return { isSuccess: true };
         }
 
         if (response.status === 500)
