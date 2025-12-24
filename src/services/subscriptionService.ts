@@ -1,19 +1,20 @@
-import { CreateSubscriptionRequest } from "@/src/types/subscription/createSubscriptionRequest";
 import { TUTORAPI } from "@/src/constants/addresses";
+import { interpret } from '@/src/services/interpreter';
+import { Result } from '@/src/types/common/result';
+import { CreateSubscriptionRequest } from "@/src/types/subscription/createSubscriptionRequest";
 
-export const getSubscriptionGroups = async (): Promise<string []> => {
+export const getSubscriptionGroups = async (): Promise<Result<string[]>> => {
     try {
         const response = await fetch(`${TUTORAPI}/subscription/getSubscriptionGroups`, { method: "GET" });
 
-        const result = JSON.parse(await response.text()) as string[];
-        return result;
+        return interpret<string[]>(response);
     } catch (e) {
-        console.log('Error', e);
-        return [];
+        console.log(e, 'Getting the subscription groups failed!');
+        return { isSuccess: false };
     }
 }
 
-export const create = async ({ createSubscriptionRequest, accessToken }: { createSubscriptionRequest: CreateSubscriptionRequest, accessToken: string }) : Promise<boolean> => {
+export const create = async ({ createSubscriptionRequest, accessToken }: { createSubscriptionRequest: CreateSubscriptionRequest, accessToken: string }): Promise<Result> => {
     try {
         const response = await fetch(`${TUTORAPI}/subscription/create`, {
             method: "POST",
@@ -24,10 +25,10 @@ export const create = async ({ createSubscriptionRequest, accessToken }: { creat
             }
         });
 
-        return true;
+        return await interpret(response);
     } catch (e) {
-        console.log('Error', e);
-        return false;
+        console.error(e, 'Activating the subscription for the user failed!');
+        return { isSuccess: false }
     }
 }
 
