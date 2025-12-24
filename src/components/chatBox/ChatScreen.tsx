@@ -7,8 +7,11 @@ import { Chat } from "@/src/types/chat/chat";
 import { Message } from "@/src/types/chat/message";
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../hooks/useAuthStore';
+import { useModal } from '@/src/components/themedModal/ThemedModalContext'
+import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 
 export default function ChatScreen({ chatId }: ChatScreenProps) {
+    const { showModal, closeModal } = useModal();
     const [messages, setMessages] = useState<Message[]>([] as Message[]);
     const [input, setInput] = useState('');
     const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
@@ -34,9 +37,15 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
 
     const handleSendVoiceMessage = async (audio: { uri: string; name: string; type: string }) => {
         setAnalysing(true);
-        let userTranscription = await transcription({ url: audio.uri, accessToken: authState.accessToken });
+        const userTranscriptionResult = await transcription({ url: audio.uri, accessToken: authState.accessToken ?? '' });
         setAnalysing(false);
-        await handleSendTextMessage(userTranscription);
+
+        if (!userTranscriptionResult.isSuccess || userTranscriptionResult.data === undefined) {
+            showModal({ children: <ActConfirm title='Error' message='Tutor failed to hear you, please try later!' onAct={closeModal} />})
+            return;
+        }
+
+        await handleSendTextMessage(userTranscriptionResult.data);
     };
 
     const handleSendTextMessage = async (userTranscription?: string) => {

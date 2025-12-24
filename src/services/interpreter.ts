@@ -3,12 +3,17 @@ import { Result } from '@/src/types/common/result';
 export const interpret = async <T>(response: Response): Promise<Result<T>> => {
     try {
         if (response.status === 200) {
-            const responseText = await response.text();
-            if(responseText)
-                return { isSuccess: true, data: JSON.parse(responseText) as T };
+            const contentType = response.headers.get("content-type");
+            if (contentType?.includes("application/json")) {
+                const data = (await response.json()) as T;
+                return { isSuccess: true, data };
+            }
 
-            return { isSuccess: true };
+            return { isSuccess: true, data: (await response.text()) as T };
         }
+
+        if (response.status === 204)
+            return { isSuccess: true };
 
         if (response.status === 500)
             return { isSuccess: false, error: 'Something went wrong!' };

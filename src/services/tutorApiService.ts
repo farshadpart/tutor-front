@@ -1,5 +1,7 @@
 import { TUTORAPI } from "@/src/constants/addresses";
-import { Chat } from "@/src/types/chat/chat"
+import { Chat } from "@/src/types/chat/chat";
+import { Result } from '@/src/types/common/result';
+import { interpret } from '@/src/services/interpreter';
 
 export const chat = async ({ input, accessToken }: { input: Chat[], accessToken: string | undefined }): Promise<string> => {
     if (accessToken === undefined)
@@ -17,26 +19,28 @@ export const chat = async ({ input, accessToken }: { input: Chat[], accessToken:
     return response.text();
 }
 
-export const transcription = async ({ url, accessToken }: { url: string, accessToken: string | undefined }) => {
-    if (accessToken === undefined)
-        throw Error("Access Token is undefined!")
+export const transcription = async ({ url, accessToken }: { url: string, accessToken: string }): Promise<Result<string>> => {
+    try {
+        const formData = new FormData();
+        formData.append("voice", {
+            uri: url,
+            name: "audio.m4a",
+            type: "audio/m4a",
+        } as any);
 
-    const formData = new FormData();
-    formData.append("voice", {
-        uri: url,
-        name: "audio.m4a",
-        type: "audio/m4a",
-    } as any);
-
-    const result = await fetch(`${TUTORAPI}/chat/speak`, {
-        method: "POST",
-        body: formData,
-        headers: {
-            "Accept": "text/plain",
-            "Content-Type": "multipart/form-data",
-            "Authorization": `Bearer ${accessToken}`,
-        },
-    });
+        const response = await fetch(`${TUTORAPI}/chat/speak`, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Accept": "text/plain",
+                "Content-Type": "multipart/form-data",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+        });
     
-    return result.text();
+        return interpret<string>(response);
+    } catch (e) {
+        console.error(e, 'Method transcription failed!');
+        return { isSuccess: false };
+    }
 };
