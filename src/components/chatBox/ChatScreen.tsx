@@ -1,5 +1,7 @@
 import { ChatBox } from '@/src/components/chatBox/ChatBox';
 import { ChatScreenProps } from "@/src/components/chatBox/types/chatScreenProps";
+import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
+import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 import { makeChatReady } from '@/src/services/chatService';
 import { getChatHistory, saveChatHistory, upsertChatInfo } from '@/src/services/messageService';
 import { chat, transcription } from '@/src/services/tutorApiService';
@@ -7,8 +9,6 @@ import { Chat } from "@/src/types/chat/chat";
 import { Message } from "@/src/types/chat/message";
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../hooks/useAuthStore';
-import { useModal } from '@/src/components/themedModal/ThemedModalContext'
-import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 
 export default function ChatScreen({ chatId }: ChatScreenProps) {
     const { showModal, closeModal } = useModal();
@@ -70,9 +70,15 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
             });
 
             try {
-                const chatBotReply = await chat({ input: makeChatReady(chats, userInput), accessToken: authState.accessToken });
+                const tutorReplyResult = await chat({ input: makeChatReady(chats, userInput), accessToken: authState.accessToken ?? '' });
+                if (!tutorReplyResult.isSuccess || tutorReplyResult.data === undefined) {
+                    setChatbotIsTyping(false);
+                    showModal({ children: <ActConfirm title='Error' message='Tutor failed to reply you, please try later!' onAct={closeModal} /> })
+                    return;
+                }
+
                 setMessages(prev => {
-                    let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: chatBotReply ?? '', reply: true }]
+                    let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: tutorReplyResult.data ?? '', reply: true }]
                     const save = async () => await saveChatHistory(chatId, latestMessages);
                     save();
                     return latestMessages;

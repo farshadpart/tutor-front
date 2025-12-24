@@ -15,6 +15,8 @@ export const interpret = async <T>(response: Response): Promise<Result<T>> => {
         if (response.status === 204)
             return { isSuccess: true };
 
+        console.error('Response Status', response.status);
+
         if (response.status === 500)
             return { isSuccess: false, error: 'Something went wrong!' };
 

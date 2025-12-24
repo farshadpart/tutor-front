@@ -3,20 +3,22 @@ import { Chat } from "@/src/types/chat/chat";
 import { Result } from '@/src/types/common/result';
 import { interpret } from '@/src/services/interpreter';
 
-export const chat = async ({ input, accessToken }: { input: Chat[], accessToken: string | undefined }): Promise<string> => {
-    if (accessToken === undefined)
-        throw Error("Access Token is undefined!")
+export const chat = async ({ input, accessToken }: { input: Chat[], accessToken: string }): Promise<Result<string>> => {
+    try {
+        const response = await fetch(`${TUTORAPI}/chat/write`, {
+            method: "POST",
+            body: JSON.stringify(input),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            }
+        });
 
-    const response = await fetch(`${TUTORAPI}/chat/write`, {
-        method: "POST",
-        body: JSON.stringify(input),
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-        }
-    });
-
-    return response.text();
+        return interpret(response);
+    } catch (e) {
+        console.error(e, 'Meth chat failed!')
+        return { isSuccess: false }
+    }
 }
 
 export const transcription = async ({ url, accessToken }: { url: string, accessToken: string }): Promise<Result<string>> => {
