@@ -2,6 +2,7 @@ import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 import { ThemedText } from '@/src/components/themedText/ThemedText';
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import { UserSummary } from '@/src/components/userSummary/UserSummary';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { deleteChat, upsertChatInfo } from "@/src/services/messageService";
 import { ChatInfo } from "@/src/types/chat/chatInfo";
@@ -9,14 +10,12 @@ import { Feather } from '@expo/vector-icons';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
-import { useAuthStore } from "../../hooks/useAuthStore";
 import ChatDrawerItem from "./ChatDrawerItem";
 import { useChatListProvider } from "./ChatListContext";
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const { showModal, closeModal } = useModal();
     const { theme, scheme } = useTheme();
-    const authStore = useAuthStore();
     const { chatList, setChatList } = useChatListProvider();
     const router = useRouter();
     const activeRoute = props.state.routes[props.state.index];
@@ -57,9 +56,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         >
             <DrawerItemList {...props} />
 
-            <ThemedTouchableOpacity style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={() => authStore.logOut(authStore.user!.email)}>
-                <ThemedText style={[styles.buttonText, { color: theme.colors.text }]}>Logout</ThemedText>
-            </ThemedTouchableOpacity>
+            <UserSummary />
 
             <ThemedTouchableOpacity
                 style={[
