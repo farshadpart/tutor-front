@@ -40,6 +40,10 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         }
     }
 
+    const redirectToUserPage = () => {
+        router.push('/User');
+    }
+
     const handleRename = async (id: string, newTitle: string) => {
         await upsertChatInfo({ id, title: newTitle });
         setChatList(chatList.map(chat => (chat.id === id ? { ...chat, title: newTitle } : chat)));
@@ -57,7 +61,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         >
             <DrawerItemList {...props} />
 
-            <ThemedTouchableOpacity style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={() => authStore.logOut(authStore.user!.email)}>
+            <ThemedTouchableOpacity style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={redirectToUserPage}>
                 <ThemedText style={[styles.buttonText, { color: theme.colors.text }]}>Logout</ThemedText>
             </ThemedTouchableOpacity>
 
