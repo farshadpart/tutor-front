@@ -1,117 +1,137 @@
-import React, { useMemo, useState } from 'react';
-import { StyleSheet, useWindowDimensions } from 'react-native';
-import { TabView, TabBar } from 'react-native-tab-view';
-import { ThemedView } from '@/src/components/themedView/ThemedView';
 import { ThemedText } from '@/src/components/themedText/ThemedText';
+import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import { ThemedView } from '@/src/components/themedView/ThemedView';
+import React, { useMemo, useState } from 'react';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '@/src/providers/ThemeProvider';
 
-export type TabbedMessageProps = {
-    item: {
-        response: string;
-        correction?: string | null;
-        revisedSentence?: string | null;
-        reply?: boolean;
-        error?: boolean;
-    }
+type TutorPartKey = 'reply' | 'revisedSentence' | 'correction';
+
+type TabbedMessageProps = {
+    response?: string;
+    revisedSentence?: string;
+    correction?: string;
+    initialSelected?: TutorPartKey;
+    onSelectedChange?: (key: TutorPartKey) => void;
+    containerStyle?: ViewStyle;
 };
 
-export const TabbedMessage = React.memo(({ item }: TabbedMessageProps) => {
-    const { theme } = useTheme();
-    const layout = useWindowDimensions();
-    const [index, setIndex] = useState(0);
+type TabItem = {
+    key: TutorPartKey;
+    label: string;
+    value?: string;
+};
 
-    const routes = useMemo(() => {
-        const tabs: { key: string; title: string }[] = [
-            { key: 'response', title: 'Reply' }
+export function TabbedMessage({
+    response,
+    revisedSentence,
+    correction,
+    initialSelected,
+    onSelectedChange,
+    containerStyle,
+}: TabbedMessageProps) {
+    const { theme } = useTheme();
+
+    const availableTabs = useMemo(() => {
+        const tabs: TabItem[] = [
+            { key: 'reply', label: 'Reply', value: response },
+            { key: 'revisedSentence', label: 'Revised Sentence', value: revisedSentence },
+            { key: 'correction', label: 'Correction', value: correction },
         ];
 
-        if (item.revisedSentence)
-            tabs.push({ key: 'revised', title: 'Revised Sentence' });
+        return tabs.filter(t => (t.value ?? '').trim().length > 0);
+    }, [response, revisedSentence, correction]);
 
-        if (item.correction)
-            tabs.push({ key: 'correction', title: 'Correction' });
+    const fallbackSelected: TutorPartKey = availableTabs[0]?.key ?? 'reply';
 
-        return tabs;
-    }, [item]);
+    const [selected, setSelected] = useState<TutorPartKey>(
+        initialSelected && availableTabs.some(t => t.key === initialSelected)
+            ? initialSelected
+            : fallbackSelected
+    );
 
-    const renderScene = ({ route }: any) => {
-        let text = item.response;
+    const selectedText = useMemo(() => {
+        return availableTabs.find(t => t.key === selected)?.value ?? '';
+    }, [availableTabs, selected]);
 
-        if (route.key === 'revised')
-            text = item.revisedSentence ?? '';
-
-        if (route.key === 'correction')
-            text = item.correction ?? '';
-
-        return (
-            <ThemedView style={styles.content}>
-                <ThemedText style={{ color: theme.colors.text }}>
-                    {text}
-                </ThemedText>
-            </ThemedView>
-        );
+    const select = (key: TutorPartKey) => {
+        setSelected(key);
+        onSelectedChange?.(key);
     };
 
-    let backgroundColor: string;
-    if (item.reply) {
-        backgroundColor = !item.error
-            ? theme.colors.replyMessageBackground
-            : theme.colors.errorMessageBackground;
-    } else {
-        backgroundColor = theme.colors.messageBackground;
-    }
+    if (availableTabs.length === 0) return null;
 
     return (
-        <ThemedView
-            style={[
-                styles.container,
-                { backgroundColor },
-                item.reply ? styles.replyMessage : styles.receivedMessage
-            ]}
-        >
-            <TabView
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                initialLayout={{ width: layout.width }}
-                swipeEnabled={false}
-                renderTabBar={(props) => (
-                    <TabBar
-                        {...props}
-                        style={[
-                            styles.tabBar,
-                            { backgroundColor }
-                        ]}
-                        indicatorStyle={{
-                            backgroundColor: theme.colors.primary
-                        }}
-                    />
-                )}
-            />
+        <ThemedView style={[styles.wrapper, containerStyle]}>
+            <ThemedView
+                style={[
+                    styles.bubble,
+                    {
+                        backgroundColor: theme.colors.replyMessageBackground,
+                        borderColor: theme.colors.border,
+                    },
+                ]}
+            >
+                <ThemedText style={{ color: theme.colors.text }}>
+                    {selectedText}
+                </ThemedText>
+            </ThemedView>
+
+            <ThemedView>
+                <ThemedView style={styles.tabsInner}>
+                    {availableTabs.map((t, idx) => {
+                        const isActive = t.key === selected;
+
+                        return (
+                            <ThemedTouchableOpacity
+                                key={t.key}
+                                activeOpacity={0.7}
+                                onPress={() => select(t.key)}
+                                style={[
+                                    styles.tab,
+                                    {
+                                        backgroundColor: isActive ? theme.colors.primary : theme.colors.secondary,
+                                        borderColor: theme.colors.border,
+                                    },
+                                ]}
+                            >
+                                <ThemedText style={isActive ? { color: theme.colors.primaryText } : { color: theme.colors.textSecondary }}>
+                                    {t.label}
+                                </ThemedText>
+                            </ThemedTouchableOpacity>
+                        );
+                    })}
+                </ThemedView>
+            </ThemedView>
         </ThemedView>
     );
-});
-
-TabbedMessage.displayName = 'TabbedMessage';
+}
 
 const styles = StyleSheet.create({
-    container: {
-        margin: 5,
-        borderRadius: 10,
+    wrapper: {
         maxWidth: '75%',
-        overflow: 'hidden'
+        alignSelf: 'flex-end',
+        marginRight: 5
     },
-    content: {
-        padding: 10
+    bubble: {
+        borderWidth: 1,
+        borderRadius: 14,
+        paddingHorizontal: 14,
+        paddingVertical: 12,
+        minHeight: 90,
     },
-    tabBar: {
-        elevation: 0,
-        borderTopWidth: StyleSheet.hairlineWidth
+    tab: {
+        paddingHorizontal: 14,
+        paddingVertical: 10,
+        borderWidth: 1,
+        borderTopWidth: 0,
+
+        flexGrow: 0,
+        flexShrink: 0,
+        alignSelf: 'flex-start',
     },
-    receivedMessage: {
-        alignSelf: 'flex-start'
-    },
-    replyMessage: {
-        alignSelf: 'flex-end'
+    tabsInner: {
+        flexDirection: 'row',
+        alignSelf: 'flex-end',
     }
 });
