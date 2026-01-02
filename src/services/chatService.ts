@@ -25,8 +25,8 @@ The JSON must have exactly these properties:
 
 Field rules:
 1- Correction:
-1-1- Correct grammar word choice and sentence structure only.
-1-2- One short sentence maximum.
+1-1- Briefly explain why the user's sentence is wrong and how to improve it focusing only on grammar word choice and sentence structure.
+1-2- Keep it concise at one to two short sentences.
 1-3- Do not mention punctuation or capitalization.
 1-4- Ignore punctuation and capitalization completely.
 1-5- Use null if there is nothing to correct.

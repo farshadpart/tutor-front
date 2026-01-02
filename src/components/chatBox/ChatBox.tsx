@@ -4,12 +4,14 @@ import { ThemedTextInput } from '@/src/components/themedTextInput/ThemedTextInpu
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 import { ThemedView } from '@/src/components/themedView/ThemedView';
 import { useTheme } from '@/src/providers/ThemeProvider';
+import { TutorReply } from '@/src/types/chat/tutorReply';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import InputArea from '../keyboardShiftView/InputArea';
 import KeyboardShiftView from '../keyboardShiftView/KeyboardShiftView';
 import { VoiceRecorder } from '../recorder/VoiceRecorder';
+import { TabbedMessage } from '../tabbedMessage/TabbedMessage';
 import { ThemedFlatList } from "../themedFlatList/themedFlatList";
 import { ChatBoxFooter } from './ChatBoxFooter';
 
@@ -37,7 +39,18 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                 ref={flatListRef}
                 data={localMessages}
                 keyExtractor={item => item.id}
-                renderItem={({ item }) => <MessageItem item={item} />}
+                renderItem=
+                {
+                    ({ item }) => {
+                        if(item.reply){
+                            const tutorReply = JSON.parse(item.text) as TutorReply;
+                            console.log('Tutor Reply:', tutorReply)
+                            return <TabbedMessage correction={tutorReply.correction} response={tutorReply.response} revisedSentence={tutorReply.revisedSentence} />
+                        }
+
+                        return <MessageItem item={item} />
+                    }
+                }
                 contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
                 ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
             />
@@ -52,7 +65,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                     {
                         input.length === 0 ?
                             <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
-                            <ThemedTouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={[styles.sendButton, {backgroundColor: theme.colors.background}]}>
+                            <ThemedTouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={[styles.sendButton, { backgroundColor: theme.colors.background }]}>
                                 <Ionicons name="send" size={24} color={theme.colors.text} />
                             </ThemedTouchableOpacity>
                     }

@@ -38,8 +38,8 @@ export function TabbedMessage({
     const availableTabs = useMemo(() => {
         const tabs: TabItem[] = [
             { key: 'reply', label: 'Reply', icon: 'chatbubble-ellipses-outline', value: response },
-            { key: 'revisedSentence', label: 'Revised Sentence', icon: 'create-outline', value: revisedSentence },
             { key: 'correction', label: 'Correction', icon: 'checkmark-circle-outline', value: correction },
+            { key: 'revisedSentence', label: 'Revised Sentence', icon: 'create-outline', value: revisedSentence }
         ];
 
         return tabs.filter(t => (t.value ?? '').trim().length > 0);
@@ -116,6 +116,7 @@ export function TabbedMessage({
 
 const styles = StyleSheet.create({
     wrapper: {
+        maxWidth: '75%',
         alignSelf: 'flex-end',
         marginRight: 5
     },
