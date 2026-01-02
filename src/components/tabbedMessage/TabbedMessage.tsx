@@ -1,11 +1,13 @@
 import { ThemedText } from '@/src/components/themedText/ThemedText';
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 import { ThemedView } from '@/src/components/themedView/ThemedView';
-import React, { useMemo, useState } from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '@/src/providers/ThemeProvider';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import React, { ComponentProps, useMemo, useState } from 'react';
+import { StyleSheet, ViewStyle } from 'react-native';
 
 type TutorPartKey = 'reply' | 'revisedSentence' | 'correction';
+type IconName = ComponentProps<typeof Ionicons>['name'];
 
 type TabbedMessageProps = {
     response?: string;
@@ -19,6 +21,7 @@ type TabbedMessageProps = {
 type TabItem = {
     key: TutorPartKey;
     label: string;
+    icon: IconName;
     value?: string;
 };
 
@@ -34,9 +37,9 @@ export function TabbedMessage({
 
     const availableTabs = useMemo(() => {
         const tabs: TabItem[] = [
-            { key: 'reply', label: 'Reply', value: response },
-            { key: 'revisedSentence', label: 'Revised Sentence', value: revisedSentence },
-            { key: 'correction', label: 'Correction', value: correction },
+            { key: 'reply', label: 'Reply', icon: 'chatbubble-ellipses-outline', value: response },
+            { key: 'revisedSentence', label: 'Revised Sentence', icon: 'create-outline', value: revisedSentence },
+            { key: 'correction', label: 'Correction', icon: 'checkmark-circle-outline', value: correction },
         ];
 
         return tabs.filter(t => (t.value ?? '').trim().length > 0);
@@ -87,17 +90,21 @@ export function TabbedMessage({
                                 key={t.key}
                                 activeOpacity={0.7}
                                 onPress={() => select(t.key)}
+                                accessibilityRole="button"
+                                accessibilityLabel={t.label}
                                 style={[
                                     styles.tab,
                                     {
-                                        backgroundColor: isActive ? theme.colors.primary : theme.colors.secondary,
+                                        backgroundColor: isActive ? theme.colors.primary : theme.colors.replyMessageBackground,
                                         borderColor: theme.colors.border,
                                     },
                                 ]}
                             >
-                                <ThemedText style={isActive ? { color: theme.colors.primaryText } : { color: theme.colors.textSecondary }}>
-                                    {t.label}
-                                </ThemedText>
+                                <Ionicons
+                                    name={t.icon}
+                                    size={18}
+                                    color={isActive ? theme.colors.primaryText : theme.colors.textSecondary}
+                                />
                             </ThemedTouchableOpacity>
                         );
                     })}
@@ -109,29 +116,26 @@ export function TabbedMessage({
 
 const styles = StyleSheet.create({
     wrapper: {
-        maxWidth: '75%',
         alignSelf: 'flex-end',
         marginRight: 5
     },
     bubble: {
-        borderWidth: 1,
-        borderRadius: 14,
-        paddingHorizontal: 14,
-        paddingVertical: 12,
-        minHeight: 90,
+        borderRadius: 10,
+        padding: 10
     },
     tab: {
-        paddingHorizontal: 14,
-        paddingVertical: 10,
-        borderWidth: 1,
-        borderTopWidth: 0,
-
-        flexGrow: 0,
-        flexShrink: 0,
+        paddingHorizontal: 6,
+        paddingVertical: 3,
+        borderRadius: 0,
+        borderBottomEndRadius: 10,
+        borderBottomStartRadius: 10,
         alignSelf: 'flex-start',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     tabsInner: {
         flexDirection: 'row',
         alignSelf: 'flex-end',
+        marginRight: 5
     }
 });
