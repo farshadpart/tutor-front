@@ -44,7 +44,6 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                     ({ item }) => {
                         if(item.reply){
                             const tutorReply = JSON.parse(item.text) as TutorReply;
-                            console.log('Tutor Reply:', tutorReply)
                             return <TabbedMessage correction={tutorReply.correction} response={tutorReply.response} revisedSentence={tutorReply.revisedSentence} />
                         }
 
