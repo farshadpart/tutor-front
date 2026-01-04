@@ -1,0 +1,1 @@
+export type TutorPartKey = 'reply' | 'revisedSentence' | 'correction';

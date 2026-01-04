@@ -1,29 +1,13 @@
+import { TabbedMessageProps } from '@/src/components/tabbedMessage/types/TabbedMessageProps';
+import { TabItem } from '@/src/components/tabbedMessage/types/TabItem';
+import { TutorPartKey } from '@/src/components/tabbedMessage/types/TutorPartKey';
 import { ThemedText } from '@/src/components/themedText/ThemedText';
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 import { ThemedView } from '@/src/components/themedView/ThemedView';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import React, { ComponentProps, useMemo, useState } from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
-
-type TutorPartKey = 'reply' | 'revisedSentence' | 'correction';
-type IconName = ComponentProps<typeof Ionicons>['name'];
-
-type TabbedMessageProps = {
-    response?: string;
-    revisedSentence?: string;
-    correction?: string;
-    initialSelected?: TutorPartKey;
-    onSelectedChange?: (key: TutorPartKey) => void;
-    containerStyle?: ViewStyle;
-};
-
-type TabItem = {
-    key: TutorPartKey;
-    label: string;
-    icon: IconName;
-    value?: string;
-};
+import React, { useMemo, useState } from 'react';
+import { StyleSheet } from 'react-native';
 
 export function TabbedMessage({
     response,
