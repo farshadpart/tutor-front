@@ -61,8 +61,26 @@ export const refresh = async (refreshRequest: RefreshRequest): Promise<Result<Re
     }
 }
 
-export const logout = (email: string) : boolean => {
-    return true;
+export const logout = async (refreshToken?: string) : Promise<Result> => {
+    try {
+        const response = await fetch(`${TUTORAPI}/account/logout`, {
+            method: "POST",
+            body: JSON.stringify({ refreshToken }),
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        const refreshResponse = await interpret(response);
+        if (!refreshResponse.isSuccess || refreshResponse.data === undefined) {
+            return { isSuccess: false };
+        }
+
+        return { isSuccess: true };
+    } catch (e) {
+        console.error('Error', e);
+        return { isSuccess: false, error: "Something went wrong!" };
+    }
 }
 
 export const register = async (registerReqeust: RegisterRequest): Promise<Result> => {

@@ -9,7 +9,7 @@ export const getSubscriptionGroups = async (): Promise<Result<string[]>> => {
 
         return interpret<string[]>(response);
     } catch (e) {
-        console.log(e, 'Getting the subscription groups failed!');
+        console.error(e, 'Getting the subscription groups failed!');
         return { isSuccess: false };
     }
 }

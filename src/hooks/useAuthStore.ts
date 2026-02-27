@@ -13,7 +13,7 @@ type UserTokenState = {
     tokenHolder?: TokenHolder;
     refresh: (refreshToken: string) => Promise<void>;
     logIn: (loginRequest: LoginRequest) => Promise<Result<LoginResponse>>;
-    logOut: (email: string) => void;
+    logOut: (email?: string) => Promise<void>;
     setSubscription: (subscriptionGroup?: string) => void;
 };
 
@@ -45,8 +45,8 @@ export const useAuthStore = create(
 
                 return loginResponse;
             },
-            logOut: (email: string) => {
-                const logOutResult = logout(email);
+            logOut: async (refreshToken?: string) => {
+                const logOutResult = await logout(refreshToken);
                 if (!logOutResult) {
                     return;
                 }
