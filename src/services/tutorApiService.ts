@@ -1,7 +1,7 @@
 import { TUTORAPI } from "@/src/constants/addresses";
+import { interpret } from '@/src/services/interpreter';
 import { Chat } from "@/src/types/chat/chat";
 import { Result } from '@/src/types/common/result';
-import { interpret } from '@/src/services/interpreter';
 
 export const chat = async ({ input, accessToken }: { input: Chat[], accessToken: string }): Promise<Result<string>> => {
     try {
@@ -16,7 +16,7 @@ export const chat = async ({ input, accessToken }: { input: Chat[], accessToken:
 
         return interpret(response);
     } catch (e) {
-        console.error(e, 'Meth chat failed!')
+        console.error(e, 'Method chat failed!')
         return { isSuccess: false }
     }
 }

@@ -17,6 +17,9 @@ export const interpret = async <T>(response: Response): Promise<Result<T>> => {
 
         console.error('Response Status', response.status);
 
+        if (response.status === 401)
+            return { isSuccess: false, error: 'Your credential is expired. Please login again.' };
+
         if (response.status === 500)
             return { isSuccess: false, error: 'Something went wrong!' };
 

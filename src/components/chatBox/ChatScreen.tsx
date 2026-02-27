@@ -2,13 +2,13 @@ import { ChatBox } from '@/src/components/chatBox/ChatBox';
 import { ChatScreenProps } from "@/src/components/chatBox/types/chatScreenProps";
 import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
+import { useToken } from '@/src/hooks/useToken';
 import { makeChatReady } from '@/src/services/chatService';
 import { getChatHistory, saveChatHistory, upsertChatInfo } from '@/src/services/messageService';
 import { chat, transcription } from '@/src/services/tutorApiService';
 import { Chat } from "@/src/types/chat/chat";
 import { Message } from "@/src/types/chat/message";
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '../../hooks/useAuthStore';
 
 export default function ChatScreen({ chatId }: ChatScreenProps) {
     const { showModal, closeModal } = useModal();
@@ -16,7 +16,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
     const [input, setInput] = useState('');
     const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
     const [analysing, setAnalysing] = useState(false);
-    const authState = useAuthStore();
+    const accessToken = useToken();
 
     useEffect(() => {
         const fetchChatHistory = async () => {
@@ -37,7 +37,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
 
     const handleSendVoiceMessage = async (audio: { uri: string; name: string; type: string }) => {
         setAnalysing(true);
-        const userTranscriptionResult = await transcription({ url: audio.uri, accessToken: authState.accessToken ?? '' });
+        const userTranscriptionResult = await transcription({ url: audio.uri, accessToken: accessToken ?? '' });
         setAnalysing(false);
 
         if (!userTranscriptionResult.isSuccess || userTranscriptionResult.data === undefined) {
@@ -70,7 +70,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
             });
 
             try {
-                const tutorReplyResult = await chat({ input: makeChatReady(chats, userInput), accessToken: authState.accessToken ?? '' });
+                const tutorReplyResult = await chat({ input: makeChatReady(chats, userInput), accessToken: accessToken ?? '' });
                 if (!tutorReplyResult.isSuccess || tutorReplyResult.data === undefined) {
                     setChatbotIsTyping(false);
                     showModal({ children: <ActConfirm title='Error' message='Tutor failed to reply you, please try later!' onAct={closeModal} /> })

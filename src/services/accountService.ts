@@ -1,13 +1,15 @@
 import { TUTORAPI } from "@/src/constants/addresses";
+import { interpret } from "@/src/services/interpreter";
 import { Claim } from "@/src/types/account/claim";
 import { LoginRequest } from "@/src/types/account/loginRequest";
 import { LoginResponse } from "@/src/types/account/loginResponse";
 import { RegisterRequest } from "@/src/types/account/registerRequest";
-import { TutorApiLoginResponse } from "@/src/types/account/tutoApiLoginResponse";
 import { User } from "@/src/types/account/user";
-import { jwtDecode } from "jwt-decode";
 import { Result } from "@/src/types/common/result";
-import { interpret } from "@/src/services/interpreter";
+import { jwtDecode } from "jwt-decode";
+import { RefreshRequest } from "../types/account/refreshRequest";
+import { RefreshResponse } from "../types/account/refreshResponse";
+import { TokenHolder } from "../types/account/tokenHolders";
 
 export const login = async (loginRequest: LoginRequest): Promise<Result<LoginResponse>> => {
     try {
@@ -19,14 +21,39 @@ export const login = async (loginRequest: LoginRequest): Promise<Result<LoginRes
             }
         });
 
-        const loginResponse = await interpret<TutorApiLoginResponse>(response);
+        const loginResponse = await interpret<TokenHolder>(response);
         if (!loginResponse.isSuccess || loginResponse.data === undefined) {
-            return loginResponse;
+            return { isSuccess: false };
         }
 
-        const user = mapTokenToUser(loginResponse.data.accessToken);
+        const user = mapTokenToUser(loginResponse.data.accessToken.token);
         return {
-            isSuccess: true, data: { user, accessToken: loginResponse.data.accessToken }
+            isSuccess: true, data: { user, tokenHolder: loginResponse.data }
+        }
+    } catch (e) {
+        console.error('Error', e);
+        return { isSuccess: false, error: "Something went wrong!"};
+    }
+}
+
+export const refresh = async (refreshRequest: RefreshRequest): Promise<Result<RefreshResponse>> => {
+    try {
+        const response = await fetch(`${TUTORAPI}/account/refresh`, {
+            method: "POST",
+            body: JSON.stringify(refreshRequest),
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        const refreshResponse = await interpret<TokenHolder>(response);
+        if (!refreshResponse.isSuccess || refreshResponse.data === undefined) {
+            return {isSuccess: false};
+        }
+
+        const user = mapTokenToUser(refreshResponse.data.accessToken.token);
+        return {
+            isSuccess: true, data: { user, tokenHolder: refreshResponse.data }
         }
     } catch (e) {
         console.error('Error', e);
