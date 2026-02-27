@@ -12,8 +12,9 @@ export const interpret = async <T>(response: Response): Promise<Result<T>> => {
             return { isSuccess: true, data: (await response.text()) as T };
         }
 
-        if (response.status === 204)
+        if (response.status === 204) {
             return { isSuccess: true };
+        }
 
         console.error('Response Status', response.status);
 
