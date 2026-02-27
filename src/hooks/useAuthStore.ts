@@ -1,31 +1,45 @@
-import { login, logout } from "@/src/services/accountService";
+import { login, logout, refresh } from "@/src/services/accountService";
 import { LoginRequest } from "@/src/types/account/loginRequest";
-import { LoginResponse } from '@/src/types/account/loginResponse';
-import { Result } from '@/src/types/common/result';
+import { Result } from "@/src/types/common/result";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { LoginResponse } from "../types/account/loginResponse";
+import { TokenHolder } from "../types/account/tokenHolders";
 import { User } from "../types/account/user";
 
-type UserState = {
+type UserTokenState = {
     user?: User;
-    accessToken?: string;
+    tokenHolder?: TokenHolder;
+    refresh: (refreshToken: string) => Promise<void>;
     logIn: (loginRequest: LoginRequest) => Promise<Result<LoginResponse>>;
     logOut: (email: string) => void;
     setSubscription: (subscriptionGroup?: string) => void;
 };
 
 export const useAuthStore = create(
-    persist<UserState>(
+    persist<UserTokenState>(
         (set) => ({
             user: undefined,
+            tokenHolder: undefined,
+            refresh: async (refreshToken: string) => {
+                const refreshResponse = await refresh({refreshToken});
+
+                set((state) => {
+                    return {
+                        ...state,
+                        user: refreshResponse.data?.user,
+                        tokenHolder: refreshResponse.data?.tokenHolder
+                    };
+                });
+            },
             logIn: async (loginRequest: LoginRequest) => {
                 const loginResponse = await login(loginRequest);
                 set((state) => {
                     return {
                         ...state,
                         user: loginResponse.data?.user,
-                        accessToken: loginResponse.data?.accessToken
+                        tokenHolder: loginResponse.data?.tokenHolder
                     };
                 });
 

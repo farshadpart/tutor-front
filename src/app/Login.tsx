@@ -17,11 +17,11 @@ const Login = () => {
     const [password, setPassword] = useState("");
 
     const handleLoginPress = async (email: string, password: string) => {
-        const loginResult = await authStore.logIn({ email, password });
+        const loginResponse = await authStore.logIn({ email, password });
 
-        if (!loginResult.isSuccess) {
+        if (!loginResponse.isSuccess) {
 
-            if (loginResult.error === '401') {
+            if (loginResponse.error === '401') {
                 showModal({children: <ActConfirm title='Login Failed' message='Login failed, please check your credentials and try again.' onAct={closeModal} />});
                 return;
             }
