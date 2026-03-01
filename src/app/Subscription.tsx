@@ -3,16 +3,18 @@ import { useModal } from "@/src/components/themedModal/ThemedModalContext";
 import { ThemedText } from "@/src/components/themedText/ThemedText";
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
 import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { useAuthStore } from '@/src/hooks/useAuthStore';
+import { useToken } from "@/src/hooks/useToken";
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { create, getSubscriptionGroups } from "@/src/services/subscriptionService";
 import { usePreventRemove } from '@react-navigation/native';
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
-import { useAuthStore } from "../hooks/useAuthStore";
 
 const Subscription = () => {
     const { theme } = useTheme();
     const { showModal, closeModal } = useModal();
+    const token = useToken();
     const authStore = useAuthStore();
     const [subscriptionGroups, setSubscriptionGroups] = useState<string[]>([]);
 
@@ -65,7 +67,7 @@ const Subscription = () => {
                 userId: authStore.user!.id,
                 subscriptionGroup: group
             },
-            accessToken: authStore.accessToken ?? ""
+            accessToken: token ?? ""
         });
 
         if (!result.isSuccess) {

@@ -1,4 +1,4 @@
-﻿import { ChatDrawerItemProps } from "@/src/components/chatDrawerItem/types/chatDriverItemProps";
+import { ChatDrawerItemProps } from "@/src/components/chatDrawerItem/types/chatDriverItemProps";
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { useState } from "react";
@@ -7,6 +7,7 @@ import { ThemedText } from '@/src/components/themedText/ThemedText';
 import { ThemedView } from '@/src/components/themedView/ThemedView'
 import { ThemedTextInput } from '@/src/components/themedTextInput/ThemedTextInput';
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import { useAuthStore } from '@/src/hooks/useAuthStore';
 
 export default function ChatDrawerItem({
     id,
@@ -16,6 +17,7 @@ export default function ChatDrawerItem({
     onRename,
     onDelete,
 }: ChatDrawerItemProps) {
+    const userId = useAuthStore().user?.id;
     const { theme } = useTheme();
     const [isEditing, setIsEditing] = useState(false);
     const [draft, setDraft] = useState(title);
@@ -23,7 +25,7 @@ export default function ChatDrawerItem({
     const handleSave = () => {
         setIsEditing(false);
         if (draft.trim() && draft !== title) {
-            onRename(id, draft.trim());
+            onRename(id, draft.trim(), userId ?? '');
         } else {
             setDraft(title);
         }
