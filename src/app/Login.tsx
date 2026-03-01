@@ -6,7 +6,6 @@ import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/
 import { ThemedView } from "@/src/components/themedView/ThemedView";
 import { useState } from "react";
 import { Keyboard, StyleSheet } from "react-native";
-import InputArea from "../components/keyboardShiftView/InputArea";
 import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
 import { useAuthStore } from "../hooks/useAuthStore";
 
@@ -22,7 +21,7 @@ const Login = () => {
         if (!loginResponse.isSuccess) {
 
             if (loginResponse.error === '401') {
-                showModal({children: <ActConfirm title='Login Failed' message='Login failed, please check your credentials and try again.' onAct={closeModal} />});
+                showModal({ children: <ActConfirm title='Login Failed' message='Login failed, please check your credentials and try again.' onAct={closeModal} /> });
                 return;
             }
 
@@ -38,28 +37,24 @@ const Login = () => {
             <ThemedView style={styles.container}>
                 <ThemedText style={styles.title}>Login</ThemedText>
 
-                <InputArea>
-                    <ThemedText style={styles.label}>Email</ThemedText>
-                    <ThemedTextInput
-                        style={styles.input}
-                        placeholder="Enter your email"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-                </InputArea>
+                <ThemedText style={styles.label}>Email</ThemedText>
+                <ThemedTextInput
+                    style={styles.input}
+                    placeholder="Enter your email"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    value={email}
+                    onChangeText={setEmail}
+                />
 
-                <InputArea>
-                    <ThemedText style={styles.label}>Password</ThemedText>
-                    <ThemedTextInput
-                        style={styles.input}
-                        placeholder="Enter your password"
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
-                </InputArea>
+                <ThemedText style={styles.label}>Password</ThemedText>
+                <ThemedTextInput
+                    style={styles.input}
+                    placeholder="Enter your password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                />
 
                 <ThemedTouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
                     <ThemedText style={styles.buttonText}>Login</ThemedText>

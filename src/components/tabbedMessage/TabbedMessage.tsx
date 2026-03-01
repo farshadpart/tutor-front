@@ -73,7 +73,7 @@ export function TabbedMessage({
                             <ThemedTouchableOpacity
                                 key={t.key}
                                 activeOpacity={0.7}
-                                onPress={() => select(t.key)}
+                                onPress={(e) => { select(t.key); e.stopPropagation?.(); }}
                                 accessibilityRole="button"
                                 accessibilityLabel={t.label}
                                 style={[
