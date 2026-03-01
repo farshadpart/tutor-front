@@ -12,8 +12,10 @@ import { useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
 import ChatDrawerItem from "./ChatDrawerItem";
 import { useChatListProvider } from "./ChatListContext";
+import { useAuthStore } from '@/src/hooks/useAuthStore';
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
+    const userId = useAuthStore().user?.id;
     const { showModal, closeModal } = useModal();
     const { theme, scheme } = useTheme();
     const { chatList, setChatList } = useChatListProvider();
@@ -26,11 +28,13 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
     const handleDelete = (item: ChatInfo) => {
         const message = `Are you sure you want to delete the chat "${item.title}"?`;
-        showModal({ children: <ActConfirm dangerousAct={true} title='Delete' message={message} submitLabel='Delete' onCancel={closeModal} onAct={() => {closeModal(); deleteThisChat(item.id)}} />})
+        showModal({
+            children: <ActConfirm dangerousAct={true} title='Delete' message={message} submitLabel='Delete' onCancel={closeModal} onAct={() => { closeModal(); deleteThisChat(item.id, userId ?? '') }} />
+        })
     };
 
-    const deleteThisChat = (id: string) => {
-        deleteChat(id);
+    const deleteThisChat = (id: string, userId: string) => {
+        deleteChat(id, userId);
         setChatList(chatList.filter((c) => c.id !== id));
         if (activeChatId === id) {
             requestAnimationFrame(() => {
@@ -39,8 +43,8 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         }
     }
 
-    const handleRename = async (id: string, newTitle: string) => {
-        await upsertChatInfo({ id, title: newTitle });
+    const handleRename = async (id: string, newTitle: string, userId: string) => {
+        await upsertChatInfo({ id, title: newTitle }, userId);
         setChatList(chatList.map(chat => (chat.id === id ? { ...chat, title: newTitle } : chat)));
     };
 

@@ -2,6 +2,7 @@ import { ChatBox } from '@/src/components/chatBox/ChatBox';
 import { ChatScreenProps } from "@/src/components/chatBox/types/chatScreenProps";
 import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
+import { useAuthStore } from '@/src/hooks/useAuthStore';
 import { useToken } from '@/src/hooks/useToken';
 import { makeChatReady } from '@/src/services/chatService';
 import { getChatHistory, saveChatHistory, upsertChatInfo } from '@/src/services/messageService';
@@ -17,6 +18,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
     const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
     const [analysing, setAnalysing] = useState(false);
     const accessToken = useToken();
+    const userId = useAuthStore().user?.id;
 
     useEffect(() => {
         const fetchChatHistory = async () => {
@@ -30,10 +32,10 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
         return () => {
             const message = messages.at(-1);
             if (message !== undefined && !message.error && !message.reply) {
-                upsertChatInfo({ id: chatId, title: message?.text }).then();
+                upsertChatInfo({ id: chatId, title: message?.text }, userId ?? '').then();
             }
         };
-    }, [messages, chatId])
+    }, [messages, chatId, userId])
 
     const handleSendVoiceMessage = async (audio: { uri: string; name: string; type: string }) => {
         setAnalysing(true);

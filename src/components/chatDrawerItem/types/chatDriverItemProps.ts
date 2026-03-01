@@ -3,6 +3,6 @@ export interface ChatDrawerItemProps {
     title: string;
     isActive: boolean;
     onPress: () => void;
-    onRename: (id: string, newTitle: string) => void;
+    onRename: (id: string, newTitle: string, userId: string) => void;
     onDelete: () => void;
 }
