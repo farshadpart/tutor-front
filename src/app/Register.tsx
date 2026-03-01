@@ -9,7 +9,6 @@ import { RegisterRequest } from "@/src/types/account/registerRequest";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Keyboard, StyleSheet } from "react-native";
-import InputArea from "../components/keyboardShiftView/InputArea";
 import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
 
 const Register = () => {
@@ -42,39 +41,33 @@ const Register = () => {
             <ThemedView style={styles.container}>
                 <ThemedText style={styles.title}>Create Account</ThemedText>
 
-                <InputArea>
-                    <ThemedText style={styles.label}>Email</ThemedText>
-                    <ThemedTextInput
-                        style={styles.input}
-                        placeholder="Enter your email"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-                </InputArea>
+                <ThemedText style={styles.label}>Email</ThemedText>
+                <ThemedTextInput
+                    style={styles.input}
+                    placeholder="Enter your email"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    value={email}
+                    onChangeText={setEmail}
+                />
 
-                <InputArea>
-                    <ThemedText style={styles.label}>Password</ThemedText>
-                    <ThemedTextInput
-                        style={styles.input}
-                        placeholder="Enter your password"
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
-                </InputArea>
+                <ThemedText style={styles.label}>Password</ThemedText>
+                <ThemedTextInput
+                    style={styles.input}
+                    placeholder="Enter your password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                />
 
-                <InputArea>
-                    <ThemedText style={styles.label}>Confirm Password</ThemedText>
-                    <ThemedTextInput
-                        style={styles.input}
-                        placeholder="Confirm your password"
-                        secureTextEntry
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                    />
-                </InputArea>
+                <ThemedText style={styles.label}>Confirm Password</ThemedText>
+                <ThemedTextInput
+                    style={styles.input}
+                    placeholder="Confirm your password"
+                    secureTextEntry
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                />
 
                 <ThemedTouchableOpacity style={styles.button} onPress={() => handleRegisterPress({ email, password })}>
                     <ThemedText style={styles.buttonText}>Register</ThemedText>
