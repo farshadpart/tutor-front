@@ -56,6 +56,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
             <InputArea>
                 <ThemedView style={styles.inputContainer}>
                     <ThemedTextInput
+                        multiline
                         style={styles.input}
                         value={input}
                         onChangeText={setInput}
