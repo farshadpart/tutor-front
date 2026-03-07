@@ -74,7 +74,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                 ]}
                 onPress={() =>
                     router.push({
-                        pathname: '/',
+                        pathname: '/chatArea',
                         params: { newChat: 'newChat' },
                     })
                 }
