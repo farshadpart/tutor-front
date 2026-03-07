@@ -32,7 +32,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
         return () => {
             const message = messages.at(-1);
             if (message !== undefined && !message.error && !message.reply) {
-                upsertChatInfo({ id: chatId, title: message?.text }, userId ?? '').then();
+                upsertChatInfo({ id: chatId, title: message?.text.slice(0, 50) }, userId ?? '').then();
             }
         };
     }, [messages, chatId, userId])
