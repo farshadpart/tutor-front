@@ -11,8 +11,8 @@ import {
     useAudioRecorder,
     useAudioRecorderState,
 } from 'expo-audio';
-import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { StyleSheet, ToastAndroid } from 'react-native';
 
 type VoiceRecorderProps = {
     onRecordingComplete?: (audio: {
@@ -23,17 +23,33 @@ type VoiceRecorderProps = {
 };
 
 export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
+    const oneMinute = 60000;
     const { showModal, closeModal } = useModal();
     const { theme } = useTheme();
     const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
     const recorderState = useAudioRecorderState(audioRecorder);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const showLimitToast = () => {
+        ToastAndroid.show('Audio messages length are limited to 60 seconds.', ToastAndroid.SHORT);
+    };
 
     const record = async () => {
         await audioRecorder.prepareToRecordAsync();
-        audioRecorder.record();
+        await audioRecorder.record();
+
+        timerRef.current = setTimeout(async () => {
+            await stopRecording();
+            showLimitToast();
+        }, oneMinute);
     };
 
     const stopRecording = async () => {
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+
         await audioRecorder.stop();
 
         if (audioRecorder.uri && onRecordingComplete) {
@@ -63,14 +79,22 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
         })();
     }, [showModal, closeModal]);
 
+    useEffect(() => {
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, []);
+
     return (
         <ThemedView>
             <ThemedTouchableOpacity style={[styles.iconButton, { backgroundColor: theme.colors.background }]} onPress={recorderState.isRecording ? stopRecording : record}>
-                {recorderState.isRecording ? (
-                    <Entypo name="controller-stop" size={24} color={theme.colors.text} />
-                ) : (
-                    <Entypo name="mic" size={24} color={theme.colors.text} />
-                )}
+                {
+                    recorderState.isRecording
+                        ? <Entypo name="controller-stop" size={24} color={theme.colors.text} />
+                        : <Entypo name="mic" size={24} color={theme.colors.text} />
+                }
             </ThemedTouchableOpacity>
         </ThemedView>
     );
