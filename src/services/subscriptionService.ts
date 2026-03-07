@@ -2,6 +2,7 @@ import { TUTORAPI } from "@/src/constants/addresses";
 import { interpret } from '@/src/services/interpreter';
 import { Result } from '@/src/types/common/result';
 import { CreateSubscriptionRequest } from "@/src/types/subscription/createSubscriptionRequest";
+import { fetchWithTimeout } from '@/src/utilities/httpUitlities'
 
 export const getSubscriptionGroups = async (): Promise<Result<string[]>> => {
     try {
@@ -16,7 +17,7 @@ export const getSubscriptionGroups = async (): Promise<Result<string[]>> => {
 
 export const create = async ({ createSubscriptionRequest, accessToken }: { createSubscriptionRequest: CreateSubscriptionRequest, accessToken: string }): Promise<Result> => {
     try {
-        const response = await fetch(`${TUTORAPI}/subscription/create`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/subscription/create`, {
             method: "POST",
             body: JSON.stringify(createSubscriptionRequest),
             headers: {

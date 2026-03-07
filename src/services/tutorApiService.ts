@@ -2,10 +2,11 @@ import { TUTORAPI } from "@/src/constants/addresses";
 import { interpret } from '@/src/services/interpreter';
 import { Chat } from "@/src/types/chat/chat";
 import { Result } from '@/src/types/common/result';
+import { fetchWithTimeout } from '@/src/utilities/httpUitlities'
 
 export const chat = async ({ input, accessToken }: { input: Chat[], accessToken: string }): Promise<Result<string>> => {
     try {
-        const response = await fetch(`${TUTORAPI}/chat/write`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/chat/write`, {
             method: "POST",
             body: JSON.stringify(input),
             headers: {
@@ -30,7 +31,7 @@ export const transcription = async ({ url, accessToken }: { url: string, accessT
             type: "audio/m4a",
         } as any);
 
-        const response = await fetch(`${TUTORAPI}/chat/speak`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/chat/speak`, {
             method: "POST",
             body: formData,
             headers: {

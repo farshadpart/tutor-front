@@ -10,10 +10,11 @@ import { jwtDecode } from "jwt-decode";
 import { RefreshRequest } from "../types/account/refreshRequest";
 import { RefreshResponse } from "../types/account/refreshResponse";
 import { TokenHolder } from "../types/account/tokenHolders";
+import { fetchWithTimeout } from '@/src/utilities/httpUitlities'
 
 export const login = async (loginRequest: LoginRequest): Promise<Result<LoginResponse>> => {
     try {
-        const response = await fetch(`${TUTORAPI}/account/login`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/account/login`, {
             method: "POST",
             body: JSON.stringify(loginRequest),
             headers: {
@@ -38,7 +39,7 @@ export const login = async (loginRequest: LoginRequest): Promise<Result<LoginRes
 
 export const refresh = async (refreshRequest: RefreshRequest): Promise<Result<RefreshResponse>> => {
     try {
-        const response = await fetch(`${TUTORAPI}/account/refresh`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/account/refresh`, {
             method: "POST",
             body: JSON.stringify(refreshRequest),
             headers: {
@@ -63,7 +64,7 @@ export const refresh = async (refreshRequest: RefreshRequest): Promise<Result<Re
 
 export const logout = async (refreshToken?: string) : Promise<Result> => {
     try {
-        const response = await fetch(`${TUTORAPI}/account/logout`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/account/logout`, {
             method: "POST",
             body: JSON.stringify({ refreshToken }),
             headers: {
@@ -85,7 +86,7 @@ export const logout = async (refreshToken?: string) : Promise<Result> => {
 
 export const register = async (registerReqeust: RegisterRequest): Promise<Result> => {
     try {
-        const response = await fetch(`${TUTORAPI}/account/register`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/account/register`, {
             method: "POST",
             body: JSON.stringify(registerReqeust),
             headers: {
