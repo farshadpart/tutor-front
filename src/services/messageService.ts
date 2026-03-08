@@ -1,37 +1,27 @@
 import { ChatInfo } from "@/src/types/chat/chatInfo";
 import { Message } from "@/src/types/chat/message";
-import { File, Paths } from 'expo-file-system';
+import * as SecureStore from "expo-secure-store";
 
 export const getChatHistory = async (chatId: string): Promise<Message[]> => {
-    const file = new File(Paths.document, `${chatId}.json`);
-    const fileInfo = file.info();
-    if (!fileInfo.exists) {
+    const chatHistoryStr = await SecureStore.getItemAsync(`${chatId}.json`);
+    if (chatHistoryStr === null) {
         return [];
     }
 
-    return JSON.parse(await file.text()) as Message[];
+    return JSON.parse(chatHistoryStr) as Message[];
 }
 
 export const saveChatHistory = async (chatId: string, conversation: Message[]) => {
-    const chatAsString = JSON.stringify(conversation);
-    const file = new File(Paths.document, `${chatId}.json`);
-    const fileInfo = file.info();
-
-    if (!fileInfo.exists) {
-        file.create();
-    }
-
-    file.write(chatAsString);
+    await SecureStore.setItemAsync(`${chatId}.json`, JSON.stringify(conversation));
 }
 
 export const getChatList = async (userId: string) => {
-    const file = new File(Paths.document, `${userId}-chatList.json`);
-    const fileInfo = file.info();
-    if (!fileInfo.exists) {
+    const chatListStr = await SecureStore.getItemAsync(`${userId}-chatList.json`);
+    if (chatListStr === null) {
         return [];
     }
 
-    return JSON.parse(await file.text()) as ChatInfo[];
+    return JSON.parse(chatListStr) as ChatInfo[];
 }
 
 export const upsertChatInfo = async (chatInfo: ChatInfo, userId: string) => {
@@ -51,26 +41,14 @@ export const deleteChat = async (id: string, userId: string) => {
     let chatList = await getChatList(userId);
     chatList = chatList.filter(chatInfo => chatInfo.id !== id)
     updateChatInfoList(chatList, userId);
-    deleteChatHistory(id);
+    await deleteChatHistory(id);
 }
 
 const updateChatInfoList = (chatInfoList: ChatInfo[], userId: string) => {
-    const file = new File(Paths.document, `${userId}-chatList.json`);
-    const fileInfo = file.info();
-
-    if (!fileInfo.exists) {
-        file.create()
-    }
-
-    file.write(JSON.stringify(chatInfoList));
+    SecureStore.setItem(`${userId}-chatList.json`, JSON.stringify(chatInfoList));
 }
 
-const deleteChatHistory = (chatId: string) => {
-    const file = new File(Paths.document, `${chatId}.json`);
-    const fileInfo = file.info();
-
-    if (fileInfo.exists) {
-        file.delete();
-    }
+const deleteChatHistory = async (chatId: string) => {
+    await SecureStore.deleteItemAsync(`${chatId}.json`);
 }
 
