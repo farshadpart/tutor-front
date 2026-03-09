@@ -1,5 +1,6 @@
-import { TouchableOpacityProps, StyleProp, ViewStyle } from 'react-native';
+import { TouchableOpacityProps, StyleProp, ViewStyle, GestureResponderEvent } from 'react-native';
 
-export type ThemedTouchableOpacityProps = TouchableOpacityProps & {
-    style?: StyleProp<ViewStyle>;
-};
+export type ThemedTouchableOpacityProps = Omit<TouchableOpacityProps, 'onPress'> & {
+        style?: StyleProp<ViewStyle>;
+        onPress?: (event: GestureResponderEvent) => void | Promise<void>;
+    };
