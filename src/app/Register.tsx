@@ -1,3 +1,4 @@
+import KeyboardShiftView from "@/src/components/keyboardShiftView/KeyboardShiftView";
 import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from "@/src/components/themedModal/ThemedModalContext";
 import { ThemedText } from "@/src/components/themedText/ThemedText";
@@ -9,7 +10,7 @@ import { RegisterRequest } from "@/src/types/account/registerRequest";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Keyboard, StyleSheet } from "react-native";
-import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
+import { Messages } from '@/src/constants/messages'
 
 const Register = () => {
     const router = useRouter();
@@ -20,20 +21,20 @@ const Register = () => {
 
     const handleRegisterPress = async (registerRequest: RegisterRequest) => {
         if (password !== confirmPassword) {
-            showModal({ children: <ActConfirm onAct={closeModal} title="Password Mismatch" message="Passwords do not match. Please re-enter your password." /> });
+            showModal({ children: <ActConfirm onAct={closeModal} title={Messages.passwordMismatch} message={Messages.passwordsDoNotMatchPleaseReenterYourPassword} /> });
             return;
         }
 
         const registerResult = await register(registerRequest);
         if (registerResult.isSuccess) {
             Keyboard.dismiss();
-            showModal({ children: <ActConfirm onAct={closeModal} title="Email Confirmation" message="Please check your confirmation email to verify your address." /> });
+            showModal({ children: <ActConfirm onAct={closeModal} title={Messages.emailConfirmation} message={Messages.pleaseCheckYourConfirmationEmailToVerifyYourAddress} /> });
             router.replace("/");
 
             return;
         }
 
-        showModal({ children: <ActConfirm onAct={closeModal} title="Registration Failed" message="Your registration could not be completed. Please try later!" /> });
+        showModal({ children: <ActConfirm onAct={closeModal} title={Messages.registrationFailed} message={Messages.yourRegistrationCouldNotBeCompletedPleaseTryLater} /> });
     }
 
     return (
@@ -44,7 +45,7 @@ const Register = () => {
                 <ThemedText style={styles.label}>Email</ThemedText>
                 <ThemedTextInput
                     style={styles.input}
-                    placeholder="Enter your email"
+                    placeholder={Messages.enterYourEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     value={email}
@@ -54,7 +55,7 @@ const Register = () => {
                 <ThemedText style={styles.label}>Password</ThemedText>
                 <ThemedTextInput
                     style={styles.input}
-                    placeholder="Enter your password"
+                    placeholder={Messages.enterYourPassword}
                     secureTextEntry
                     value={password}
                     onChangeText={setPassword}
@@ -63,7 +64,7 @@ const Register = () => {
                 <ThemedText style={styles.label}>Confirm Password</ThemedText>
                 <ThemedTextInput
                     style={styles.input}
-                    placeholder="Confirm your password"
+                    placeholder={Messages.confirmYourPassword}
                     secureTextEntry
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}

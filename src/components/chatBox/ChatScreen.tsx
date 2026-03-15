@@ -2,6 +2,7 @@ import { ChatBox } from '@/src/components/chatBox/ChatBox';
 import { ChatScreenProps } from "@/src/components/chatBox/types/chatScreenProps";
 import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
+import { Messages } from '@/src/constants/messages';
 import { useAuthStore } from '@/src/hooks/useAuthStore';
 import { useToken } from '@/src/hooks/useToken';
 import { makeChatReady } from '@/src/services/chatService';
@@ -43,7 +44,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
         setAnalysing(false);
 
         if (!userTranscriptionResult.isSuccess || userTranscriptionResult.data === undefined) {
-            showModal({ children: <ActConfirm title='Error' message='Tutor failed to hear you, please try later!' onAct={closeModal} />})
+            showModal({ children: <ActConfirm title={Messages.error} message={Messages.tutorFailedToHearYouPleaseTryLater} onAct={closeModal} />})
             return;
         }
 
@@ -55,7 +56,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
         const chats: Chat[] = [];
         if (!userInput) {
             setMessages(prev => {
-                let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: 'Looks like we didn’t catch your voice or any text. Want to try again?', reply: true, error: true }]
+                let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: Messages.looksLikeWeDidntCatchYourVoiceOrAnyTextWantToTryAgain, reply: true, error: true }]
                 const save = async () => await saveChatHistory(chatId, latestMessages);
                 save();
                 return latestMessages;
@@ -75,7 +76,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
                 const tutorReplyResult = await chat({ input: makeChatReady(chats, userInput), accessToken: accessToken ?? '' });
                 if (!tutorReplyResult.isSuccess || tutorReplyResult.data === undefined) {
                     setChatbotIsTyping(false);
-                    showModal({ children: <ActConfirm title='Error' message='Tutor failed to reply you, please try later!' onAct={closeModal} /> })
+                    showModal({ children: <ActConfirm title={Messages.error} message={Messages.tutorfailedToReplyYouPleaseTryLater} onAct={closeModal} /> })
                     return;
                 }
 
@@ -87,7 +88,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
                 });
             } catch {
                 setMessages(prev => {
-                    let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: 'It seems the tutor is busy! Please try again.', reply: true, error: true }]
+                    let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: Messages.tutorfailedToReplyYouPleaseTryLater, reply: true, error: true }]
                     const save = async () => await saveChatHistory(chatId, latestMessages);
                     save();
                     return latestMessages;

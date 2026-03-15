@@ -1,13 +1,14 @@
+import KeyboardShiftView from "@/src/components/keyboardShiftView/KeyboardShiftView";
 import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 import { ThemedText } from "@/src/components/themedText/ThemedText";
 import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInput";
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
 import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { Messages } from '@/src/constants/messages';
+import { useAuthStore } from "@/src/hooks/useAuthStore";
 import { useState } from "react";
 import { Keyboard, StyleSheet } from "react-native";
-import KeyboardShiftView from "../components/keyboardShiftView/KeyboardShiftView";
-import { useAuthStore } from "../hooks/useAuthStore";
 
 const Login = () => {
     const { showModal, closeModal } = useModal();
@@ -21,11 +22,11 @@ const Login = () => {
         if (!loginResponse.isSuccess) {
 
             if (loginResponse.error === '401') {
-                showModal({ children: <ActConfirm title='Login Failed' message='Login failed, please check your credentials and try again.' onAct={closeModal} /> });
+                showModal({ children: <ActConfirm title={Messages.loginFailed} message={Messages.loginFailedPleaseCheckYourCredentialsAndTryAgain} onAct={closeModal} /> });
                 return;
             }
 
-            showModal({ children: <ActConfirm title='Login Failed' message='Something went wrong, please try later!' onAct={closeModal} /> });
+            showModal({ children: <ActConfirm title={Messages.loginFailed} message={Messages.somethingWentWrongPleaseTryLater} onAct={closeModal} /> });
             return;
         }
 
@@ -40,7 +41,7 @@ const Login = () => {
                 <ThemedText style={styles.label}>Email</ThemedText>
                 <ThemedTextInput
                     style={styles.input}
-                    placeholder="Enter your email"
+                    placeholder={Messages.enterYourEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     value={email}
@@ -50,7 +51,7 @@ const Login = () => {
                 <ThemedText style={styles.label}>Password</ThemedText>
                 <ThemedTextInput
                     style={styles.input}
-                    placeholder="Enter your password"
+                    placeholder={Messages.enterYourPassword}
                     secureTextEntry
                     value={password}
                     onChangeText={setPassword}

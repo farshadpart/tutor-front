@@ -3,6 +3,7 @@ import { useModal } from "@/src/components/themedModal/ThemedModalContext";
 import { ThemedText } from "@/src/components/themedText/ThemedText";
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
 import { ThemedView } from "@/src/components/themedView/ThemedView";
+import { Messages } from '@/src/constants/messages';
 import { useAuthStore } from '@/src/hooks/useAuthStore';
 import { useToken } from "@/src/hooks/useToken";
 import { useTheme } from '@/src/providers/ThemeProvider';
@@ -20,7 +21,7 @@ const Subscription = () => {
 
     const confirmExit = () => {
         showModal({
-            children: <ActConfirm dangerousAct={true} title='Warning' message='If you go back now, your progress will be lost. Are you sure?'
+            children: <ActConfirm dangerousAct={true} title={Messages.warning} message={Messages.ifYouGoBackNowYourProgressWillBeLostAreYouSure}
                 onAct={() => { cancelSubscriptionSelection(); closeModal(); }} onCancel={closeModal} />
         })
     }
@@ -33,7 +34,7 @@ const Subscription = () => {
         const fetchSubscriptionGroups = async () => {
             const subscriptionGroupResult = await getSubscriptionGroups();
             if (!subscriptionGroupResult.isSuccess) {
-                showModal({ children: <ActConfirm title='Error' message='Failed to retrive the subscription groups, please try later!' onAct={closeModal} /> })
+                showModal({ children: <ActConfirm title={Messages.error} message={Messages.failedToRetriveTheSubscriptionGroupsPleaseTryLater} onAct={closeModal} /> })
                 return;
             }
 
@@ -71,7 +72,7 @@ const Subscription = () => {
         });
 
         if (!result.isSuccess) {
-            showModal({ children: <ActConfirm onAct={closeModal} title="Subscription Error" message="Something went wrong while processing your subscription." /> });
+            showModal({ children: <ActConfirm onAct={closeModal} title={Messages.subscriptionError} message={Messages.somethingWentWrongWhileProcessingYourSubscription} /> });
             return;
         }
 
