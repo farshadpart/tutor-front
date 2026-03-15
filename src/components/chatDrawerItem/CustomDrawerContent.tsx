@@ -3,6 +3,8 @@ import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 import { ThemedText } from '@/src/components/themedText/ThemedText';
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 import { UserSummary } from '@/src/components/userSummary/UserSummary';
+import { Messages } from '@/src/constants/messages';
+import { useAuthStore } from '@/src/hooks/useAuthStore';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { deleteChat, upsertChatInfo } from "@/src/services/messageService";
 import { ChatInfo } from "@/src/types/chat/chatInfo";
@@ -12,7 +14,6 @@ import { useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
 import ChatDrawerItem from "./ChatDrawerItem";
 import { useChatListProvider } from "./ChatListContext";
-import { useAuthStore } from '@/src/hooks/useAuthStore';
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const userId = useAuthStore().user?.id;
@@ -27,7 +28,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             : undefined;
 
     const handleDelete = (item: ChatInfo) => {
-        const message = `Are you sure you want to delete the chat "${item.title}"?`;
+        const message = Messages.areYouSureYouWantToDeleteTheChatTitle(item.title);
         showModal({
             children: <ActConfirm dangerousAct={true} title='Delete' message={message} submitLabel='Delete' onCancel={closeModal} onAct={() => { closeModal(); deleteThisChat(item.id, userId ?? '') }} />
         })

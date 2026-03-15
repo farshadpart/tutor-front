@@ -2,6 +2,7 @@ import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 import { ThemedView } from '@/src/components/themedView/ThemedView';
+import { Messages } from '@/src/constants/messages';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import Entypo from '@expo/vector-icons/Entypo';
 import {
@@ -31,7 +32,7 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const showLimitToast = () => {
-        ToastAndroid.show('Audio messages length are limited to 60 seconds.', ToastAndroid.SHORT);
+        ToastAndroid.show(Messages.audioMessagesAreLimitedTo60Seconds, ToastAndroid.SHORT);
     };
 
     const record = async () => {
@@ -69,7 +70,7 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
         (async () => {
             const status = await AudioModule.requestRecordingPermissionsAsync();
             if (!status.granted) {
-                showModal({ children: <ActConfirm onAct={closeModal} title='Error' message='Permission to access microphone was denied' /> });
+                showModal({ children: <ActConfirm onAct={closeModal} title={Messages.error} message={Messages.microphoneAccessWasDeniedPleaseEnableMicrophonePermissionToRecordAudio} /> });
             }
 
             await setAudioModeAsync({
