@@ -10,7 +10,8 @@ import { jwtDecode } from "jwt-decode";
 import { RefreshRequest } from "../types/account/refreshRequest";
 import { RefreshResponse } from "../types/account/refreshResponse";
 import { TokenHolder } from "../types/account/tokenHolders";
-import { fetchWithTimeout } from '@/src/utilities/httpUitlities'
+import { fetchWithTimeout } from '@/src/utilities/httpUitlities';
+import { log } from '@/src/services/logService';
 
 export const login = async (loginRequest: LoginRequest): Promise<Result<LoginResponse>> => {
     try {
@@ -32,7 +33,7 @@ export const login = async (loginRequest: LoginRequest): Promise<Result<LoginRes
             isSuccess: true, data: { user, tokenHolder: loginResponse.data }
         }
     } catch (e) {
-        console.error('Error', e);
+        log("Error", 'Logging request failed. LoginRequest: {@loginRequest}', [loginRequest], e);
         return { isSuccess: false, error: "Something went wrong!"};
     }
 }
@@ -57,13 +58,17 @@ export const refresh = async (refreshRequest: RefreshRequest): Promise<Result<Re
             isSuccess: true, data: { user, tokenHolder: refreshResponse.data }
         }
     } catch (e) {
-        console.error('Error', e);
+        log("Error", 'Refresh request failed. RefreshRequest: {@refreshRequest}', [refreshRequest], e);
         return { isSuccess: false, error: "Something went wrong!"};
     }
 }
 
 export const logout = async (refreshToken?: string) : Promise<Result> => {
     try {
+        if (refreshToken === null || refreshToken === undefined) {
+            return { isSuccess: false };
+        }
+
         const response = await fetchWithTimeout(`${TUTORAPI}/account/logout`, {
             method: "POST",
             body: JSON.stringify({ refreshToken }),
@@ -79,7 +84,7 @@ export const logout = async (refreshToken?: string) : Promise<Result> => {
 
         return { isSuccess: true };
     } catch (e) {
-        console.error('Error', e);
+        log("Error", 'Logout request failed. RefreshToken: {@refreshToken}', [refreshToken], e);
         return { isSuccess: false, error: "Something went wrong!" };
     }
 }
@@ -96,7 +101,7 @@ export const register = async (registerReqeust: RegisterRequest): Promise<Result
 
         return interpret(response);
     } catch (e) {
-        console.error(e, 'The registeration process failed');
+        log("Error", 'Register request failed. RegisterRequest: {@registerRequest}', [registerReqeust], e);
         return { isSuccess: false, error: 'Something went wrong!' };
     }
 }

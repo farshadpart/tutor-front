@@ -2,7 +2,8 @@ import { TUTORAPI } from "@/src/constants/addresses";
 import { interpret } from '@/src/services/interpreter';
 import { Result } from '@/src/types/common/result';
 import { CreateSubscriptionRequest } from "@/src/types/subscription/createSubscriptionRequest";
-import { fetchWithTimeout } from '@/src/utilities/httpUitlities'
+import { fetchWithTimeout } from '@/src/utilities/httpUitlities';
+import { log } from '@/src/services/logService';
 
 export const getSubscriptionGroups = async (): Promise<Result<string[]>> => {
     try {
@@ -10,7 +11,7 @@ export const getSubscriptionGroups = async (): Promise<Result<string[]>> => {
 
         return interpret<string[]>(response);
     } catch (e) {
-        console.error(e, 'Getting the subscription groups failed!');
+        log("Error", 'Getting the subscription groups failed!', [], e);
         return { isSuccess: false };
     }
 }
@@ -28,7 +29,7 @@ export const create = async ({ createSubscriptionRequest, accessToken }: { creat
 
         return await interpret(response);
     } catch (e) {
-        console.error(e, 'Activating the subscription for the user failed!');
+        log("Error", 'Activating the subscription for the user failed! CreateSubscriptionRequest: {@CreateSubscriptionRequest}', [createSubscriptionRequest], e);
         return { isSuccess: false }
     }
 }

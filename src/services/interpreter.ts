@@ -1,4 +1,5 @@
 import { Result } from '@/src/types/common/result';
+import { log } from '@/src/services/logService';
 
 export const interpret = async <T>(response: Response): Promise<Result<T>> => {
     try {
@@ -16,8 +17,6 @@ export const interpret = async <T>(response: Response): Promise<Result<T>> => {
             return { isSuccess: true };
         }
 
-        console.error('Response Status', response.status);
-
         if (response.status === 401)
             return { isSuccess: false, error: 'Your credential is expired. Please login again.' };
 
@@ -26,7 +25,7 @@ export const interpret = async <T>(response: Response): Promise<Result<T>> => {
 
         return { isSuccess: false, error: response.status.toString() };
     } catch (e) {
-        console.error(e, `Failed to interpret response`);
+        log("Error", 'Failed to interpret the response. Response: {@response}', [response], e);
         return { isSuccess: false, error: 'Something went wrong!' };
     }
 } 
