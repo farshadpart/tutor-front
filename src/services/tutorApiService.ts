@@ -2,7 +2,8 @@ import { TUTORAPI } from "@/src/constants/addresses";
 import { interpret } from '@/src/services/interpreter';
 import { Chat } from "@/src/types/chat/chat";
 import { Result } from '@/src/types/common/result';
-import { fetchWithTimeout } from '@/src/utilities/httpUitlities'
+import { fetchWithTimeout } from '@/src/utilities/httpUitlities';
+import { log } from '@/src/services/logService';
 
 export const chat = async ({ input, accessToken }: { input: Chat[], accessToken: string }): Promise<Result<string>> => {
     try {
@@ -17,7 +18,7 @@ export const chat = async ({ input, accessToken }: { input: Chat[], accessToken:
 
         return interpret(response);
     } catch (e) {
-        console.error(e, 'Method chat failed!')
+        log("Error", 'Method chat failed.', [], e);
         return { isSuccess: false }
     }
 }
@@ -43,7 +44,7 @@ export const transcription = async ({ url, accessToken }: { url: string, accessT
     
         return interpret<string>(response);
     } catch (e) {
-        console.error(e, 'Method transcription failed!');
+        log("Error", 'Method transcription failed.', [], e);
         return { isSuccess: false };
     }
 };

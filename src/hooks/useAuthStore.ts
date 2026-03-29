@@ -46,10 +46,7 @@ export const useAuthStore = create(
                 return loginResponse;
             },
             logOut: async (refreshToken?: string) => {
-                const logOutResult = await logout(refreshToken);
-                if (!logOutResult) {
-                    return;
-                }
+                await logout(refreshToken);
 
                 set((state) => {
                     return {
