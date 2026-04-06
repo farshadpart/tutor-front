@@ -4,6 +4,7 @@ import { Result } from '@/src/types/common/result';
 import { CreateSubscriptionRequest } from "@/src/types/subscription/createSubscriptionRequest";
 import { fetchWithTimeout } from '@/src/utilities/httpUitlities';
 import { log } from '@/src/services/logService';
+import { getValidToken } from "@/src/services/tokenService";
 
 export const getSubscriptionGroups = async (): Promise<Result<string[]>> => {
     try {
@@ -16,14 +17,14 @@ export const getSubscriptionGroups = async (): Promise<Result<string[]>> => {
     }
 }
 
-export const create = async ({ createSubscriptionRequest, accessToken }: { createSubscriptionRequest: CreateSubscriptionRequest, accessToken: string }): Promise<Result> => {
+export const create = async ({ createSubscriptionRequest }: { createSubscriptionRequest: CreateSubscriptionRequest }): Promise<Result> => {
     try {
         const response = await fetchWithTimeout(`${TUTORAPI}/subscription/create`, {
             method: "POST",
             body: JSON.stringify(createSubscriptionRequest),
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${await getValidToken()}`,
             }
         });
 

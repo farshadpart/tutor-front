@@ -5,7 +5,6 @@ import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/
 import { ThemedView } from "@/src/components/themedView/ThemedView";
 import { Messages } from '@/src/constants/messages';
 import { useAuthStore } from '@/src/hooks/useAuthStore';
-import { useToken } from "@/src/hooks/useToken";
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { create, getSubscriptionGroups } from "@/src/services/subscriptionService";
 import { usePreventRemove } from '@react-navigation/native';
@@ -15,7 +14,6 @@ import { StyleSheet } from "react-native";
 const Subscription = () => {
     const { theme } = useTheme();
     const { showModal, closeModal } = useModal();
-    const token = useToken();
     const authStore = useAuthStore();
     const [subscriptionGroups, setSubscriptionGroups] = useState<string[]>([]);
 
@@ -67,8 +65,7 @@ const Subscription = () => {
             createSubscriptionRequest: {
                 userId: authStore.user!.id,
                 subscriptionGroup: group
-            },
-            accessToken: token ?? ""
+            }
         });
 
         if (!result.isSuccess) {
