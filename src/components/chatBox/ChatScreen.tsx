@@ -4,7 +4,6 @@ import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 import { Messages } from '@/src/constants/messages';
 import { useAuthStore } from '@/src/hooks/useAuthStore';
-import { useToken } from '@/src/hooks/useToken';
 import { makeChatReady } from '@/src/services/chatService';
 import { getChatHistory, saveChatHistory, upsertChatInfo } from '@/src/services/messageService';
 import { chat, transcription } from '@/src/services/tutorApiService';
@@ -18,7 +17,6 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
     const [input, setInput] = useState('');
     const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
     const [analysing, setAnalysing] = useState(false);
-    const accessToken = useToken();
     const userId = useAuthStore().user?.id;
 
     useEffect(() => {
@@ -40,7 +38,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
 
     const handleSendVoiceMessage = async (audio: { uri: string; name: string; type: string }) => {
         setAnalysing(true);
-        const userTranscriptionResult = await transcription({ url: audio.uri, accessToken: accessToken ?? '' });
+        const userTranscriptionResult = await transcription({ url: audio.uri });
         setAnalysing(false);
 
         if (!userTranscriptionResult.isSuccess || userTranscriptionResult.data === undefined) {
@@ -73,7 +71,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
             });
 
             try {
-                const tutorReplyResult = await chat({ input: makeChatReady(chats, userInput), accessToken: accessToken ?? '' });
+                const tutorReplyResult = await chat({ input: makeChatReady(chats, userInput) });
                 if (!tutorReplyResult.isSuccess || tutorReplyResult.data === undefined) {
                     setChatbotIsTyping(false);
                     showModal({ children: <ActConfirm title={Messages.error} message={Messages.tutorfailedToReplyYouPleaseTryLater} onAct={closeModal} /> })

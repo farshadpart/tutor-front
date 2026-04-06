@@ -11,7 +11,7 @@ import { User } from "../types/account/user";
 type UserTokenState = {
     user?: User;
     tokenHolder?: TokenHolder;
-    refresh: (refreshToken: string) => Promise<void>;
+    refresh: (refreshToken: string) => Promise<string | undefined>;
     logIn: (loginRequest: LoginRequest) => Promise<Result<LoginResponse>>;
     logOut: (email?: string) => Promise<void>;
     setSubscription: (subscriptionGroup?: string) => void;
@@ -23,7 +23,7 @@ export const useAuthStore = create(
             user: undefined,
             tokenHolder: undefined,
             refresh: async (refreshToken: string) => {
-                const refreshResponse = await refresh({refreshToken});
+                const refreshResponse = await refresh({ refreshToken });
 
                 set((state) => {
                     return {
@@ -32,6 +32,8 @@ export const useAuthStore = create(
                         tokenHolder: refreshResponse.data?.tokenHolder
                     };
                 });
+
+                return refreshResponse.data?.tokenHolder?.accessToken.token;
             },
             logIn: async (loginRequest: LoginRequest) => {
                 const loginResponse = await login(loginRequest);
