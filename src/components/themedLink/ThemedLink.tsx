@@ -3,7 +3,7 @@ import { Link } from "expo-router";
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { ThemedLinkProps } from '@/src/components/themedLink/types/ThemedLinkProps';
 
-export function ThemedText({ style, ...rest }: ThemedLinkProps) {
+export function ThemedLink({ style, ...rest }: ThemedLinkProps) {
     const { theme } = useTheme();
 
     const defaultStyle: TextStyle = {

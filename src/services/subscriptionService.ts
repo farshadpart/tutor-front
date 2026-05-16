@@ -5,12 +5,35 @@ import { CreateSubscriptionRequest } from "@/src/types/subscription/createSubscr
 import { fetchWithTimeout } from '@/src/utilities/httpUitlities';
 import { log } from '@/src/services/logService';
 import { getValidToken } from "@/src/services/tokenService";
+import {SubscriptionGroup} from "@/src/types/subscription/subscriptionGroup";
 
-export const getSubscriptionGroups = async (): Promise<Result<string[]>> => {
+export const getSubscriptionGroups = async (): Promise<Result<SubscriptionGroup[]>> => {
     try {
-        const response = await fetch(`${TUTORAPI}/subscription/getSubscriptionGroups`, { method: "GET" });
+        //const response = await fetch(`${TUTORAPI}/subscription/getSubscriptionGroups`, { method: "GET" });
+        //return interpret<SubscriptionGroup[]>(response);
 
-        return interpret<string[]>(response);
+        return {
+            isSuccess: true,
+            data: [
+                {
+                    id: 1,
+                    title: "Basic",
+                    priceUsDollars: 59.99,
+                    periodInDays: 90,
+                    requestCount: 3000,
+                    description: 'Basic Features'
+                },
+                {
+                    id: 2,
+                    title: "Pro",
+                    priceUsDollars: 99.99,
+                    periodInDays: 360,
+                    requestCount: 15000,
+                    description: 'Amazing Features'
+                }
+            ],
+            error: undefined
+        };
     } catch (e) {
         log("Error", 'Getting the subscription groups failed!', [], e);
         return { isSuccess: false };
