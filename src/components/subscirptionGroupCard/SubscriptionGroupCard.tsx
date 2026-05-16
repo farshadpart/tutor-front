@@ -2,10 +2,23 @@ import {ThemedText} from "@/src/components/themedText/ThemedText";
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 import {StyleSheet} from "react-native";
 import {SubscriptionGroupCardProps} from "@/src/components/subscirptionGroupCard/types/SubscriptionGroupCardProps";
+import { useTheme } from "@/src/providers/ThemeProvider";
 
 export function SubscriptionGroupCard ({ subscirptionGroup, selected, onPress } : SubscriptionGroupCardProps) {
+    const { theme } = useTheme();
+
     return (
-        <ThemedTouchableOpacity onPress={onPress} style={[styles.card, selected && styles.selectedCard,]}>
+        <ThemedTouchableOpacity
+            onPress={onPress}
+            style={[
+                styles.card,
+                {
+                    backgroundColor: selected ? theme.colors.activeRowBackground : theme.colors.card,
+                    borderColor: selected ? theme.colors.primary : theme.colors.border,
+                },
+                selected && styles.selectedCard,
+            ]}
+        >
              <ThemedText style={styles.title}>{subscirptionGroup.title}</ThemedText>
              <ThemedText style={styles.price}>${subscirptionGroup.priceUsDollars}</ThemedText>
              <ThemedText style={styles.period}>{subscirptionGroup.periodInDays} days </ThemedText>
