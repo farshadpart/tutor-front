@@ -10,7 +10,7 @@ export function useSubscriptionPurchase() {
         async (productId: string): Promise<PurchaseResult> => {
             try {
                 if (!connected) {
-                    log("Trace", "Failed to connect to google payment endpoint");
+                    log("Trace", "Google Play Store is not connected");
                     return {
                         isSuccess: false,
                         error: "Google Play is not connected.",

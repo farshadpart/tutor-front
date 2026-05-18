@@ -9,7 +9,7 @@ export const log = (logLevel: 'Trace' | 'Debug' | 'Information' | 'Error', messa
             message,
             arguments: parameters
         }
-
+        
         fetchWithTimeout(`${TUTORAPI}/log/log`, {
             method: "POST",
             body: JSON.stringify(logRequest),
@@ -23,7 +23,7 @@ export const log = (logLevel: 'Trace' | 'Debug' | 'Information' | 'Error', messa
 }
 
 const stringfyError = (exception: any) : string | null => {
-    if (exception === null) {
+    if (exception === null || exception === undefined) {
         return null;
     }
 
