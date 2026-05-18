@@ -1,5 +1,5 @@
 export interface SubscriptionGroup {
-    id: number,
+    id: string,
     title: string,
     priceUsDollars: number,
     periodInDays: number,

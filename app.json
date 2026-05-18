@@ -63,7 +63,8 @@
       "expo-secure-store",
       "expo-build-properties",
       "expo-web-browser",
-      "expo-asset"
+      "expo-asset",
+      "expo-iap"
     ],
     "experiments": {
       "typedRoutes": true,

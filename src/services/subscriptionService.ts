@@ -16,7 +16,7 @@ export const getSubscriptionGroups = async (): Promise<Result<SubscriptionGroup[
             isSuccess: true,
             data: [
                 {
-                    id: 1,
+                    id: "90-days",
                     title: "Basic",
                     priceUsDollars: 59.99,
                     periodInDays: 90,
@@ -24,10 +24,10 @@ export const getSubscriptionGroups = async (): Promise<Result<SubscriptionGroup[
                     description: 'Basic Features'
                 },
                 {
-                    id: 2,
+                    id: "365-days",
                     title: "Pro",
                     priceUsDollars: 99.99,
-                    periodInDays: 360,
+                    periodInDays: 365,
                     requestCount: 15000,
                     description: 'Amazing Features'
                 }

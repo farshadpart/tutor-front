@@ -12,11 +12,13 @@ import { usePreventRemove } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import {FlatList, ScrollView, StyleSheet, View} from "react-native";
 import { SubscriptionGroupCard} from "@/src/components/subscirptionGroupCard/SubscriptionGroupCard";
+import { useSubscriptionPurchase } from "@/src/hooks/useSubscriptionPurchase";
 
 export default function Subscription() {
     const { theme } = useTheme();
     const { showModal, closeModal } = useModal();
     const authStore = useAuthStore();
+    const { purchase } = useSubscriptionPurchase();
 
     const [subscriptionGroups, setSubscriptionGroups] = useState<SubscriptionGroup[]>([]);
     const [selectedGroup, setSelectedGroup] = useState<SubscriptionGroup | null>(null);
@@ -80,6 +82,21 @@ export default function Subscription() {
             return;
         }
 
+        const googlePurchaseResult = await purchase(selectedGroup.id.toString());
+
+        if (!googlePurchaseResult.isSuccess) {
+            showModal({
+                children: (
+                    <ActConfirm
+                        onAct={closeModal}
+                        title={Messages.subscriptionError}
+                        message={Messages.somethingWentWrongWhileProcessingYourSubscription}
+                    />
+                ),
+            });
+            return;
+        }
+        
         const result = await create({
             createSubscriptionRequest: {
                 userId: authStore.user!.id,
