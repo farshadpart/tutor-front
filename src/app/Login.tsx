@@ -7,6 +7,7 @@ import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/
 import { ThemedView } from "@/src/components/themedView/ThemedView";
 import { Messages } from '@/src/constants/messages';
 import { useAuthStore } from "@/src/hooks/useAuthStore";
+import { Link } from "expo-router";
 import { useState } from "react";
 import { Keyboard, StyleSheet } from "react-native";
 
@@ -60,6 +61,11 @@ const Login = () => {
                 <ThemedTouchableOpacity style={styles.button} onPress={() => handleLoginPress(email, password)}>
                     <ThemedText style={styles.buttonText}>Login</ThemedText>
                 </ThemedTouchableOpacity>
+
+                <ThemedText style={styles.footerText}>
+                    {'Forgot your password? '}
+                    <Link href="/ResetPassword" style={styles.link}>Reset Password</Link>
+                </ThemedText>
             </ThemedView>
         </KeyboardShiftView>
     );
@@ -95,6 +101,14 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 18,
+        fontWeight: "600",
+    },
+    footerText: {
+        marginTop: 24,
+        textAlign: "center",
+        fontSize: 15,
+    },
+    link: {
         fontWeight: "600",
     },
 });

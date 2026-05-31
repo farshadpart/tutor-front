@@ -1,9 +1,11 @@
 import { TUTORAPI } from "@/src/constants/addresses";
 import { interpret } from "@/src/services/interpreter";
 import { Claim } from "@/src/types/account/claim";
+import { ForgotPasswordRequest } from "@/src/types/account/forgotPasswordRequest";
 import { LoginRequest } from "@/src/types/account/loginRequest";
 import { LoginResponse } from "@/src/types/account/loginResponse";
 import { RegisterRequest } from "@/src/types/account/registerRequest";
+import { ResetPasswordRequest } from "@/src/types/account/resetPasswordRequest";
 import { User } from "@/src/types/account/user";
 import { Result } from "@/src/types/common/result";
 import { jwtDecode } from "jwt-decode";
@@ -102,6 +104,40 @@ export const register = async (registerReqeust: RegisterRequest): Promise<Result
         return interpret(response);
     } catch (e) {
         log("Error", 'Register request failed. RegisterRequest: {@registerRequest}', [registerReqeust], e);
+        return { isSuccess: false, error: 'Something went wrong!' };
+    }
+}
+
+export const forgotPassword = async (forgotPasswordRequest: ForgotPasswordRequest): Promise<Result> => {
+    try {
+        const response = await fetchWithTimeout(`${TUTORAPI}/account/forgotPassword`, {
+            method: "POST",
+            body: JSON.stringify(forgotPasswordRequest),
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        return interpret(response);
+    } catch (e) {
+        log("Error", 'Forgot password request failed. ForgotPasswordRequest: {@forgotPasswordRequest}', [forgotPasswordRequest], e);
+        return { isSuccess: false, error: 'Something went wrong!' };
+    }
+}
+
+export const resetPassword = async (resetPasswordRequest: ResetPasswordRequest): Promise<Result> => {
+    try {
+        const response = await fetchWithTimeout(`${TUTORAPI}/account/resetPassword`, {
+            method: "POST",
+            body: JSON.stringify(resetPasswordRequest),
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        return interpret(response);
+    } catch (e) {
+        log("Error", 'Reset password request failed. ResetPasswordRequest: {@resetPasswordRequest}', [resetPasswordRequest], e);
         return { isSuccess: false, error: 'Something went wrong!' };
     }
 }
