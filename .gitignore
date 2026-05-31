@@ -4,6 +4,9 @@
 .vs/
 .vscode/
 
+#Rider files
+.idea/
+
 #key files
 keyProvider.ts
 

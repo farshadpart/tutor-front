@@ -37,6 +37,7 @@ function ThemedStack() {
                     <Stack.Protected guard={authStore.user === undefined}>
                         <Stack.Screen name="Login" />
                         <Stack.Screen name="Register" />
+                        <Stack.Screen name="ResetPassword" options={{ title: 'Reset Password' }} />
                     </Stack.Protected>
                     <Stack.Protected guard={authStore.user !== undefined && authStore.user.subscriptionGroup === undefined}>
                         <Stack.Screen name="Subscription" />
