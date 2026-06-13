@@ -1,7 +1,7 @@
 export async function fetchWithTimeout(
     url: string,
     options: RequestInit,
-    timeoutMs: number = 15000
+    timeoutMs: number = 30000
 ): Promise<Response> {
 
     const controller = new AbortController();
