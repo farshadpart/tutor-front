@@ -35,7 +35,7 @@ export const login = async (loginRequest: LoginRequest): Promise<Result<LoginRes
             isSuccess: true, data: { user, tokenHolder: loginResponse.data }
         }
     } catch (e) {
-        log("Error", 'Logging request failed. LoginRequest: {@loginRequest}', [loginRequest], e);
+        log("Error", 'Login request failed. Email: {email}', [loginRequest.email], e);
         return { isSuccess: false, error: "Something went wrong!"};
     }
 }
@@ -60,7 +60,7 @@ export const refresh = async (refreshRequest: RefreshRequest): Promise<Result<Re
             isSuccess: true, data: { user, tokenHolder: refreshResponse.data }
         }
     } catch (e) {
-        log("Error", 'Refresh request failed. RefreshRequest: {@refreshRequest}', [refreshRequest], e);
+        log("Error", 'Refresh request failed. HasRefreshToken: {hasRefreshToken}', [Boolean(refreshRequest.refreshToken)], e);
         return { isSuccess: false, error: "Something went wrong!"};
     }
 }
@@ -86,7 +86,7 @@ export const logout = async (refreshToken?: string) : Promise<Result> => {
 
         return { isSuccess: true };
     } catch (e) {
-        log("Error", 'Logout request failed. RefreshToken: {@refreshToken}', [refreshToken], e);
+        log("Error", 'Logout request failed. HasRefreshToken: {hasRefreshToken}', [Boolean(refreshToken)], e);
         return { isSuccess: false, error: "Something went wrong!" };
     }
 }
@@ -103,7 +103,7 @@ export const register = async (registerReqeust: RegisterRequest): Promise<Result
 
         return interpret(response);
     } catch (e) {
-        log("Error", 'Register request failed. RegisterRequest: {@registerRequest}', [registerReqeust], e);
+        log("Error", 'Register request failed. Email: {email}', [registerReqeust.email], e);
         return { isSuccess: false, error: 'Something went wrong!' };
     }
 }
@@ -120,7 +120,7 @@ export const forgotPassword = async (forgotPasswordRequest: ForgotPasswordReques
 
         return interpret(response);
     } catch (e) {
-        log("Error", 'Forgot password request failed. ForgotPasswordRequest: {@forgotPasswordRequest}', [forgotPasswordRequest], e);
+        log("Error", 'Forgot password request failed. Email: {email}', [forgotPasswordRequest.email], e);
         return { isSuccess: false, error: 'Something went wrong!' };
     }
 }
@@ -137,7 +137,10 @@ export const resetPassword = async (resetPasswordRequest: ResetPasswordRequest):
 
         return interpret(response);
     } catch (e) {
-        log("Error", 'Reset password request failed. ResetPasswordRequest: {@resetPasswordRequest}', [resetPasswordRequest], e);
+        log("Error", 'Reset password request failed. Email: {email}, HasToken: {hasToken}', [
+            resetPasswordRequest.email,
+            Boolean(resetPasswordRequest.token),
+        ], e);
         return { isSuccess: false, error: 'Something went wrong!' };
     }
 }
