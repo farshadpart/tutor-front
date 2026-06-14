@@ -6,9 +6,13 @@ import { fetchWithTimeout } from '@/src/utilities/httpUitlities';
 import { log } from '@/src/services/logService';
 import { getValidToken } from "@/src/services/tokenService";
 
+const serviceName = "tutorApiService";
+const chatEndpoint = "/chat/write";
+const transcriptionEndpoint = "/chat/speak";
+
 export const chat = async ({ input }: { input: Chat[] }): Promise<Result<string>> => {
     try {
-        const response = await fetchWithTimeout(`${TUTORAPI}/chat/write`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}${chatEndpoint}`, {
             method: "POST",
             body: JSON.stringify(input),
             headers: {
@@ -19,8 +23,11 @@ export const chat = async ({ input }: { input: Chat[] }): Promise<Result<string>
 
         return interpret(response);
     } catch (e) {
-        log("Error", 'Method chat failed.', [], e);
-        return { isSuccess: false }
+        log("Error", 'Tutor API chat request failed. Endpoint: {endpoint}, MessageCount: {messageCount}', [
+            chatEndpoint,
+            input.length,
+        ], e);
+        return { isSuccess: false, error: "Something went wrong!" }
     }
 }
 
@@ -33,7 +40,7 @@ export const transcription = async ({ url }: { url: string }): Promise<Result<st
             type: "audio/m4a",
         } as any);
 
-        const response = await fetchWithTimeout(`${TUTORAPI}/chat/speak`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}${transcriptionEndpoint}`, {
             method: "POST",
             body: formData,
             headers: {
@@ -45,7 +52,11 @@ export const transcription = async ({ url }: { url: string }): Promise<Result<st
     
         return interpret<string>(response);
     } catch (e) {
-        log("Error", 'Method transcription failed.', [], e);
-        return { isSuccess: false };
+        log("Error", 'Tutor API transcription request failed. Endpoint: {endpoint}, FileType: {fileType}, HasUri: {hasUri}', [
+            transcriptionEndpoint,
+            "audio/m4a",
+            Boolean(url),
+        ], e);
+        return { isSuccess: false, error: "Something went wrong!" };
     }
 };

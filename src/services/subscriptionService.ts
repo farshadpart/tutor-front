@@ -30,8 +30,10 @@ export const create = async ({ createSubscriptionRequest }: { createSubscription
 
         return await interpret(response);
     } catch (e) {
-        log("Error", 'Activating the subscription for the user failed! CreateSubscriptionRequest: {@CreateSubscriptionRequest}', [createSubscriptionRequest], e);
+        log("Error", 'Activating the subscription for the user failed. UserId: {UserId}, SubscriptionGroup: {subscriptionGroup}', [
+            createSubscriptionRequest.userId,
+            createSubscriptionRequest.subscriptionGroup,
+        ], e);
         return { isSuccess: false }
     }
 }
-
