@@ -1,5 +1,6 @@
 import { ChatBoxProps } from "@/src/components/chatBox/types/chatBoxProps";
 import { MessageItem } from '@/src/components/messageItem/MessageItem';
+import { ThemedText } from '@/src/components/themedText/ThemedText';
 import { ThemedTextInput } from '@/src/components/themedTextInput/ThemedTextInput';
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 import { ThemedView } from '@/src/components/themedView/ThemedView';
@@ -14,9 +15,12 @@ import { TabbedMessage } from '../tabbedMessage/TabbedMessage';
 import { ThemedFlatList } from "../themedFlatList/themedFlatList";
 import { ChatBoxFooter } from './ChatBoxFooter';
 
+const MESSAGE_LIMIT = 500;
+
 export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyping, onSendTextMessage }: ChatBoxProps) => {
     const { theme } = useTheme();
     const localMessages = [...messages].reverse();
+    const messageLimitReached = messages.length > MESSAGE_LIMIT;
     const [input, setInput] = useState('');
     const flatListRef = useRef<FlatList>(null);
 
@@ -54,20 +58,28 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                 ListHeaderComponent={<ChatBoxFooter chatbotIsTyping={chatbotIsTyping} analysing={analysing} />}
             />
             <ThemedView style={styles.inputContainer}>
-                <ThemedTextInput
-                    maxLength={1000}
-                    multiline
-                    style={styles.input}
-                    value={input}
-                    onChangeText={setInput}
-                    placeholder="Type a message"
-                />
                 {
-                    input.length === 0 ?
-                        <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
-                        <ThemedTouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={[styles.sendButton, { backgroundColor: theme.colors.background }]}>
-                            <Ionicons name="send" size={24} color={theme.colors.text} />
-                        </ThemedTouchableOpacity>
+                    messageLimitReached ?
+                        <ThemedView style={[styles.limitMessageContainer, { backgroundColor: theme.colors.secondary, borderColor: theme.colors.border }]}>
+                            <ThemedText style={styles.limitMessage}>You've reached the message limit for this chat. Please start a new chat to continue.</ThemedText>
+                        </ThemedView> :
+                        <>
+                            <ThemedTextInput
+                                maxLength={1000}
+                                multiline
+                                style={styles.input}
+                                value={input}
+                                onChangeText={setInput}
+                                placeholder="Type a message"
+                            />
+                            {
+                                input.length === 0 ?
+                                    <VoiceRecorder onRecordingComplete={handleRecordingComplete} /> :
+                                    <ThemedTouchableOpacity disabled={chatbotIsTyping} onPress={handlePressSend} style={[styles.sendButton, { backgroundColor: theme.colors.background }]}>
+                                        <Ionicons name="send" size={24} color={theme.colors.text} />
+                                    </ThemedTouchableOpacity>
+                            }
+                        </>
                 }
             </ThemedView>
         </KeyboardShiftView>
@@ -90,5 +102,15 @@ const styles = StyleSheet.create({
     },
     sendButton: {
         paddingHorizontal: 10
+    },
+    limitMessageContainer: {
+        flex: 1,
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 10
+    },
+    limitMessage: {
+        textAlign: 'center',
     },
 });
