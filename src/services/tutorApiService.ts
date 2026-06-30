@@ -21,7 +21,7 @@ export const chat = async ({ input }: { input: Chat[] }): Promise<Result<string>
             }
         });
 
-        return interpret(response);
+        return await interpret(response);
     } catch (e) {
         log("Error", 'Tutor API chat request failed. Endpoint: {endpoint}, MessageCount: {messageCount}', [
             chatEndpoint,
@@ -50,7 +50,7 @@ export const transcription = async ({ url }: { url: string }): Promise<Result<st
             },
         });
     
-        return interpret<string>(response);
+        return await interpret<string>(response);
     } catch (e) {
         log("Error", 'Tutor API transcription request failed. Endpoint: {endpoint}, FileType: {fileType}, HasUri: {hasUri}', [
             transcriptionEndpoint,
