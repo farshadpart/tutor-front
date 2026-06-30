@@ -4,7 +4,6 @@ import { ActConfirm } from '@/src/components/modalTemplates/confirm/ActConfirm';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
 import { Messages } from '@/src/constants/messages';
 import { useAuthStore } from '@/src/hooks/useAuthStore';
-import { makeChatReady } from '@/src/services/chatService';
 import { getChatHistory, saveChatHistory, upsertChatInfo } from '@/src/services/messageService';
 import { chat, transcription } from '@/src/services/tutorApiService';
 import { Chat } from "@/src/types/chat/chat";
@@ -71,7 +70,8 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
             });
 
             try {
-                const tutorReplyResult = await chat({ input: makeChatReady(chats, userInput) });
+                chats.push({ role: 'user', content: userInput });
+                const tutorReplyResult = await chat({ input: chats });
                 if (!tutorReplyResult.isSuccess || tutorReplyResult.data === undefined) {
                     setChatbotIsTyping(false);
                     showModal({ children: <ActConfirm title={Messages.error} message={Messages.tutorfailedToReplyYouPleaseTryLater} onAct={closeModal} /> })
