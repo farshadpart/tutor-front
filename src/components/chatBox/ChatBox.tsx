@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
         flex: 1,
         borderWidth: 1,
         borderRadius: 8,
+        marginHorizontal: 24,
         paddingHorizontal: 12,
         paddingVertical: 10
     },
