@@ -37,7 +37,7 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
 
     const record = async () => {
         await audioRecorder.prepareToRecordAsync();
-        await audioRecorder.record();
+        audioRecorder.record();
 
         timerRef.current = setTimeout(async () => {
             await stopRecording();
