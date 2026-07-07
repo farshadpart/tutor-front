@@ -21,7 +21,7 @@ export const UserSummary = () => {
     return (
         <ThemedTouchableOpacity onPress={() => router.push('/User')} style={[styles.container, { backgroundColor: 'transparent' }]} activeOpacity={1}>
             <View style={styles.avatarContainer}>
-                <Image source={userPhoto} style={styles.avatar} />
+                <Image testID="user-summary-avatar" source={userPhoto} style={styles.avatar} />
             </View>
             <ThemedText style={styles.name} numberOfLines={1}>
                 {authStore.user?.email}
