@@ -9,7 +9,7 @@ const User = () => {
     const authStore = useAuthStore();
 
     return (
-        <ThemedTouchableOpacity style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={async () => await authStore.logOut(authStore.tokenHolder?.refreshToken.token)}>
+        <ThemedTouchableOpacity testID="logOutButton" style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={async () => await authStore.logOut(authStore.tokenHolder?.refreshToken.token)}>
             <ThemedText style={[styles.buttonText, { color: theme.colors.text }]}>Logout</ThemedText>
         </ThemedTouchableOpacity>
     )
