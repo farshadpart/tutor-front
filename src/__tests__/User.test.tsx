@@ -2,7 +2,7 @@ import { fireEvent, render } from '@testing-library/react-native';
 import { light } from '@/src/constants/colors';
 import { useAuthStore } from '@/src/hooks/useAuthStore';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import User from './User';
+import User from '@/src/app/User';
 
 jest.mock('@/src/hooks/useAuthStore', () => ({
     useAuthStore: jest.fn(),
