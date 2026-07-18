@@ -1,1 +1,1 @@
-export const TUTORAPI = 'https://eleven-power.com/tutor'
+export const TUTORAPI = 'https://tutor.eleven-power.com'
