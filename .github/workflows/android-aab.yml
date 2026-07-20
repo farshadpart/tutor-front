@@ -34,9 +34,19 @@ jobs:
         working-directory: android
         run: ./gradlew bundleRelease --no-daemon
 
+      - name: Sign Android AAB
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: tutor-production-aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          path: android/app/build/outputs/bundle/release/app-release-signed.aab
           if-no-files-found: error
