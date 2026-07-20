@@ -43,6 +43,7 @@ jobs:
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          removeOriginalGpgSign: true
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
