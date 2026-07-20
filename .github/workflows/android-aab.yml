@@ -36,7 +36,7 @@ jobs:
         
       - name: Strip default debug signature
         run: |
-          zip -d ${{ env.AAB_DIR }}/app-release.aab "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.MF" || true
+          zip -d android/app/build/outputs/bundle/app-release.aab "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.MF" || true
 
       - name: Sign Android AAB
         id: sign_app
