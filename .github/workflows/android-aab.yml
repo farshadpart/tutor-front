@@ -27,29 +27,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 1. Generate the native /android folder on the fly
       - name: Expo Prebuild
         run: npx expo prebuild --platform android --no-install
 
-      # 2. Decode the keystore file back to binary directly inside the runner workspace
-      - name: Decode Keystore
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/production.jks
-
-      # 3. Build and Sign with Gradle simultaneously using environment properties
-      - name: Build and Sign production Android app bundle
+      - name: Build production Android app bundle
         working-directory: android
-        env:
-          ORG_GRADLE_PROJECT_MYAPP_RELEASE_STORE_FILE: production.jks
-          ORG_GRADLE_PROJECT_MYAPP_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ORG_GRADLE_PROJECT_MYAPP_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ORG_GRADLE_PROJECT_MYAPP_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: ./gradlew bundleRelease --no-daemon
+        
+      - name: Strip default debug signature
+        run: |
+          zip -d ${{ env.AAB_DIR }}/app-release.aab "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.MF" || true
 
-      # 4. Upload the production AAB directly (Gradle natively overrides the file name as app-release.aab)
+      - name: Sign Android AAB
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: tutor-production-aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
           if-no-files-found: error

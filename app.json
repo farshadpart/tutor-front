@@ -37,13 +37,7 @@
         {
           "android": {
             "enableProguardInReleaseBuilds": true,
-            "enableShrinkResourcesInReleaseBuilds": true,
-            "signingConfig": {
-              "storeFile": "production.jks",
-              "storePassword": "System.getenv('ORG_GRADLE_PROJECT_MYAPP_RELEASE_STORE_PASSWORD')",
-              "keyAlias": "System.getenv('ORG_GRADLE_PROJECT_MYAPP_RELEASE_KEY_ALIAS')",
-              "keyPassword": "System.getenv('ORG_GRADLE_PROJECT_MYAPP_RELEASE_KEY_PASSWORD')"
-            }
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
       ],
