@@ -28,7 +28,9 @@ jobs:
         run: npm ci
         
       - name: Generate build number
-        run: echo "BUILD_NUMBER=$((GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
+        run: |
+          echo "BUILD_NUMBER=$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
+          echo "Build number: $GITHUB_RUN_NUMBER"
 
       - name: Expo Prebuild
         run: npx expo prebuild --platform android --no-install
