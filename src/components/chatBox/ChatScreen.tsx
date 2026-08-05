@@ -9,6 +9,7 @@ import { chat, transcription } from '@/src/services/tutorApiService';
 import { Chat } from "@/src/types/chat/chat";
 import { Message } from "@/src/types/chat/message";
 import { useEffect, useState } from 'react';
+import { saveAudio } from "@/src/services/fileService";
 
 export default function ChatScreen({ chatId }: ChatScreenProps) {
     const { showModal, closeModal } = useModal();
@@ -77,9 +78,19 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
                     showModal({ children: <ActConfirm title={Messages.error} message={Messages.tutorfailedToReplyYouPleaseTryLater} onAct={closeModal} /> })
                     return;
                 }
-
+                
+                const saveResult = saveAudio(tutorReplyResult.data.voiceResponse);
+                
                 setMessages(prev => {
-                    let latestMessages = [...prev, { id: Date.now().toString() + '-reply', text: tutorReplyResult.data ?? '', reply: true }]
+                    let latestMessages = 
+                        [...prev, 
+                            { 
+                                id: Date.now().toString() + '-reply', 
+                                text: tutorReplyResult.data?.textResponse ?? '', 
+                                reply: true, 
+                                audioUrl: saveResult.isSuccess ? tutorReplyResult.data?.voiceResponse.fileName : undefined,  
+                            }
+                        ];
                     const save = async () => await saveChatHistory(chatId, latestMessages);
                     save();
                     return latestMessages;
