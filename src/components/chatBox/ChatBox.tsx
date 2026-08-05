@@ -5,7 +5,7 @@ import { ThemedTextInput } from '@/src/components/themedTextInput/ThemedTextInpu
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
 import { ThemedView } from '@/src/components/themedView/ThemedView';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { TutorReply } from '@/src/types/chat/tutorReply';
+import { TextResponse } from '@/src/types/chat/tutorReply';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
@@ -46,8 +46,8 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                 renderItem=
                 {
                     ({ item }) => {
-                        if (item.reply) {
-                            const tutorReply = JSON.parse(item.text) as TutorReply;
+                        if (item.reply && !item.error) {
+                            const tutorReply = JSON.parse(item.text) as TextResponse;
                             return <TabbedMessage correction={tutorReply.correction} response={tutorReply.response} revisedSentence={tutorReply.revisedSentence} />
                         }
 
