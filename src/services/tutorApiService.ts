@@ -5,12 +5,12 @@ import { Result } from '@/src/types/common/result';
 import { fetchWithTimeout } from '@/src/utilities/httpUitlities';
 import { log } from '@/src/services/logService';
 import { getValidToken } from "@/src/services/tokenService";
+import {TutorReplyResponse} from "@/src/types/chat/tutorReply";
 
-const serviceName = "tutorApiService";
 const chatEndpoint = "/chat/write";
 const transcriptionEndpoint = "/chat/speak";
 
-export const chat = async ({ input }: { input: Chat[] }): Promise<Result<string>> => {
+export const chat = async ({ input }: { input: Chat[] }): Promise<Result<TutorReplyResponse>> => {
     try {
         const response = await fetchWithTimeout(`${TUTORAPI}${chatEndpoint}`, {
             method: "POST",
@@ -21,7 +21,7 @@ export const chat = async ({ input }: { input: Chat[] }): Promise<Result<string>
             }
         });
 
-        return await interpret(response);
+        return await interpret<TutorReplyResponse>(response);
     } catch (e) {
         log("Error", 'Tutor API chat request failed. Endpoint: {endpoint}, MessageCount: {messageCount}', [
             chatEndpoint,
