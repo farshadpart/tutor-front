@@ -20,7 +20,7 @@ export function TabbedMessage({
     containerStyle,
 }: TabbedMessageProps) {
     const { theme } = useTheme();
-    const { play, stop, isPlaying, setIsPlaying } = useAudioPlayerProvider();
+    const { handlePlayTap } = useAudioPlayerProvider();
 
     const availableTabs = useMemo(() => {
         const tabs: TabItem[] = [
@@ -31,20 +31,6 @@ export function TabbedMessage({
 
         return tabs.filter(t => (t.value ?? '').trim().length > 0);
     }, [response, revisedSentence, correction]);
-    
-    const HandlePress = async () => {
-        if(!audioUrl)
-            return;
-        
-        if(isPlaying) {
-            await stop();
-            setIsPlaying(false);
-            return;
-        }
-        
-        play(audioUrl)
-        setIsPlaying(true);
-    }
 
     const fallbackSelected: TutorPartKey = availableTabs[0]?.key ?? 'reply';
 
@@ -76,7 +62,7 @@ export function TabbedMessage({
                     },
                 ]}
             >
-                <Pressable onPress={HandlePress}>
+                <Pressable onPress={async () => await handlePlayTap(audioUrl)}>
                     <ThemedText style={{ color: theme.colors.text }}>
                         {selectedText}
                     </ThemedText>
