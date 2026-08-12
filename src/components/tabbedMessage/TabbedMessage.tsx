@@ -8,8 +8,7 @@ import { useTheme } from '@/src/providers/ThemeProvider';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useMemo, useState } from 'react';
 import {Pressable, StyleSheet} from 'react-native';
-import { getAudioFileUri } from "@/src/services/fileService";
-import { useAudioPlayer } from 'expo-audio';
+import { useAudioPlayerProvider } from "@/src/providers/AudioPlayerProvider"
 
 export function TabbedMessage({
     response,
@@ -21,8 +20,7 @@ export function TabbedMessage({
     containerStyle,
 }: TabbedMessageProps) {
     const { theme } = useTheme();
-    const [isPlaying, setIsPlaying] = useState(false);
-    const audioPlayer = useAudioPlayer(getAudioFileUri(audioUrl ?? ''));
+    const { play, stop, isPlaying, setIsPlaying } = useAudioPlayerProvider();
 
     const availableTabs = useMemo(() => {
         const tabs: TabItem[] = [
@@ -39,13 +37,12 @@ export function TabbedMessage({
             return;
         
         if(isPlaying) {
-            audioPlayer.pause();
+            await stop();
             setIsPlaying(false);
-            await audioPlayer.seekTo(0);
             return;
         }
         
-        audioPlayer.play()
+        play(audioUrl)
         setIsPlaying(true);
     }
 
