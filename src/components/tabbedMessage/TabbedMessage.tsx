@@ -7,17 +7,22 @@ import { ThemedView } from '@/src/components/themedView/ThemedView';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useMemo, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
+import { getAudioFileUri } from "@/src/services/fileService";
+import { useAudioPlayer } from 'expo-audio';
 
 export function TabbedMessage({
     response,
     revisedSentence,
     correction,
+    audioUrl,
     initialSelected,
     onSelectedChange,
     containerStyle,
 }: TabbedMessageProps) {
     const { theme } = useTheme();
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioPlayer = useAudioPlayer(getAudioFileUri(audioUrl ?? ''));
 
     const availableTabs = useMemo(() => {
         const tabs: TabItem[] = [
@@ -28,6 +33,21 @@ export function TabbedMessage({
 
         return tabs.filter(t => (t.value ?? '').trim().length > 0);
     }, [response, revisedSentence, correction]);
+    
+    const HandlePress = async () => {
+        if(!audioUrl)
+            return;
+        
+        if(isPlaying) {
+            audioPlayer.pause();
+            setIsPlaying(false);
+            await audioPlayer.seekTo(0);
+            return;
+        }
+        
+        audioPlayer.play()
+        setIsPlaying(true);
+    }
 
     const fallbackSelected: TutorPartKey = availableTabs[0]?.key ?? 'reply';
 
@@ -59,9 +79,11 @@ export function TabbedMessage({
                     },
                 ]}
             >
-                <ThemedText style={{ color: theme.colors.text }}>
-                    {selectedText}
-                </ThemedText>
+                <Pressable onPress={HandlePress}>
+                    <ThemedText style={{ color: theme.colors.text }}>
+                        {selectedText}
+                    </ThemedText>
+                </Pressable>
             </ThemedView>
 
             <ThemedView>

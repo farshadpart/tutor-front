@@ -16,7 +16,7 @@ export function ChatListProvider({ children }: { children: React.ReactNode; }) {
             {children}
         </ChatListContext.Provider>
     );
-};
+}
 
 export function useChatListProvider() {
     const context = useContext(ChatListContext);

@@ -48,7 +48,12 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                     ({ item }) => {
                         if (item.reply && !item.error) {
                             const tutorReply = JSON.parse(item.text) as TextResponse;
-                            return <TabbedMessage correction={tutorReply.correction} response={tutorReply.response} revisedSentence={tutorReply.revisedSentence} />
+                            return <TabbedMessage 
+                                correction={tutorReply.correction} 
+                                response={tutorReply.response} 
+                                revisedSentence={tutorReply.revisedSentence} 
+                                audioUrl={item.audioUrl}
+                            />
                         }
 
                         return <MessageItem item={item} />
