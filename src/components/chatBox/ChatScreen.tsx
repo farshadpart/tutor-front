@@ -10,6 +10,7 @@ import { Chat } from "@/src/types/chat/chat";
 import { Message } from "@/src/types/chat/message";
 import { useEffect, useState } from 'react';
 import { saveAudio } from "@/src/services/fileService";
+import { useAudioPlayerProvider } from "@/src/providers/AudioPlayerProvider";
 
 export default function ChatScreen({ chatId }: ChatScreenProps) {
     const { showModal, closeModal } = useModal();
@@ -18,6 +19,7 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
     const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
     const [analysing, setAnalysing] = useState(false);
     const userId = useAuthStore().user?.id;
+    const {setHotMessage} = useAudioPlayerProvider();
 
     useEffect(() => {
         const fetchChatHistory = async () => {
@@ -82,10 +84,12 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
                 const saveResult = saveAudio(tutorReplyResult.data.voiceResponse);
                 
                 setMessages(prev => {
+                    const messageId = Date.now().toString() + '-reply';
+                    setHotMessage(messageId);
                     let latestMessages = 
                         [...prev, 
                             { 
-                                id: Date.now().toString() + '-reply', 
+                                id: messageId, 
                                 text: tutorReplyResult.data?.textResponse ?? '', 
                                 reply: true, 
                                 audioUrl: saveResult.isSuccess ? tutorReplyResult.data?.voiceResponse.fileName : undefined,  

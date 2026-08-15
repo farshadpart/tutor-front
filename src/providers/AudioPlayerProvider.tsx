@@ -4,6 +4,8 @@ import {getAudioFileUri} from "@/src/services/fileService";
 
 type AudioPlayerContextValue = {
     handlePlayTap: (audioUrl: string | undefined) => Promise<void>;
+    hotMessage: string|undefined;
+    setHotMessage: (message: string|undefined) => void;
 }
 
 const AudioPlayerContext = createContext<AudioPlayerContextValue | undefined>(undefined);
@@ -11,6 +13,7 @@ const AudioPlayerContext = createContext<AudioPlayerContextValue | undefined>(un
 export function AudioPlayerProvider({ children }: { children: React.ReactNode; }) {
     const audioPlayer = useAudioPlayer();
     const [isPlaying, setIsPlaying] = useState(false);
+    const [hotMessage, setHotMessage] = useState<string|undefined>();
     const currentAudioUrl = useRef<string | undefined>(undefined);
 
     const handlePlayTap = async (audioUrl: string | undefined) : Promise<void> => {
@@ -47,7 +50,7 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode; }
     
 
     return (
-        <AudioPlayerContext.Provider value={{ handlePlayTap }}>
+        <AudioPlayerContext.Provider value={{ handlePlayTap, hotMessage, setHotMessage }}>
             {children}
         </AudioPlayerContext.Provider>
     );
