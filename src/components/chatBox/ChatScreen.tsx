@@ -83,9 +83,9 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
                 
                 const saveResult = saveAudio(tutorReplyResult.data.voiceResponse);
                 
+                const messageId = Date.now().toString() + '-reply';
+                setHotMessage(messageId);
                 setMessages(prev => {
-                    const messageId = Date.now().toString() + '-reply';
-                    setHotMessage(messageId);
                     let latestMessages = 
                         [...prev, 
                             { 

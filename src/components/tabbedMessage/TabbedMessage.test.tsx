@@ -36,6 +36,14 @@ jest.mock('@/src/components/themedTouchableOpacity/ThemedTouchableOpacity', () =
 
 jest.mock('@expo/vector-icons/Ionicons', () => 'Ionicons');
 
+jest.mock('@/src/providers/AudioPlayerProvider', () => ({
+    useAudioPlayerProvider: () => ({
+        handlePlayTap: jest.fn(),
+        hotMessage: undefined,
+        setHotMessage: jest.fn(),
+    }),
+}));
+
 describe('TabbedMessage', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -44,6 +52,7 @@ describe('TabbedMessage', () => {
     it('renders nothing when no tab content is available', async () => {
         const { toJSON } = await render(
             <TabbedMessage
+                messageId="message-1"
                 response=" "
                 correction=""
                 revisedSentence={undefined}
@@ -56,6 +65,7 @@ describe('TabbedMessage', () => {
     it('renders only tabs with non-empty content and selects the first available tab', async () => {
         const { getByLabelText, queryByLabelText, getByText, queryByText } = await render(
             <TabbedMessage
+                messageId="message-2"
                 response="Tutor reply"
                 correction="   "
                 revisedSentence="A revised sentence"
@@ -72,6 +82,7 @@ describe('TabbedMessage', () => {
     it('uses a valid initial selected tab', async () => {
         const { getByText, queryByText } = await render(
             <TabbedMessage
+                messageId="message-3"
                 response="Tutor reply"
                 correction="Try this correction"
                 revisedSentence="A revised sentence"
@@ -86,6 +97,7 @@ describe('TabbedMessage', () => {
     it('falls back to the first available tab when initial selected content is unavailable', async () => {
         const { getByText, queryByText } = await render(
             <TabbedMessage
+                messageId="message-4"
                 response="Tutor reply"
                 correction=""
                 revisedSentence="A revised sentence"
@@ -101,6 +113,7 @@ describe('TabbedMessage', () => {
         const onSelectedChange = jest.fn();
         const { getByLabelText, getByText, queryByText } = await render(
             <TabbedMessage
+                messageId="message-5"
                 response="Tutor reply"
                 correction="Try this correction"
                 revisedSentence="A revised sentence"
@@ -122,6 +135,7 @@ describe('TabbedMessage', () => {
         const unavailableInitialSelected = 'unknown' as TutorPartKey;
         const { getByText } = await render(
             <TabbedMessage
+                messageId="message-6"
                 response=""
                 correction="Try this correction"
                 revisedSentence="A revised sentence"

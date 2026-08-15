@@ -28,7 +28,7 @@ export function TabbedMessage({
             void handlePlayTap(audioUrl);
             setHotMessage(undefined);
         }
-    }, [hotMessage])
+    }, [audioUrl, handlePlayTap, hotMessage, messageId, setHotMessage])
 
     const availableTabs = useMemo(() => {
         const tabs: TabItem[] = [
