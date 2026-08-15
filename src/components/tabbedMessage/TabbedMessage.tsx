@@ -6,11 +6,12 @@ import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/
 import { ThemedView } from '@/src/components/themedView/ThemedView';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {Pressable, StyleSheet} from 'react-native';
 import { useAudioPlayerProvider } from "@/src/providers/AudioPlayerProvider"
 
 export function TabbedMessage({
+    messageId,
     response,
     revisedSentence,
     correction,
@@ -20,7 +21,14 @@ export function TabbedMessage({
     containerStyle,
 }: TabbedMessageProps) {
     const { theme } = useTheme();
-    const { handlePlayTap } = useAudioPlayerProvider();
+    const { handlePlayTap, hotMessage, setHotMessage } = useAudioPlayerProvider();
+    
+    useEffect(() => {
+        if(hotMessage === messageId){
+            void handlePlayTap(audioUrl);
+            setHotMessage(undefined);
+        }
+    }, [audioUrl, handlePlayTap, hotMessage, messageId, setHotMessage])
 
     const availableTabs = useMemo(() => {
         const tabs: TabItem[] = [
@@ -49,7 +57,8 @@ export function TabbedMessage({
         onSelectedChange?.(key);
     };
 
-    if (availableTabs.length === 0) return null;
+    if (availableTabs.length === 0) 
+        return null;
 
     return (
         <ThemedView style={[styles.wrapper, containerStyle]}>
