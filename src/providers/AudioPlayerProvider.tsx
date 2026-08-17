@@ -1,9 +1,10 @@
-import React, {createContext, useContext, useRef, useState} from "react";
+import React, {createContext, useCallback, useContext, useRef, useState} from "react";
 import {useAudioPlayer} from "expo-audio";
 import {getAudioFileUri} from "@/src/services/fileService";
 
 type AudioPlayerContextValue = {
     handlePlayTap: (audioUrl: string | undefined) => Promise<void>;
+    stopPlayback: () => Promise<void>;
     hotMessage: string|undefined;
     setHotMessage: (message: string|undefined) => void;
 }
@@ -16,17 +17,24 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode; }
     const [hotMessage, setHotMessage] = useState<string|undefined>();
     const currentAudioUrl = useRef<string | undefined>(undefined);
 
+    const stopPlayback = useCallback(async () => {
+        audioPlayer.pause();
+        await audioPlayer.seekTo(0);
+        setIsPlaying(false);
+        currentAudioUrl.current = undefined;
+    }, [audioPlayer]);
+
     const handlePlayTap = async (audioUrl: string | undefined) : Promise<void> => {
         if(!audioUrl)
             return;
 
         if(isPlaying && currentAudioUrl.current === audioUrl) {
-            await stop();
+            await stopPlayback();
             return;
         }
 
         if(isPlaying)
-            await stop();
+            await stopPlayback();
 
         play(audioUrl);
         currentAudioUrl.current = audioUrl;
@@ -42,15 +50,8 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode; }
         audioPlayer.play();
     }
 
-    const stop = async () => {
-        audioPlayer.pause();
-        await audioPlayer.seekTo(0);
-        setIsPlaying(false);
-    }
-    
-
     return (
-        <AudioPlayerContext.Provider value={{ handlePlayTap, hotMessage, setHotMessage }}>
+        <AudioPlayerContext.Provider value={{ handlePlayTap, stopPlayback, hotMessage, setHotMessage }}>
             {children}
         </AudioPlayerContext.Provider>
     );

@@ -19,7 +19,15 @@ export default function ChatScreen({ chatId }: ChatScreenProps) {
     const [chatbotIsTyping, setChatbotIsTyping] = useState(false);
     const [analysing, setAnalysing] = useState(false);
     const userId = useAuthStore().user?.id;
-    const {setHotMessage} = useAudioPlayerProvider();
+    const {setHotMessage, stopPlayback} = useAudioPlayerProvider();
+
+    useEffect(() => {
+        void stopPlayback();
+
+        return () => {
+            void stopPlayback();
+        };
+    }, [chatId, stopPlayback]);
 
     useEffect(() => {
         const fetchChatHistory = async () => {

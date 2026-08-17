@@ -43,6 +43,7 @@ jest.mock('@expo/vector-icons/Ionicons', () => 'Ionicons');
 jest.mock('@/src/providers/AudioPlayerProvider', () => ({
     useAudioPlayerProvider: () => ({
         handlePlayTap: mockHandlePlayTap,
+        stopPlayback: jest.fn(),
         hotMessage: mockHotMessage,
         setHotMessage: mockSetHotMessage,
     }),

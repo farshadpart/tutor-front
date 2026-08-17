@@ -4,6 +4,7 @@ import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/
 import { ThemedView } from '@/src/components/themedView/ThemedView';
 import { Messages } from '@/src/constants/messages';
 import { useTheme } from '@/src/providers/ThemeProvider';
+import { useAudioPlayerProvider } from '@/src/providers/AudioPlayerProvider';
 import Entypo from '@expo/vector-icons/Entypo';
 import {
     AudioModule,
@@ -27,6 +28,7 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
     const oneMinute = 60000;
     const { showModal, closeModal } = useModal();
     const { theme } = useTheme();
+    const { stopPlayback } = useAudioPlayerProvider();
     const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
     const recorderState = useAudioRecorderState(audioRecorder);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -36,6 +38,7 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
     };
 
     const record = async () => {
+        await stopPlayback();
         await audioRecorder.prepareToRecordAsync();
         audioRecorder.record();
 
