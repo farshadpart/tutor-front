@@ -39,7 +39,7 @@ export const update = async (userSettings: UserSettings): Promise<Result> => {
             }
         });
         
-        return { isSuccess: true };
+        return await interpret(response);
     } catch (e) {
         log("Error", 'Failed to call updateUserSettings Endpoint. UserSettings: {@UserSettings}', [userSettings], e);
         return { isSuccess: false, error: "Something went wrong!" };
