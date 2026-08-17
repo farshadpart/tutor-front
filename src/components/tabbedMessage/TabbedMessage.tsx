@@ -8,7 +8,8 @@ import { useTheme } from '@/src/providers/ThemeProvider';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useMemo, useState, useEffect } from 'react';
 import {Pressable, StyleSheet} from 'react-native';
-import { useAudioPlayerProvider } from "@/src/providers/AudioPlayerProvider"
+import { useAudioPlayerProvider } from "@/src/providers/AudioPlayerProvider";
+import { useUserSettingsProvider} from "@/src/providers/UserSettingsProvider";
 
 export function TabbedMessage({
     messageId,
@@ -22,13 +23,14 @@ export function TabbedMessage({
 }: TabbedMessageProps) {
     const { theme } = useTheme();
     const { handlePlayTap, hotMessage, setHotMessage } = useAudioPlayerProvider();
+    const { autoPlayVoice } = useUserSettingsProvider();
     
     useEffect(() => {
-        if(hotMessage === messageId){
+        if(autoPlayVoice && hotMessage === messageId){
             void handlePlayTap(audioUrl);
             setHotMessage(undefined);
         }
-    }, [audioUrl, handlePlayTap, hotMessage, messageId, setHotMessage])
+    }, []);
 
     const availableTabs = useMemo(() => {
         const tabs: TabItem[] = [

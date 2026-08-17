@@ -19,14 +19,20 @@ export const UserSummary = () => {
     const userPhoto = avatarImages[scheme as keyof typeof avatarImages];
 
     return (
-        <ThemedTouchableOpacity onPress={() => router.push('/User')} style={[styles.container, { backgroundColor: 'transparent' }]} activeOpacity={1}>
-            <View style={styles.avatarContainer}>
-                <Image testID="user-summary-avatar" source={userPhoto} style={styles.avatar} />
-            </View>
-            <ThemedText style={styles.name} numberOfLines={1}>
-                {authStore.user?.email}
-            </ThemedText>
-        </ThemedTouchableOpacity>
+        <View style={styles.container}>
+            <ThemedTouchableOpacity
+                onPress={() => router.push('/User')}
+                style={styles.profile}
+                activeOpacity={1}
+            >
+                <View style={styles.avatarContainer}>
+                    <Image testID="user-summary-avatar" source={userPhoto} style={styles.avatar} />
+                </View>
+                <ThemedText style={styles.name} numberOfLines={1}>
+                    {authStore.user?.email}
+                </ThemedText>
+            </ThemedTouchableOpacity>
+        </View>
     );
 }
 
@@ -34,10 +40,13 @@ const AVATAR_SIZE = 56;
 
 const styles = StyleSheet.create({
     container: {
+        padding: 12,
+    },
+    profile: {
         flexDirection: 'column',
         alignItems: 'center',
-        padding: 12,
         borderRadius: 14,
+        backgroundColor: 'transparent',
     },
     avatarContainer: {
         width: AVATAR_SIZE,
@@ -52,6 +61,6 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 16,
         fontWeight: '600',
-        marginTop: 8
+        marginTop: 8,
     },
 });

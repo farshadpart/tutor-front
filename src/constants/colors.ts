@@ -24,6 +24,7 @@ export const light: Theme = {
         modalShadowColor: '#000000',
         destructiveBackground: '#FEE2E2',
         destructive: '#DC2626',
+        switchTrackInactive: '#767577',
     },
 };
 
@@ -50,6 +51,7 @@ export const dark: Theme = {
         modalBackground: '#111827',
         modalShadowColor: '#000000',
         destructiveBackground: '#3F1D1D',
-        destructive: '#F87171'
+        destructive: '#F87171',
+        switchTrackInactive: '#767577',
     },
 };
