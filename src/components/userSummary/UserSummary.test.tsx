@@ -36,7 +36,6 @@ describe('UserSummary', () => {
             scheme: 'light',
             theme: light,
         });
-
         const router: ReturnType<typeof useRouter> = {
             back: jest.fn(),
             canGoBack: jest.fn(() => false),

@@ -1,25 +1,39 @@
 import { ThemedText } from '@/src/components/themedText/ThemedText';
 import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/ThemedTouchableOpacity';
+import { UserSettingsControl } from '@/src/components/userSummary/UserSettingsControl';
 import { useAuthStore } from '@/src/hooks/useAuthStore';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { StyleSheet } from 'react-native';
+import { UserSettingsProvider } from '@/src/providers/UserSettingsProvider';
+import { StyleSheet, View } from 'react-native';
 
-const User = () => {
+const UserContent = () => {
     const { theme } = useTheme();
     const authStore = useAuthStore();
 
     return (
-        <ThemedTouchableOpacity testID="logOutButton" style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={async () => await authStore.logOut(authStore.tokenHolder?.refreshToken.token)}>
-            <ThemedText style={[styles.buttonText, { color: theme.colors.text }]}>Logout</ThemedText>
-        </ThemedTouchableOpacity>
+        <View style={styles.container}>
+            <UserSettingsControl />
+            <ThemedTouchableOpacity testID="logOutButton" style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={async () => await authStore.logOut(authStore.tokenHolder?.refreshToken.token)}>
+                <ThemedText style={[styles.buttonText, { color: theme.colors.text }]}>Logout</ThemedText>
+            </ThemedTouchableOpacity>
+        </View>
     )
 }
+
+const User = () => (
+    <UserSettingsProvider>
+        <UserContent />
+    </UserSettingsProvider>
+);
 
 export default User;
 
 const styles = StyleSheet.create({
+    container: {
+        padding: 20,
+    },
     button: {
-        margin: 20,
+        marginTop: 20,
         borderRadius: 8,
         paddingVertical: 14,
         alignItems: "center",

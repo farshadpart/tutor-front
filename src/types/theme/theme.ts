@@ -22,5 +22,6 @@ export type Theme = {
         modalShadowColor: string;
         destructiveBackground: string;
         destructive: string;
+        switchTrackInactive: string;
     };
 };
