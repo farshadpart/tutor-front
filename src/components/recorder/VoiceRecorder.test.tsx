@@ -17,6 +17,7 @@ const mockCloseModal = jest.fn();
 const mockPrepareToRecordAsync = jest.fn();
 const mockRecord = jest.fn();
 const mockStop = jest.fn();
+const mockStopPlayback = jest.fn();
 
 let mockRecorderState = { isRecording: false };
 const mockAudioRecorder = {
@@ -35,6 +36,12 @@ jest.mock('@/src/providers/ThemeProvider', () => ({
                 text: '#1f2937',
             },
         },
+    }),
+}));
+
+jest.mock('@/src/providers/AudioPlayerProvider', () => ({
+    useAudioPlayerProvider: () => ({
+        stopPlayback: mockStopPlayback,
     }),
 }));
 
@@ -89,6 +96,7 @@ describe('VoiceRecorder', () => {
         (setAudioModeAsync as jest.Mock).mockResolvedValue(undefined);
         mockPrepareToRecordAsync.mockResolvedValue(undefined);
         mockStop.mockResolvedValue(undefined);
+        mockStopPlayback.mockResolvedValue(undefined);
     });
 
     it('requests microphone permission and enables recording audio mode', async () => {
@@ -119,15 +127,19 @@ describe('VoiceRecorder', () => {
         });
     });
 
-    it('starts recording from the idle state', async () => {
+    it('stops Tutor playback before starting recording', async () => {
         const { getByTestId } = await render(<VoiceRecorder />);
 
         await fireEvent.press(getByTestId('voice-recorder-button'));
 
         await waitFor(() => {
+            expect(mockStopPlayback).toHaveBeenCalledTimes(1);
             expect(mockPrepareToRecordAsync).toHaveBeenCalledTimes(1);
             expect(mockRecord).toHaveBeenCalledTimes(1);
         });
+
+        expect(mockStopPlayback.mock.invocationCallOrder[0])
+            .toBeLessThan(mockPrepareToRecordAsync.mock.invocationCallOrder[0]);
     });
 
     it('stops recording and passes the audio file to the completion handler', async () => {
