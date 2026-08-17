@@ -2,8 +2,12 @@ import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { TouchableOpacity as MockTouchableOpacity } from 'react-native';
 import { TabbedMessage } from './TabbedMessage';
 import { TutorPartKey } from '@/src/components/tabbedMessage/types/TutorPartKey';
+import { useUserSettingsProvider } from '@/src/providers/UserSettingsProvider';
 
 const mockStopPropagation = jest.fn();
+const mockHandlePlayTap = jest.fn();
+const mockSetHotMessage = jest.fn();
+let mockHotMessage: string | undefined;
 
 jest.mock('@/src/providers/ThemeProvider', () => ({
     useTheme: () => ({
@@ -38,15 +42,64 @@ jest.mock('@expo/vector-icons/Ionicons', () => 'Ionicons');
 
 jest.mock('@/src/providers/AudioPlayerProvider', () => ({
     useAudioPlayerProvider: () => ({
-        handlePlayTap: jest.fn(),
-        hotMessage: undefined,
-        setHotMessage: jest.fn(),
+        handlePlayTap: mockHandlePlayTap,
+        hotMessage: mockHotMessage,
+        setHotMessage: mockSetHotMessage,
     }),
 }));
+
+jest.mock('@/src/providers/UserSettingsProvider', () => ({
+    useUserSettingsProvider: jest.fn(),
+}));
+
+const mockUseUserSettingsProvider = jest.mocked(useUserSettingsProvider);
 
 describe('TabbedMessage', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockHotMessage = undefined;
+        mockUseUserSettingsProvider.mockReturnValue({
+            autoPlayVoice: false,
+            isSaving: false,
+            updateAutoPlayVoice: jest.fn(),
+        });
+    });
+
+    it('automatically plays a hot message when auto-play is enabled', async () => {
+        mockHotMessage = 'message-auto-play';
+        mockUseUserSettingsProvider.mockReturnValue({
+            autoPlayVoice: true,
+            isSaving: false,
+            updateAutoPlayVoice: jest.fn(),
+        });
+
+        await render(
+            <TabbedMessage
+                messageId="message-auto-play"
+                response="Tutor reply"
+                audioUrl="https://example.com/reply.mp3"
+            />
+        );
+
+        await waitFor(() => {
+            expect(mockHandlePlayTap).toHaveBeenCalledWith('https://example.com/reply.mp3');
+            expect(mockSetHotMessage).toHaveBeenCalledWith(undefined);
+        });
+    });
+
+    it('does not automatically play a hot message when auto-play is disabled', async () => {
+        mockHotMessage = 'message-no-auto-play';
+
+        await render(
+            <TabbedMessage
+                messageId="message-no-auto-play"
+                response="Tutor reply"
+                audioUrl="https://example.com/reply.mp3"
+            />
+        );
+
+        expect(mockHandlePlayTap).not.toHaveBeenCalled();
+        expect(mockSetHotMessage).not.toHaveBeenCalled();
     });
 
     it('renders nothing when no tab content is available', async () => {

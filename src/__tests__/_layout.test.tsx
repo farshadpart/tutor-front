@@ -46,6 +46,10 @@ jest.mock('@/src/components/themedModal/ThemedModalContext', () => {
     };
 });
 
+jest.mock('@/src/providers/UserSettingsProvider', () => ({
+    UserSettingsProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 const mockUseAuthStore = jest.mocked(useAuthStore);
 const mockUseTheme = jest.mocked(useTheme);
 

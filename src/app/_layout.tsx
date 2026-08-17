@@ -3,6 +3,7 @@ import { useAuthStore } from '../hooks/useAuthStore';
 import { useTheme, ThemeProvider } from '@/src/providers/ThemeProvider';
 import { ThemedModalProvider } from '../components/themedModal/ThemedModalContext';
 import { View } from 'react-native';
+import { UserSettingsProvider } from '@/src/providers/UserSettingsProvider';
 
 function ThemedStack() {
     const authStore = useAuthStore();
@@ -51,7 +52,9 @@ function ThemedStack() {
 export default function Layout() {
     return (
         <ThemeProvider>
-            <ThemedStack />
+            <UserSettingsProvider>
+                <ThemedStack />
+            </UserSettingsProvider>
         </ThemeProvider>
     );
 }

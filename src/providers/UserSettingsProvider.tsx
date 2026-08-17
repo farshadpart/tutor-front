@@ -1,5 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {getUserSettings, update as updateUserSettings} from "@/src/services/userSettingsService"
+import {useAuthStore} from "@/src/hooks/useAuthStore";
 
 type UserSettingsContextValue = {
     autoPlayVoice: boolean;
@@ -10,42 +11,39 @@ type UserSettingsContextValue = {
 const UserSettingsContext = createContext<UserSettingsContextValue | undefined>(undefined);
 
 export function UserSettingsProvider({ children }: { children: React.ReactNode; }) {
+    const user = useAuthStore(state => state.user);
     const [autoPlayVoice, setAutoPlayVoice] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
-        let isMounted = true;
+        if (user === undefined) {
+            setAutoPlayVoice(true);
+            setIsSaving(false);
+            return;
+        }
 
         const loadUserSettings = async () => {
             const result = await getUserSettings();
 
-            if (isMounted && result.isSuccess && result.data !== undefined) {
+            if (result.isSuccess && result.data !== undefined) {
                 setAutoPlayVoice(result.data.autoPlayVoice);
             }
         };
 
         void loadUserSettings();
-
-        return () => {
-            isMounted = false;
-        };
-    }, []);
+    }, [user]);
 
     const updateAutoPlayVoice = async (value: boolean) => {
-        const previousValue = autoPlayVoice;
-
-        setAutoPlayVoice(value);
-        setIsSaving(true);
-
         try {
+            setIsSaving(true);
             const result = await updateUserSettings({ autoPlayVoice: value });
 
-            if (!result.isSuccess) {
-                setAutoPlayVoice(previousValue);
+            if (result.isSuccess) {
+                setAutoPlayVoice(value);
             }
-        } catch {
-            setAutoPlayVoice(previousValue);
-        } finally {
+        } 
+        catch {} 
+        finally {
             setIsSaving(false);
         }
     };

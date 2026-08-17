@@ -3,10 +3,9 @@ import { ThemedTouchableOpacity } from '@/src/components/themedTouchableOpacity/
 import { UserSettingsControl } from '@/src/components/userSummary/UserSettingsControl';
 import { useAuthStore } from '@/src/hooks/useAuthStore';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { UserSettingsProvider } from '@/src/providers/UserSettingsProvider';
 import { StyleSheet, View } from 'react-native';
 
-const UserContent = () => {
+const User = () => {
     const { theme } = useTheme();
     const authStore = useAuthStore();
 
@@ -19,12 +18,6 @@ const UserContent = () => {
         </View>
     )
 }
-
-const User = () => (
-    <UserSettingsProvider>
-        <UserContent />
-    </UserSettingsProvider>
-);
 
 export default User;
 
