@@ -1,4 +1,4 @@
-import { Claim } from "@/src/types/account/claim"
+import { Claim } from "@/src/types/authentication/claim"
 
 export interface User {
     id: string,

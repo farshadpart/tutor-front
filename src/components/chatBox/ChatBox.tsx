@@ -67,7 +67,7 @@ export const ChatBox = ({ messages, onRecordingComplete, analysing, chatbotIsTyp
                 {
                     messageLimitReached ?
                         <ThemedView style={[styles.limitMessageContainer, { backgroundColor: theme.colors.secondary, borderColor: theme.colors.border }]}>
-                            <ThemedText style={styles.limitMessage}>You've reached the message limit for this chat. Please start a new chat to continue.</ThemedText>
+                            <ThemedText style={styles.limitMessage}>You&apos;ve reached the message limit for this chat. Please start a new chat to continue.</ThemedText>
                         </ThemedView> :
                         <>
                             <ThemedTextInput

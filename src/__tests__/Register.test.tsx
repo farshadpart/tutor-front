@@ -5,7 +5,7 @@ import { light } from '@/src/constants/colors';
 import { Messages } from '@/src/constants/messages';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { useModal } from '@/src/components/themedModal/ThemedModalContext';
-import { register } from '@/src/services/accountService';
+import { register } from '@/src/services/authenticationService';
 import { useRouter } from 'expo-router';
 
 jest.mock('@/src/providers/ThemeProvider', () => ({
@@ -16,7 +16,7 @@ jest.mock('@/src/components/themedModal/ThemedModalContext', () => ({
     useModal: jest.fn(),
 }));
 
-jest.mock('@/src/services/accountService', () => ({
+jest.mock('@/src/services/authenticationService', () => ({
     register: jest.fn(),
 }));
 

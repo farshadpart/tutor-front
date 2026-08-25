@@ -6,7 +6,7 @@ import { ThemedTextInput } from "@/src/components/themedTextInput/ThemedTextInpu
 import { ThemedTouchableOpacity } from "@/src/components/themedTouchableOpacity/ThemedTouchableOpacity";
 import { ThemedView } from "@/src/components/themedView/ThemedView";
 import { Messages } from "@/src/constants/messages";
-import { forgotPassword, resetPassword } from "@/src/services/accountService";
+import { forgotPassword, resetPassword } from "@/src/services/authenticationService";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Keyboard, StyleSheet } from "react-native";

@@ -1,4 +1,4 @@
-import { User } from "@/src/types/account/user"
+import { User } from "@/src/types/authentication/user"
 import { TokenHolder } from "./tokenHolders"
 
 export interface LoginResponse {

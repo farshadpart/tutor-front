@@ -1,23 +1,23 @@
 import { TUTORAPI } from "@/src/constants/addresses";
 import { interpret } from "@/src/services/interpreter";
-import { Claim } from "@/src/types/account/claim";
-import { ForgotPasswordRequest } from "@/src/types/account/forgotPasswordRequest";
-import { LoginRequest } from "@/src/types/account/loginRequest";
-import { LoginResponse } from "@/src/types/account/loginResponse";
-import { RegisterRequest } from "@/src/types/account/registerRequest";
-import { ResetPasswordRequest } from "@/src/types/account/resetPasswordRequest";
-import { User } from "@/src/types/account/user";
+import { Claim } from "@/src/types/authentication/claim";
+import { ForgotPasswordRequest } from "@/src/types/authentication/forgotPasswordRequest";
+import { LoginRequest } from "@/src/types/authentication/loginRequest";
+import { LoginResponse } from "@/src/types/authentication/loginResponse";
+import { RegisterRequest } from "@/src/types/authentication/registerRequest";
+import { ResetPasswordRequest } from "@/src/types/authentication/resetPasswordRequest";
+import { User } from "@/src/types/authentication/user";
 import { Result } from "@/src/types/common/result";
 import { jwtDecode } from "jwt-decode";
-import { RefreshRequest } from "../types/account/refreshRequest";
-import { RefreshResponse } from "../types/account/refreshResponse";
-import { TokenHolder } from "../types/account/tokenHolders";
+import { RefreshRequest } from "../types/authentication/refreshRequest";
+import { RefreshResponse } from "../types/authentication/refreshResponse";
+import { TokenHolder } from "../types/authentication/tokenHolders";
 import { fetchWithTimeout } from '@/src/utilities/httpUitlities';
 import { log } from '@/src/services/logService';
 
 export const login = async (loginRequest: LoginRequest): Promise<Result<LoginResponse>> => {
     try {
-        const response = await fetchWithTimeout(`${TUTORAPI}/account/login`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/authentication/login`, {
             method: "POST",
             body: JSON.stringify(loginRequest),
             headers: {
@@ -42,7 +42,7 @@ export const login = async (loginRequest: LoginRequest): Promise<Result<LoginRes
 
 export const refresh = async (refreshRequest: RefreshRequest): Promise<Result<RefreshResponse>> => {
     try {
-        const response = await fetchWithTimeout(`${TUTORAPI}/account/refresh`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/authentication/refresh`, {
             method: "POST",
             body: JSON.stringify(refreshRequest),
             headers: {
@@ -71,7 +71,7 @@ export const logout = async (refreshToken?: string) : Promise<Result> => {
             return { isSuccess: false };
         }
 
-        const response = await fetchWithTimeout(`${TUTORAPI}/account/logout`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/authentication/logout`, {
             method: "POST",
             body: JSON.stringify({ refreshToken }),
             headers: {
@@ -91,11 +91,11 @@ export const logout = async (refreshToken?: string) : Promise<Result> => {
     }
 }
 
-export const register = async (registerReqeust: RegisterRequest): Promise<Result> => {
+export const register = async (registerRequest: RegisterRequest): Promise<Result> => {
     try {
-        const response = await fetchWithTimeout(`${TUTORAPI}/account/register`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/authentication/register`, {
             method: "POST",
-            body: JSON.stringify(registerReqeust),
+            body: JSON.stringify(registerRequest),
             headers: {
                 "Content-Type": "application/json",
             }
@@ -103,14 +103,14 @@ export const register = async (registerReqeust: RegisterRequest): Promise<Result
 
         return interpret(response);
     } catch (e) {
-        log("Error", 'Register request failed. Email: {email}', [registerReqeust.email], e);
+        log("Error", 'Register request failed. Email: {email}', [registerRequest.email], e);
         return { isSuccess: false, error: 'Something went wrong!' };
     }
 }
 
 export const forgotPassword = async (forgotPasswordRequest: ForgotPasswordRequest): Promise<Result> => {
     try {
-        const response = await fetchWithTimeout(`${TUTORAPI}/account/forgotPassword`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/authentication/forgotPassword`, {
             method: "POST",
             body: JSON.stringify(forgotPasswordRequest),
             headers: {
@@ -127,7 +127,7 @@ export const forgotPassword = async (forgotPasswordRequest: ForgotPasswordReques
 
 export const resetPassword = async (resetPasswordRequest: ResetPasswordRequest): Promise<Result> => {
     try {
-        const response = await fetchWithTimeout(`${TUTORAPI}/account/resetPassword`, {
+        const response = await fetchWithTimeout(`${TUTORAPI}/authentication/resetPassword`, {
             method: "POST",
             body: JSON.stringify(resetPasswordRequest),
             headers: {

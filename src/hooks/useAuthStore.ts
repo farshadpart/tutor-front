@@ -1,12 +1,12 @@
-import { login, logout, refresh } from "@/src/services/accountService";
-import { LoginRequest } from "@/src/types/account/loginRequest";
+import { login, logout, refresh } from "@/src/services/authenticationService";
+import { LoginRequest } from "@/src/types/authentication/loginRequest";
 import { Result } from "@/src/types/common/result";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { LoginResponse } from "../types/account/loginResponse";
-import { TokenHolder } from "../types/account/tokenHolders";
-import { User } from "../types/account/user";
+import { LoginResponse } from "../types/authentication/loginResponse";
+import { TokenHolder } from "../types/authentication/tokenHolders";
+import { User } from "../types/authentication/user";
 
 type UserTokenState = {
     user?: User;

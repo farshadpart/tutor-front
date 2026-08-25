@@ -4,7 +4,7 @@ import { Result } from '@/src/types/common/result';
 import { fetchWithTimeout } from '@/src/utilities/httpUitlities';
 import { log } from '@/src/services/logService';
 import { getValidToken } from "@/src/services/tokenService";
-import {UserSettings} from "@/src/types/account/userSettings";
+import {UserSettings} from "@/src/types/authentication/userSettings";
 
 const getUserSettingsEndpoint = "/userSettings/get";
 const updateUserSettingsEndpoint = "/userSettings/update";
